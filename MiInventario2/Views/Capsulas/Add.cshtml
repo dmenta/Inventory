@@ -1,0 +1,31 @@
+﻿@model MiInventario2.Models.CapsulasCreateViewModel
+@{
+  ViewBag.Title = "Add";
+}
+
+<h2>Add</h2>
+@using (Html.BeginForm("Add", "Capsulas", FormMethod.Post, new { @class = "form-horizontal" })) {
+  <fieldset>
+    <div class="form-group">
+      @Html.LabelFor(model => model.IdCapsula, new { @class = "col-lg-2 control-label" })
+      <div class="col-lg-10">
+        @Html.TextBoxFor(model => model.IdCapsula, new { @class = "form-control text-uppercase" })
+      </div>
+    </div>
+    <div class="form-group">
+      @Html.LabelFor(model => model.Descripcion, new { @class = "col-lg-2 control-label" })
+      <div class="col-lg-10">
+        @Html.TextBoxFor(model => model.Descripcion, new { @class = "form-control" })
+      </div>
+    </div>
+    <div class="form-group">
+      @Html.LabelFor(model => model.IdItem, new { @class = "col-lg-2 control-label" })
+      <div class="col-lg-10">
+        @Html.DropDownListFor(model => model.IdItem, new SelectList(Model.Capsulas, "Key", "Value"), new { @class = "form-control" })
+      </div>
+    </div>
+    <div class="col-lg-10 col-lg-offset-2">
+      <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+  </fieldset>
+}

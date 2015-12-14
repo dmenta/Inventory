@@ -1,0 +1,36 @@
+﻿@model MiInventario2.Models.CapsulasAddItemViewModel
+@{
+  ViewBag.Title = Model.IdCapsula;
+}
+
+<h2>Add Item to @Model.IdCapsula (@Model.Total)</h2>
+@if (@Model.Total > 100) {
+  <div class="alert alert-dismissible alert-danger">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    <strong>Oh snap!</strong> La cantidad total de la cápsula supera lo permitido.
+  </div>
+}
+
+@using (Html.BeginForm("AddItem", "Capsulas", FormMethod.Post, new { @class = "form-horizontal" })) {
+  <fieldset>
+    @Html.HiddenFor(model => model.IdCapsula)
+    <div class="form-group">
+      @Html.LabelFor(model => model.IdItem, new { @class = "col-lg-2 control-label" })
+      <div class="col-lg-10">
+        @Html.DropDownListFor(model => model.IdItem, new SelectList(Model.AddeableItems, "IdItem", "Descripcion"), new { @class = "form-control" })
+      </div>
+    </div>
+    <div class="form-group">
+      @Html.LabelFor(model => model.Cantidad, new { @class = "col-lg-2 control-label" })
+      <div class="col-lg-10">
+        @Html.TextBoxFor(model => model.Cantidad, new { @class = "form-control" })
+      </div>
+    </div>
+    <div class="col-lg-10 col-lg-offset-2">
+      <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+  </fieldset>
+}
+<p>
+  @Html.ActionLink("Back to Capsules", "Index") | @Html.ActionLink("Back to View Capsule", "List", new { @id = Model.IdCapsula })
+</p>

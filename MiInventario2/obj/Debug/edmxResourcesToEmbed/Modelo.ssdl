@@ -1,0 +1,303 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="InventarioModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Capsulas">
+    <Key>
+      <PropertyRef Name="IdCapsula" />
+    </Key>
+    <Property Name="IdCapsula" Type="varchar" MaxLength="8" Nullable="false" />
+    <Property Name="Descripcion" Type="varchar" MaxLength="40" />
+    <Property Name="IdUsuario" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="IdItem" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="CapsulasItems">
+    <Key>
+      <PropertyRef Name="IdCapsula" />
+      <PropertyRef Name="IdItem" />
+    </Key>
+    <Property Name="IdCapsula" Type="varchar" MaxLength="8" Nullable="false" />
+    <Property Name="IdItem" Type="int" Nullable="false" />
+    <Property Name="Cantidad" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Grupos">
+    <Key>
+      <PropertyRef Name="IdGrupo" />
+    </Key>
+    <Property Name="IdGrupo" Type="int" Nullable="false" />
+    <Property Name="Descripcion" Type="varchar" MaxLength="40" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Imagenes">
+    <Key>
+      <PropertyRef Name="IdImagen" />
+    </Key>
+    <Property Name="IdImagen" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Imagen" Type="image" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Inventarios">
+    <Key>
+      <PropertyRef Name="IdInventario" />
+    </Key>
+    <Property Name="IdInventario" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdUsuario" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="IdItem" Type="int" Nullable="false" />
+    <Property Name="Cantidad" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Items">
+    <Key>
+      <PropertyRef Name="IdItem" />
+    </Key>
+    <Property Name="IdItem" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdTipo" Type="int" Nullable="false" />
+    <Property Name="Nombre" Type="varchar" MaxLength="100" />
+    <Property Name="IdNivel" Type="int" Nullable="false" />
+    <Property Name="IdRareza" Type="int" Nullable="false" />
+    <Property Name="IdImagen" Type="int" />
+  </EntityType>
+  <EntityType Name="Niveles">
+    <Key>
+      <PropertyRef Name="IdNivel" />
+    </Key>
+    <Property Name="IdNivel" Type="int" Nullable="false" />
+    <Property Name="Color" Type="varchar" MaxLength="6" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Rarezas">
+    <Key>
+      <PropertyRef Name="IdRareza" />
+    </Key>
+    <Property Name="IdRareza" Type="int" Nullable="false" />
+    <Property Name="Descripcion" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="Color" Type="varchar" MaxLength="6" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Reproducciones">
+    <Key>
+      <PropertyRef Name="IdReproduccion" />
+    </Key>
+    <Property Name="IdReproduccion" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdCapsula" Type="varchar" MaxLength="8" Nullable="false" />
+    <Property Name="IdUsuario" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="Fecha" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ReproduccionesItems">
+    <Key>
+      <PropertyRef Name="IdReproduccion" />
+      <PropertyRef Name="IdItem" />
+    </Key>
+    <Property Name="IdReproduccion" Type="int" Nullable="false" />
+    <Property Name="IdItem" Type="int" Nullable="false" />
+    <Property Name="Cantidad" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Tipos">
+    <Key>
+      <PropertyRef Name="IdTipo" />
+    </Key>
+    <Property Name="IdTipo" Type="int" Nullable="false" />
+    <Property Name="IdGrupo" Type="int" Nullable="false" />
+    <Property Name="Descripcion" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="MostrarNivel" Type="bit" Nullable="false" />
+    <Property Name="MostrarRareza" Type="bit" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_Capsulas_Items">
+    <End Role="Items" Type="Self.Items" Multiplicity="1" />
+    <End Role="Capsulas" Type="Self.Capsulas" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Items">
+        <PropertyRef Name="IdItem" />
+      </Principal>
+      <Dependent Role="Capsulas">
+        <PropertyRef Name="IdItem" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CapsulasItems_Capsulas">
+    <End Role="Capsulas" Type="Self.Capsulas" Multiplicity="1" />
+    <End Role="CapsulasItems" Type="Self.CapsulasItems" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Capsulas">
+        <PropertyRef Name="IdCapsula" />
+      </Principal>
+      <Dependent Role="CapsulasItems">
+        <PropertyRef Name="IdCapsula" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CapsulasItems_Items">
+    <End Role="Items" Type="Self.Items" Multiplicity="1" />
+    <End Role="CapsulasItems" Type="Self.CapsulasItems" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Items">
+        <PropertyRef Name="IdItem" />
+      </Principal>
+      <Dependent Role="CapsulasItems">
+        <PropertyRef Name="IdItem" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Inventario_Items">
+    <End Role="Items" Type="Self.Items" Multiplicity="1" />
+    <End Role="Inventarios" Type="Self.Inventarios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Items">
+        <PropertyRef Name="IdItem" />
+      </Principal>
+      <Dependent Role="Inventarios">
+        <PropertyRef Name="IdItem" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Items_Imagenes">
+    <End Role="Imagenes" Type="Self.Imagenes" Multiplicity="0..1" />
+    <End Role="Items" Type="Self.Items" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Imagenes">
+        <PropertyRef Name="IdImagen" />
+      </Principal>
+      <Dependent Role="Items">
+        <PropertyRef Name="IdImagen" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Items_Niveles">
+    <End Role="Niveles" Type="Self.Niveles" Multiplicity="1" />
+    <End Role="Items" Type="Self.Items" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Niveles">
+        <PropertyRef Name="IdNivel" />
+      </Principal>
+      <Dependent Role="Items">
+        <PropertyRef Name="IdNivel" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Items_Rarezas">
+    <End Role="Rarezas" Type="Self.Rarezas" Multiplicity="1" />
+    <End Role="Items" Type="Self.Items" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Rarezas">
+        <PropertyRef Name="IdRareza" />
+      </Principal>
+      <Dependent Role="Items">
+        <PropertyRef Name="IdRareza" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Items_Tipos">
+    <End Role="Tipos" Type="Self.Tipos" Multiplicity="1" />
+    <End Role="Items" Type="Self.Items" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tipos">
+        <PropertyRef Name="IdTipo" />
+      </Principal>
+      <Dependent Role="Items">
+        <PropertyRef Name="IdTipo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Reproducciones_Capsulas">
+    <End Role="Capsulas" Type="Self.Capsulas" Multiplicity="1" />
+    <End Role="Reproducciones" Type="Self.Reproducciones" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Capsulas">
+        <PropertyRef Name="IdCapsula" />
+      </Principal>
+      <Dependent Role="Reproducciones">
+        <PropertyRef Name="IdCapsula" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ReproduccionesItems_Items">
+    <End Role="Items" Type="Self.Items" Multiplicity="1" />
+    <End Role="ReproduccionesItems" Type="Self.ReproduccionesItems" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Items">
+        <PropertyRef Name="IdItem" />
+      </Principal>
+      <Dependent Role="ReproduccionesItems">
+        <PropertyRef Name="IdItem" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ReproduccionesItems_Reproducciones">
+    <End Role="Reproducciones" Type="Self.Reproducciones" Multiplicity="1" />
+    <End Role="ReproduccionesItems" Type="Self.ReproduccionesItems" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Reproducciones">
+        <PropertyRef Name="IdReproduccion" />
+      </Principal>
+      <Dependent Role="ReproduccionesItems">
+        <PropertyRef Name="IdReproduccion" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Tipos_Grupos">
+    <End Role="Grupos" Type="Self.Grupos" Multiplicity="1" />
+    <End Role="Tipos" Type="Self.Tipos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Grupos">
+        <PropertyRef Name="IdGrupo" />
+      </Principal>
+      <Dependent Role="Tipos">
+        <PropertyRef Name="IdGrupo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="InventarioModelStoreContainer">
+    <EntitySet Name="Capsulas" EntityType="Self.Capsulas" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CapsulasItems" EntityType="Self.CapsulasItems" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Grupos" EntityType="Self.Grupos" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Imagenes" EntityType="Self.Imagenes" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Inventarios" EntityType="Self.Inventarios" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Items" EntityType="Self.Items" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Niveles" EntityType="Self.Niveles" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Rarezas" EntityType="Self.Rarezas" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Reproducciones" EntityType="Self.Reproducciones" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ReproduccionesItems" EntityType="Self.ReproduccionesItems" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Tipos" EntityType="Self.Tipos" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_Capsulas_Items" Association="Self.FK_Capsulas_Items">
+      <End Role="Items" EntitySet="Items" />
+      <End Role="Capsulas" EntitySet="Capsulas" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CapsulasItems_Capsulas" Association="Self.FK_CapsulasItems_Capsulas">
+      <End Role="Capsulas" EntitySet="Capsulas" />
+      <End Role="CapsulasItems" EntitySet="CapsulasItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CapsulasItems_Items" Association="Self.FK_CapsulasItems_Items">
+      <End Role="Items" EntitySet="Items" />
+      <End Role="CapsulasItems" EntitySet="CapsulasItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Inventario_Items" Association="Self.FK_Inventario_Items">
+      <End Role="Items" EntitySet="Items" />
+      <End Role="Inventarios" EntitySet="Inventarios" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Items_Imagenes" Association="Self.FK_Items_Imagenes">
+      <End Role="Imagenes" EntitySet="Imagenes" />
+      <End Role="Items" EntitySet="Items" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Items_Niveles" Association="Self.FK_Items_Niveles">
+      <End Role="Niveles" EntitySet="Niveles" />
+      <End Role="Items" EntitySet="Items" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Items_Rarezas" Association="Self.FK_Items_Rarezas">
+      <End Role="Rarezas" EntitySet="Rarezas" />
+      <End Role="Items" EntitySet="Items" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Items_Tipos" Association="Self.FK_Items_Tipos">
+      <End Role="Tipos" EntitySet="Tipos" />
+      <End Role="Items" EntitySet="Items" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Reproducciones_Capsulas" Association="Self.FK_Reproducciones_Capsulas">
+      <End Role="Capsulas" EntitySet="Capsulas" />
+      <End Role="Reproducciones" EntitySet="Reproducciones" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ReproduccionesItems_Items" Association="Self.FK_ReproduccionesItems_Items">
+      <End Role="Items" EntitySet="Items" />
+      <End Role="ReproduccionesItems" EntitySet="ReproduccionesItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ReproduccionesItems_Reproducciones" Association="Self.FK_ReproduccionesItems_Reproducciones">
+      <End Role="Reproducciones" EntitySet="Reproducciones" />
+      <End Role="ReproduccionesItems" EntitySet="ReproduccionesItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Tipos_Grupos" Association="Self.FK_Tipos_Grupos">
+      <End Role="Grupos" EntitySet="Grupos" />
+      <End Role="Tipos" EntitySet="Tipos" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

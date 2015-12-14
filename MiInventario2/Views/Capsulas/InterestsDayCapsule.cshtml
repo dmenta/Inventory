@@ -1,0 +1,66 @@
+﻿@model MiInventario2.Models.CapsulasInterests2ViewModel
+@{
+  ViewBag.Title = "Interests";
+  bool primera = true;
+}
+
+<h2>Interests</h2>
+<table class="interests">
+  <thead>
+    <tr>
+      <th class="corner"></th>
+      @foreach (var idC in Model.Capsulas) {
+        <th>@idC</th>
+      }
+    </tr>
+  </thead>
+  <tfoot>
+    <tr>
+      <td class="fecha">Total</td>
+      @foreach (var capsula in Model.Totales) {
+        primera = true;
+        <td>
+          @foreach (var elemento in capsula.Elementos) {
+            if (!primera) {
+              <br />
+            }
+            else {
+              primera = false;
+            }
+            <span>@elemento</span>
+          }
+        </td>
+      }
+    </tr>
+  </tfoot>
+  <tbody>
+    @foreach (var fecha in Model.Fechas) {
+      <tr>
+        <td class="fecha">@fecha.ToString("yyyy-MM-dd HH:mm")</td>
+        @foreach (var idC in Model.Capsulas) {
+          primera = true;
+          var capsula = Model.Filas.SingleOrDefault(p => p.Fecha == fecha && p.IdCapsula == idC);
+          if (capsula == null) {
+            <td></td>
+            continue;
+          }
+
+          <td>
+            @foreach (var total in capsula.Elementos) {
+              if (!primera) {
+                <br />
+              }
+              else {
+                primera = false;
+              }
+              <span>@total</span>
+            }
+          </td>
+        }
+      </tr>
+    }
+  </tbody>
+</table>
+<p>
+  @Html.ActionLink("Back to Capsules", "Index")
+</p>

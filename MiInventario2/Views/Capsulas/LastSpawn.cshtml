@@ -1,0 +1,56 @@
+﻿@model MiInventario2.Models.CapsulasLastSpawnViewModel
+@{
+  ViewBag.Title = "Last Spawn";
+  bool primera = true;
+}
+<h2>Last Spawn</h2>
+
+@if (Model.Fecha.HasValue) {
+  <h3>@Model.Fecha.Value.ToString("yyyy-MM-dd HH:mm") - Items: @Model.Total</h3>
+  <table class="interests">
+    <tfoot>
+      <tr>
+        <td class="nombreCapsula">Total</td>
+        <td class="elementos">
+          @foreach (var total in Model.Totales) {
+            if (!primera) {
+              <br />
+            }
+            else {
+              primera = false;
+            }
+            <span>@total</span>
+          }
+        </td>
+      </tr>
+    </tfoot>
+    <tbody>
+      @foreach (var capsula in Model.Capsulas) {
+        primera = true;
+        <tr>
+          <td class="nombreCapsula">@capsula.IdCapsula</td>
+          <td class="elementos">
+            @foreach (var elemento in capsula.Elementos) {
+              if (!primera) {
+                <br />
+              }
+              else {
+                primera = false;
+              }
+              <span>@elemento</span>
+            }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+else {
+  <p class="avisoCapsulaErronea">
+    There are no spawn logged.
+  </p>
+
+}
+<p>
+  @Html.ActionLink("Back to Capsules", "Index")
+</p>

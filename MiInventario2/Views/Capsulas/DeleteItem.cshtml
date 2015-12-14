@@ -1,0 +1,26 @@
+﻿@model MiInventario2.Models.CapsulasDeleteItemViewModel
+@{
+  ViewBag.Title = Model.IdCapsula;
+}
+
+<h2>Delete Item from @Model.IdCapsula (@Model.Total)</h2>
+@if (@Model.Total > 100) {
+  <p class="avisoCapsulaErronea">
+    La cantidad total de la cápsula supera lo permitido
+  </p>
+}
+
+@using (Html.BeginForm("DeleteItem", "Capsulas", FormMethod.Post)) {
+  @Html.HiddenFor(model => model.IdCapsula)
+  @Html.HiddenFor(model => model.Item.IdItem)
+  <p>
+    <span>@Model.Item.Descripcion</span>
+    <span>@Model.Cantidad</span>
+  </p>
+  <p>
+    <input type="submit" value="Confirm" class="btn btn-primary" />
+  </p>
+}
+<p>
+  @Html.ActionLink("Back to Capsules", "Index") | @Html.ActionLink("Back to View Capsule", "List", new { @id = Model.IdCapsula })
+</p>

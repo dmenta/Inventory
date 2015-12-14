@@ -1,0 +1,32 @@
+﻿@{
+  
+  string Tema = @"<Chart BackColor=""#C9DC87"" BackGradientStyle=""TopBottom"" BorderColor=""181, 64, 1"" BorderWidth=""2"" BorderlineDashStyle=""Solid"" Palette=""BrightPastel"">
+  <ChartAreas>
+    <ChartArea Name=""Default"" _Template_=""All"" BackColor=""Transparent"" BackSecondaryColor=""White"" BorderColor=""64, 64, 64, 64"" BorderDashStyle=""Solid"" ShadowColor=""Transparent"">
+      <AxisY LineColor=""64, 64, 64, 64"">
+        <MajorGrid Interval=""Auto"" LineColor=""64, 64, 64, 64"" />
+        <LabelStyle Font=""Arial, 12pt, style=Bold"" />
+      </AxisY>
+      <AxisX LineColor=""64, 64, 64, 64"">
+        <MajorGrid LineColor=""64, 64, 64, 64"" />
+        <LabelStyle Font=""Arial, 12pt, style=Bold"" />
+      </AxisX>
+      <Area3DStyle Inclination=""15"" IsClustered=""False"" IsRightAngleAxes=""False"" Perspective=""10"" Rotation=""10"" WallWidth=""0"" />
+    </ChartArea>
+  </ChartAreas>
+  <Legends>
+    <Legend _Template_=""All"" Alignment=""Center"" BackColor=""Transparent"" Docking=""Bottom"" Font=""Arial, 12pt, style=Bold"" IsTextAutoFit =""False"" LegendStyle=""Row"">
+    </Legend>
+  </Legends>
+  <BorderSkin SkinStyle=""Emboss"" />
+</Chart>";
+         
+  var myChart = new Chart(width: 1000, height: 800, theme: ChartTheme.Yellow)
+      .AddTitle("Chart Title")
+      .AddSeries(
+          chartType: "Column",
+          name: "Employee",
+          xValue: new[] { "Peter", "Andrew", "Julie", "Mary", "Dave" },
+          yValues: new[] { "2", "6", "4", "5", "3" })
+      .Write();
+}

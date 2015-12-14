@@ -254,7 +254,7 @@ string temp = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
             using (InventarioEntities db = new InventarioEntities())
             {
                 string user = User.Identity.GetUserName();
-                var capsulas = db.Capsulas.Where(p => p.IdUsuario == user);
+                var capsulas = db.Capsulas.Where(p => p.IdUsuario == user).ToList();
 
                 List<CapsulasViewModel> model = new List<CapsulasViewModel>();
                 foreach (var capsula in capsulas)

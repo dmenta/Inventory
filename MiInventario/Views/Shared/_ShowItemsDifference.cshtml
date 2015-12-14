@@ -1,0 +1,52 @@
+﻿@model IEnumerable<MiInventario.Models.ItemDifferenceViewModel>
+@if (Model.Any(p => p.DiferenciaA > 0 || p.DiferenciaB > 0))
+{
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <table class="table table-condensed table-striped">
+            <colgroup>
+                <col class="col-lg-4 col-md-4 col-sm-4 col-xs-4" />
+                <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
+                <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
+                <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
+                <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
+            </colgroup>
+            <thead>
+                <tr class="small">
+                    <th>Item</th>
+                    <th>Me</th>
+                    <th>Other</th>
+                    <th>D Me</th>
+                    <th>D Other</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (MiInventario.Models.ItemDifferenceViewModel item in Model.Where(p => p.DiferenciaA > 0 || p.DiferenciaB > 0))
+                {
+                    <tr>
+                        <td class="nombre">
+                            @Html.Partial("_ItemDescription", item)
+                        </td>
+                        <td class="cantidadItem">
+                            @item.CantidadUsuarioA
+                        </td>
+                        <td class="cantidadItem">
+                            @item.CantidadUsuarioB
+                        </td>
+                        <td class="cantidadItem">
+                            @if (item.DiferenciaA > 0)
+                            {
+                                <text>@item.DiferenciaA</text>
+                            }
+                        </td>
+                        <td class="cantidadItem">
+                            @if (item.DiferenciaB > 0)
+                            {
+                                <text>@item.DiferenciaB</text>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

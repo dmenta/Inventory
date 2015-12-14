@@ -1,0 +1,27 @@
+﻿@model List<MiInventario.Models.CapsulaFechaTotalViewModel>
+@{
+    ViewBag.Title = "Interests Total";
+}
+
+<h2>Interests Total</h2>
+@foreach (var capsula in Model.OrderByDescending(p => p.Items.Count()))
+{
+    <div class="col-lg-2">
+        <table class="table table-condensed table-striped">
+            <thead>
+                <tr><th>@capsula.IdCapsula</th></tr>
+            </thead>
+            @foreach (var elemento in capsula.Items)
+            {
+                <tr>
+                    <td><span>@elemento.Cantidad</span>@Html.Partial("_ItemDescription", elemento)
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+}
+<div class="clearfix"></div>
+<p class="bottomLinks">
+    @Html.ActionLink("Back to Capsules", "Index")
+</p>

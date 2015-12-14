@@ -1,0 +1,26 @@
+﻿@model MiInventario.Models.CapsulasEditViewModel
+@{
+  ViewBag.Title = "Edit";
+}
+
+<h2>Edit Capsule: @Model.IdCapsula</h2>
+@using (Html.BeginForm("Edit", "Capsulas", FormMethod.Post, new { @class = "form-horizontal" })) {
+  @Html.HiddenFor(model => model.IdCapsula)
+  <fieldset>
+    <div class="form-group">
+      @Html.LabelFor(model => model.Descripcion, new { @class = "col-lg-2 control-label" })
+      <div class="col-lg-10">
+        @Html.TextBoxFor(model => model.Descripcion, new { @class = "form-control input-sm" })
+      </div>
+    </div>
+    <div class="form-group">
+      @Html.LabelFor(model => model.ItemID, new { @class = "col-lg-2 control-label" })
+      <div class="col-lg-10">
+        @Html.DropDownListFor(model => model.ItemID, new SelectList(Model.Capsulas, "Key", "Value"), new { @class = "form-control input-sm" })
+      </div>
+    </div>
+    <div class="col-lg-10 col-lg-offset-2">
+      <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+  </fieldset>
+}

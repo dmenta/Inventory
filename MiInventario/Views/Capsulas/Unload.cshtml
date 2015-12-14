@@ -1,0 +1,102 @@
+﻿@model MiInventario.Models.CapsulaUnloadViewModel
+@{
+    ViewBag.Title = "Unload Items";
+}
+<h2>Unload Items</h2>
+@if (string.IsNullOrEmpty(Model.Descripcion))
+{
+    <h3>@Model.IdCapsula (@Model.Total)</h3>
+}
+else
+{
+    <h3>@Model.Descripcion [@Model.IdCapsula] (@Model.Total)</h3>
+}
+@if (@Model.Total > 100)
+{
+    <div class="alert alert-dismissible alert-danger">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <strong>Oh snap!</strong> La cantidad total de la cápsula supera lo permitido.
+    </div>
+}
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-dismissible alert-danger">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <strong>Oh snap!</strong> @string.Join("; ", ViewData.ModelState.Values
+                                        .SelectMany(x => x.Errors)
+                                        .Select(x => x.ErrorMessage))
+    </div>
+}
+@using (Html.BeginForm("Unload", "Capsulas", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(model => model.IdCapsula)
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <table class="table table-condensed table-striped">
+            <colgroup>
+                <col class="col-lg-6 col-md-6 col-sm-6 col-xs-6" />
+                <col class="col-lg-3 col-md-3 col-sm-3 col-xs-3" />
+                <col class="col-lg-3 col-md-3 col-sm-3 col-xs-3" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th>
+                        <label for="unloadAll">Unload</label>
+                        <input id="unloadAll" type="checkbox">
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Items.Count; i++)
+                {
+                    var item = Model.Items[i];
+                    <tr>
+                        <td class="nombre">
+                            @Html.Partial("_ItemDescription", item)
+                        </td>
+                        <td class="cantidadItem">
+                            @Html.DisplayFor(model => Model.Items[i].Cantidad)
+                        </td>
+                        <td class="cantidadItem">
+                            @Html.HiddenFor(model => Model.Items[i].CurrentItem.ItemID)
+                            @Html.HiddenFor(model => Model.Items[i].Cantidad)
+                            @Html.TextBoxFor(model => Model.Items[i].CantidadDescargar, new { @class = "form-control text-right input-sm" })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="clearfix"></div>
+    <p>
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </p>
+}
+<div class="clearfix"></div>
+<p>
+    @Html.ActionLink("Back to Capsules", "Index") | @Html.ActionLink("Back to View Capsule", "List", new { @id = Model.IdCapsula })
+</p>
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#unloadAll")
+              .click(function () {
+                  var $this = $(this);
+                  if ($this.is(':checked')) {
+                      $(".form-control").each(function (index) {
+                          var valor = $(this).prev().val();
+                          $(this).val(valor);
+                          $(this).attr("readonly", true);
+                      });
+                  }
+                  else{
+                      $(".form-control").each(function (index) {
+                          $(this).attr("readonly", false);
+                      });
+                  }
+              });
+        });
+    </script>
+}

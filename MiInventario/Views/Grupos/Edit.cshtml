@@ -1,0 +1,74 @@
+﻿@model MiInventario.Models.GrupoEditViewModel
+@{
+    ViewBag.Title = Resources.Groups.ResourceManager.GetString(Model.GroupID);
+}
+
+<h2>@Resources.Groups.ResourceManager.GetString(Model.GroupID): @Model.Total (@Model.TotalCapsulas)</h2>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-dismissible alert-danger">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <strong>Oh snap!</strong> @string.Join("; ", ViewData.ModelState.Values
+                                        .SelectMany(x => x.Errors)
+                                        .Select(x => x.ErrorMessage))
+    </div>
+}
+
+@using (Html.BeginForm("Edit", "Grupos", FormMethod.Post, new { @class = "form-horizontal" })) {
+  @Html.HiddenFor(model => model.GroupID)
+
+  <div class="col-lg-5 col-md-4 col-sm-6 col-xs-12">
+    <table class="table table-condensed table-striped">
+      <colgroup>
+        <col class="col-lg-6 col-md-6 col-sm-6 col-xs-6" />
+        <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
+        <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
+        <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Qty</th>
+          <th>Caps</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (int i = 0; i < Model.Items.Count; i++) {
+          var item = Model.Items[i];
+          <tr>
+            <td class="nombre">
+                @Html.Partial("_ItemDescription", item)
+            </td>
+            <td class="cantidadItem">
+              @Html.HiddenFor(model => Model.Items[i].CurrentItem.ItemID)
+                @Html.HiddenFor(model => Model.Items[i].CurrentItem.TypeID)
+                @Html.HiddenFor(model => Model.Items[i].CurrentItem.Level)
+                @Html.HiddenFor(model => Model.Items[i].CurrentItem.Rarity)
+              @Html.TextBoxFor(model => Model.Items[i].Cantidad, new { @class = "form-control text-right input-sm" })
+            </td>
+            <td class="cantidadCapsula">
+              (@item.CantidadCapsulas)
+            </td>
+            @{
+          int total = item.CantidadCapsulas + item.Cantidad;
+          <td class="cantidadTotal">
+            @total
+          </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <div class="clearfix"></div>
+  <p>
+    <input type="submit" value="Save" class="btn btn-primary" />
+  </p>
+}
+<div class="pie">
+  <p class="bottomLinks">
+    @Html.ActionLink("Back to Inventory", "Index") | @Html.ActionLink("Back to View", "List", new { @id = Model.GroupID })
+  </p>
+</div>

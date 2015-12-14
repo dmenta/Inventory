@@ -1,0 +1,261 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="InventarioModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Capsulas">
+          <Key>
+            <PropertyRef Name="IdCapsula" />
+          </Key>
+          <Property Name="IdCapsula" Type="varchar" MaxLength="8" Nullable="false" />
+          <Property Name="Descripcion" Type="varchar" MaxLength="40" />
+          <Property Name="IdUsuario" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="ItemID" Type="varchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CapsulasItems">
+          <Key>
+            <PropertyRef Name="IdCapsula" />
+            <PropertyRef Name="ItemID" />
+          </Key>
+          <Property Name="IdCapsula" Type="varchar" MaxLength="8" Nullable="false" />
+          <Property Name="ItemID" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Cantidad" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Inventarios">
+          <Key>
+            <PropertyRef Name="IdInventario" />
+          </Key>
+          <Property Name="IdInventario" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdUsuario" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="ItemID" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Cantidad" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Reproducciones">
+          <Key>
+            <PropertyRef Name="IdReproduccion" />
+          </Key>
+          <Property Name="IdReproduccion" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdCapsula" Type="varchar" MaxLength="8" Nullable="false" />
+          <Property Name="IdUsuario" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Fecha" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ReproduccionesItems">
+          <Key>
+            <PropertyRef Name="IdReproduccion" />
+            <PropertyRef Name="ItemID" />
+          </Key>
+          <Property Name="IdReproduccion" Type="int" Nullable="false" />
+          <Property Name="ItemID" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Cantidad" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_CapsulasItems_Capsulas">
+          <End Role="Capsulas" Type="Self.Capsulas" Multiplicity="1" />
+          <End Role="CapsulasItems" Type="Self.CapsulasItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Capsulas">
+              <PropertyRef Name="IdCapsula" />
+            </Principal>
+            <Dependent Role="CapsulasItems">
+              <PropertyRef Name="IdCapsula" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReproduccionesItems_Reproducciones">
+          <End Role="Reproducciones" Type="Self.Reproducciones" Multiplicity="1" />
+          <End Role="ReproduccionesItems" Type="Self.ReproduccionesItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reproducciones">
+              <PropertyRef Name="IdReproduccion" />
+            </Principal>
+            <Dependent Role="ReproduccionesItems">
+              <PropertyRef Name="IdReproduccion" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="InventarioModelStoreContainer">
+          <EntitySet Name="Capsulas" EntityType="Self.Capsulas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CapsulasItems" EntityType="Self.CapsulasItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Inventarios" EntityType="Self.Inventarios" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Reproducciones" EntityType="Self.Reproducciones" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReproduccionesItems" EntityType="Self.ReproduccionesItems" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_CapsulasItems_Capsulas" Association="Self.FK_CapsulasItems_Capsulas">
+            <End Role="Capsulas" EntitySet="Capsulas" />
+            <End Role="CapsulasItems" EntitySet="CapsulasItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReproduccionesItems_Reproducciones" Association="Self.FK_ReproduccionesItems_Reproducciones">
+            <End Role="Reproducciones" EntitySet="Reproducciones" />
+            <End Role="ReproduccionesItems" EntitySet="ReproduccionesItems" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="InventarioModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="InventarioEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Capsulas" EntityType="InventarioModel.Capsulas" />
+          <EntitySet Name="CapsulasItems" EntityType="InventarioModel.CapsulasItems" />
+          <EntitySet Name="Inventarios" EntityType="InventarioModel.Inventarios" />
+          <EntitySet Name="Reproducciones" EntityType="InventarioModel.Reproducciones" />
+          <EntitySet Name="ReproduccionesItems" EntityType="InventarioModel.ReproduccionesItems" />
+          <AssociationSet Name="FK_CapsulasItems_Capsulas" Association="InventarioModel.FK_CapsulasItems_Capsulas">
+            <End Role="Capsulas" EntitySet="Capsulas" />
+            <End Role="CapsulasItems" EntitySet="CapsulasItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReproduccionesItems_Reproducciones" Association="InventarioModel.FK_ReproduccionesItems_Reproducciones">
+            <End Role="Reproducciones" EntitySet="Reproducciones" />
+            <End Role="ReproduccionesItems" EntitySet="ReproduccionesItems" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Capsulas">
+          <Key>
+            <PropertyRef Name="IdCapsula" />
+          </Key>
+          <Property Name="IdCapsula" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="Descripcion" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="IdUsuario" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ItemID" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="CapsulasItems" Relationship="InventarioModel.FK_CapsulasItems_Capsulas" FromRole="Capsulas" ToRole="CapsulasItems" />
+        </EntityType>
+        <EntityType Name="CapsulasItems">
+          <Key>
+            <PropertyRef Name="IdCapsula" />
+            <PropertyRef Name="ItemID" />
+          </Key>
+          <Property Name="IdCapsula" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="ItemID" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Cantidad" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Capsulas" Relationship="InventarioModel.FK_CapsulasItems_Capsulas" FromRole="CapsulasItems" ToRole="Capsulas" />
+        </EntityType>
+        <EntityType Name="Inventarios">
+          <Key>
+            <PropertyRef Name="IdInventario" />
+          </Key>
+          <Property Name="IdInventario" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdUsuario" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ItemID" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Cantidad" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Reproducciones">
+          <Key>
+            <PropertyRef Name="IdReproduccion" />
+          </Key>
+          <Property Name="IdReproduccion" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdCapsula" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="IdUsuario" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Fecha" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="ReproduccionesItems" Relationship="InventarioModel.FK_ReproduccionesItems_Reproducciones" FromRole="Reproducciones" ToRole="ReproduccionesItems" />
+        </EntityType>
+        <EntityType Name="ReproduccionesItems">
+          <Key>
+            <PropertyRef Name="IdReproduccion" />
+            <PropertyRef Name="ItemID" />
+          </Key>
+          <Property Name="IdReproduccion" Type="Int32" Nullable="false" />
+          <Property Name="ItemID" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Cantidad" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Reproducciones" Relationship="InventarioModel.FK_ReproduccionesItems_Reproducciones" FromRole="ReproduccionesItems" ToRole="Reproducciones" />
+        </EntityType>
+        <Association Name="FK_CapsulasItems_Capsulas">
+          <End Type="InventarioModel.Capsulas" Role="Capsulas" Multiplicity="1" />
+          <End Type="InventarioModel.CapsulasItems" Role="CapsulasItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Capsulas">
+              <PropertyRef Name="IdCapsula" />
+            </Principal>
+            <Dependent Role="CapsulasItems">
+              <PropertyRef Name="IdCapsula" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReproduccionesItems_Reproducciones">
+          <End Type="InventarioModel.Reproducciones" Role="Reproducciones" Multiplicity="1" />
+          <End Type="InventarioModel.ReproduccionesItems" Role="ReproduccionesItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reproducciones">
+              <PropertyRef Name="IdReproduccion" />
+            </Principal>
+            <Dependent Role="ReproduccionesItems">
+              <PropertyRef Name="IdReproduccion" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="InventarioModelStoreContainer" CdmEntityContainer="InventarioEntities">
+          <EntitySetMapping Name="Capsulas">
+            <EntityTypeMapping TypeName="InventarioModel.Capsulas">
+              <MappingFragment StoreEntitySet="Capsulas">
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="IdCapsula" ColumnName="IdCapsula" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CapsulasItems">
+            <EntityTypeMapping TypeName="InventarioModel.CapsulasItems">
+              <MappingFragment StoreEntitySet="CapsulasItems">
+                <ScalarProperty Name="Cantidad" ColumnName="Cantidad" />
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="IdCapsula" ColumnName="IdCapsula" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Inventarios">
+            <EntityTypeMapping TypeName="InventarioModel.Inventarios">
+              <MappingFragment StoreEntitySet="Inventarios">
+                <ScalarProperty Name="Cantidad" ColumnName="Cantidad" />
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
+                <ScalarProperty Name="IdInventario" ColumnName="IdInventario" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Reproducciones">
+            <EntityTypeMapping TypeName="InventarioModel.Reproducciones">
+              <MappingFragment StoreEntitySet="Reproducciones">
+                <ScalarProperty Name="Fecha" ColumnName="Fecha" />
+                <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
+                <ScalarProperty Name="IdCapsula" ColumnName="IdCapsula" />
+                <ScalarProperty Name="IdReproduccion" ColumnName="IdReproduccion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ReproduccionesItems">
+            <EntityTypeMapping TypeName="InventarioModel.ReproduccionesItems">
+              <MappingFragment StoreEntitySet="ReproduccionesItems">
+                <ScalarProperty Name="Cantidad" ColumnName="Cantidad" />
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="IdReproduccion" ColumnName="IdReproduccion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

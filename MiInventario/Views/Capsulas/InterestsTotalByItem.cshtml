@@ -1,0 +1,19 @@
+﻿@model List<MiInventario.Models.ItemInventoryViewModel>
+@{
+    ViewBag.Title = "Total Interests";
+}
+
+<h2>Total Interests</h2>
+@foreach (string grupo in Model.Select(p => p.CurrentItem.GroupID).Distinct())
+{
+    <div class="grupo">
+        @foreach (string tipo in Model.Where(p => p.CurrentItem.GroupID == grupo).Select(q => q.CurrentItem.TypeID).Distinct())
+        {
+            @Html.Partial("_ShowItemsCapsule", Model.Where(p => p.CurrentItem.TypeID == tipo))
+        }
+    </div>
+}
+<div class="clearfix"></div>
+<p class="bottomLinks">
+    @Html.ActionLink("Back to Capsules", "Index")
+</p>

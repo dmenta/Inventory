@@ -1,0 +1,68 @@
+﻿@model MiInventario.Models.CapsulasManageViewModel
+@{
+    ViewBag.Title = "Manage Items";
+}
+<h2>Manage Items</h2>
+@if (string.IsNullOrEmpty(Model.Descripcion))
+{
+    <h3>@Model.IdCapsula (@Model.Total)</h3>
+}
+else
+{
+    <h3>@Model.Descripcion [@Model.IdCapsula] (@Model.Total)</h3>
+}
+@if (@Model.Total > 100)
+{
+    <div class="alert alert-dismissible alert-danger">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <strong>Oh snap!</strong> La cantidad total de la cápsula supera lo permitido.
+    </div>
+}
+@using (Html.BeginForm("ManageItems", "Capsulas", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(model => model.IdCapsula)
+
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <table class="table table-condensed table-striped">
+            <colgroup>
+                <col class="col-lg-6 col-md-6 col-sm-6 col-xs-6" />
+                <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
+                <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
+                <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Items.Count; i++)
+                {
+                    var item = Model.Items[i];
+                    <tr>
+                        <td class="nombre">
+                            @Html.Partial("_ItemDescription", item)
+                        </td>
+                        <td class="cantidadItem">
+                            @Html.HiddenFor(model => Model.Items[i].CurrentItem.ItemID)
+                            @Html.TextBoxFor(model => Model.Items[i].Cantidad, new { @class = "form-control text-right input-sm" })
+                        </td>
+                        <td>
+                            @Html.ActionLink("Delete", "DeleteItem", new { @id = Model.IdCapsula, itemID = item.CurrentItem.ItemID })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="clearfix"></div>
+    <p>
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </p>
+}
+<div class="clearfix"></div>
+<p>
+    @Html.ActionLink("Back to Capsules", "Index") | @Html.ActionLink("Back to View Capsule", "List", new { @id = Model.IdCapsula })
+</p>

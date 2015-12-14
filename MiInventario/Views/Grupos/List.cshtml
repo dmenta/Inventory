@@ -1,0 +1,15 @@
+﻿@model MiInventario.Models.GrupoViewModel
+@{
+    ViewBag.Title = Resources.Groups.ResourceManager.GetString(Model.GroupID);
+}
+
+<h2>@Resources.Groups.ResourceManager.GetString(Model.GroupID): @Model.Total (@Model.TotalCapsulas)</h2>
+@foreach (var tipo in Model.Tipos) {
+  @Html.Partial("_ShowItems", tipo.Items)
+}
+<div class="clearfix"></div>
+<div>
+  <p class="bottomLinks">
+    @Html.ActionLink("Back to Inventory", "Index") | @Html.ActionLink("Edit", "Edit", new { @id = Model.GroupID })
+  </p>
+</div>

@@ -1,0 +1,38 @@
+﻿@model MiInventario.Models.CapsulasManageViewModel
+@{
+    ViewBag.Title = Model.IdCapsula;
+}
+
+<h2>View Items</h2>
+@if (string.IsNullOrEmpty(Model.Descripcion))
+{
+    <h3>@Model.IdCapsula (@Model.Total)</h3>
+}
+else
+{
+    <h3>@Model.Descripcion [@Model.IdCapsula] (@Model.Total)</h3>
+}
+@if (@Model.Total > 100)
+{
+    <div class="alert alert-dismissible alert-danger">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <strong>Oh snap!</strong> La cantidad total de la cápsula supera lo permitido.
+    </div>
+}
+
+@Html.Partial("_ShowItemsCapsule", Model.Items)
+
+<div class="clearfix"></div>
+<p>
+    @Html.ActionLink("Back to Capsules", "Index")
+    | @Html.ActionLink("Log Interests", "LogInterests", new { @id = Model.IdCapsula })
+    | @Html.ActionLink("Load", "Load", new { @id = Model.IdCapsula })
+    | @Html.ActionLink("Unload", "Unload", new { @id = Model.IdCapsula })
+    | @Html.ActionLink("Edit", "Edit", new { @id = Model.IdCapsula })
+    | @Html.ActionLink("Add Item", "AddItem", new { @id = Model.IdCapsula })
+    | @Html.ActionLink("Manage Items", "ManageItems", new { @id = Model.IdCapsula })
+    @if (Model.Spawnable)
+    {
+        <text>|</text> @Html.ActionLink("Log Interests", "LogInterests", new { @id = Model.IdCapsula });
+    }
+</p>

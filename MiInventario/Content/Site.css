@@ -1,0 +1,121 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.nivel {
+    display: inline-block;
+    width: 25px;
+    text-align: center;
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+.rareza1, .rarezaR1 {
+    color: #b5b2b5;
+}
+
+.rareza2,.rarezaR2 {
+    color: #84f7b5;
+}
+
+.rareza3,.rarezaR3 {
+    color: #ad8eff;
+}
+
+.rareza4,.rarezaR4 {
+    color: #ff8ef7;
+}
+
+.nivel1 {
+    color: #ffcf5a;
+}
+
+.nivel2 {
+    color: #ffa72f;
+}
+
+.nivel3 {
+    color: #ff7413;
+}
+
+.nivel4 {
+    color: #e10000;
+}
+
+.nivel5 {
+    color: #fd2891;
+}
+
+.nivel6 {
+    color: #ed27ce;
+}
+
+.nivel7 {
+    color: #c323e3;
+}
+
+.nivel8 {
+    color: #9927f8;
+}
+
+td.cantidadItem {
+    text-align: right;
+}
+
+td.cantidadTotal {
+    text-align: right;
+}
+
+td.cantidadCapsula {
+    text-align: right;
+}
+
+td.nombre {
+    white-space: nowrap;
+}
+
+td.nombreCapsula {
+    text-align: center;
+    background-color: #532c42;
+    color: white;
+}
+
+td.nombreCapsulaNoSpawn {
+    text-align: center;
+    background-color: #ad8eff;
+    color: white;
+}
+
+    td.nombreCapsula a, td.nombreCapsulaNoSpawn a {
+        color: white;
+    }
+
+td {
+    vertical-align: middle !important;
+}
+
+th {
+    color: #9b9b9b;
+}
+tfoot .nombreTotales{
+    background-color:#9a408a;
+    color: #e4d1d1;
+    text-align:center;
+}
+#chartTitle {
+    color: white;
+}

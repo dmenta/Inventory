@@ -1,0 +1,58 @@
+﻿@model MiInventario.Models.CapsulasInterestsByDateViewModel
+@{
+    string temp = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
+<Chart _Template_=""All"" BackColor=""#272B30"" 
+   BorderlineDashStyle=""Solid""
+    BorderlineColor=""Gray""
+	BorderlineWidth=""1""
+	ForeColor=""Red""
+   Palette=""None""
+   PaletteCustomColors=""Orange; Gray"">
+  <ChartAreas>    
+    <ChartArea Name=""Default"" _Template_=""All"" 
+           BackColor=""Transparent"" 
+           ShadowColor=""Transparent""
+           ShadowOffset=""2""
+           BorderColor=""#888888"" 
+           BorderDashStyle=""Solid"">      
+      <AxisY LineColor=""#999999"" IsLabelAutoFit=""false"" IsMarginVisible=""true"">        
+        <MajorGrid Interval=""Auto"" LineColor=""#999999"" />   
+        <MajorTickMark LineColor=""#999999"" LineWidth=""1"" LineDashStyle=""Solid"" /> 
+        <LabelStyle Font=""Arial, 10 px"" ForeColor=""White"" />      
+      </AxisY>      
+      <AxisX LineColor=""#999999"" IsLabelAutoFit=""false"" IsMarginVisible=""true"">        
+        <MajorGrid LineColor=""#999999"" /> 
+        <MajorTickMark LineColor=""#999999"" />   
+        <LabelStyle Font=""Arial, 10 px"" ForeColor=""White"" />      
+      </AxisX>     
+     </ChartArea>  
+    </ChartAreas>  
+    <Legends>    
+      <Legend _Template_=""All"" 
+        Alignment=""Center"" 
+        BackColor=""Transparent"" 
+		ForeColor=""White""
+        Docking=""Bottom"" 
+        Font=""Arial, 24 px"" 
+        IsTextAutoFit =""False"" 
+        LegendStyle=""Row"">   
+    </Legend>  
+  </Legends> 
+</Chart>";
+
+    string dateFormat = Resources.General.ResourceManager.GetString(string.Format("InterestsByDate_DateFormat_{0}", Model.Grouping.ToString()));
+
+
+    var myChart = new Chart(width: 1000, height: 400, theme: temp)
+        .AddSeries(
+        chartType: "Line",
+            name: "Items",
+            xValue: Model.DateInfo.Select(p => p.Fecha.ToString(dateFormat)).ToArray(),
+            yValues: Model.DateInfo.Select(p => p.TotalItems).ToArray())
+        .AddSeries(
+        chartType: "Column",
+            name: "Capsulas",
+            xValue: Model.DateInfo.Select(p => p.Fecha.ToString(dateFormat)).ToArray(),
+            yValues: Model.DateInfo.Select(p => p.TotalCapsules).ToArray())
+        .Write("png");
+}

@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<items>
+  <item Order="1" ItemID="RESO_1" GroupID="G_RESOS" TypeID="T_RESOS" Level="1" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="2" ItemID="RESO_2" GroupID="G_RESOS" TypeID="T_RESOS" Level="2" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="3" ItemID="RESO_3" GroupID="G_RESOS" TypeID="T_RESOS" Level="3" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="4" ItemID="RESO_4" GroupID="G_RESOS" TypeID="T_RESOS" Level="4" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="5" ItemID="RESO_5" GroupID="G_RESOS" TypeID="T_RESOS" Level="5" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="6" ItemID="RESO_6" GroupID="G_RESOS" TypeID="T_RESOS" Level="6" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="7" ItemID="RESO_7" GroupID="G_RESOS" TypeID="T_RESOS" Level="7" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="8" ItemID="RESO_8" GroupID="G_RESOS" TypeID="T_RESOS" Level="8" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+
+  <item Order="9" ItemID="XMP_1" GroupID="G_WEAPONS" TypeID="T_XMPS" Level="1" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="10" ItemID="XMP_2" GroupID="G_WEAPONS" TypeID="T_XMPS" Level="2" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="11" ItemID="XMP_3" GroupID="G_WEAPONS" TypeID="T_XMPS" Level="3" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="12" ItemID="XMP_4" GroupID="G_WEAPONS" TypeID="T_XMPS" Level="4" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="13" ItemID="XMP_5" GroupID="G_WEAPONS" TypeID="T_XMPS" Level="5" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="14" ItemID="XMP_6" GroupID="G_WEAPONS" TypeID="T_XMPS" Level="6" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="15" ItemID="XMP_7" GroupID="G_WEAPONS" TypeID="T_XMPS" Level="7" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="16" ItemID="XMP_8" GroupID="G_WEAPONS" TypeID="T_XMPS" Level="8" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+
+  <item Order="17" ItemID="US_1" GroupID="G_WEAPONS" TypeID="T_USS" Level="1" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="18" ItemID="US_2" GroupID="G_WEAPONS" TypeID="T_USS" Level="2" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="19" ItemID="US_3" GroupID="G_WEAPONS" TypeID="T_USS" Level="3" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="20" ItemID="US_4" GroupID="G_WEAPONS" TypeID="T_USS" Level="4" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="21" ItemID="US_5" GroupID="G_WEAPONS" TypeID="T_USS" Level="5" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="22" ItemID="US_6" GroupID="G_WEAPONS" TypeID="T_USS" Level="6" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="23" ItemID="US_7" GroupID="G_WEAPONS" TypeID="T_USS" Level="7" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="24" ItemID="US_8" GroupID="G_WEAPONS" TypeID="T_USS" Level="8" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  
+  <item Order="25" ItemID="ADA" GroupID="G_WEAPONS" TypeID="T_VIRUS" Level="0" Rarity="R4" IsCapsule="false" PaysInterests="false" />
+  <item Order="26" ItemID="JARVIS" GroupID="G_WEAPONS" TypeID="T_VIRUS" Level="0" Rarity="R4" IsCapsule="false" PaysInterests="false" />
+
+  <item Order="27" ItemID="SHIELD_CO" GroupID="G_MODS" TypeID="T_SHIELDS" Level="0" Rarity="R2" IsCapsule="false" PaysInterests="false" />
+  <item Order="28" ItemID="SHIELD_RA" GroupID="G_MODS" TypeID="T_SHIELDS" Level="0" Rarity="R3" IsCapsule="false" PaysInterests="false" />
+  <item Order="29" ItemID="SHIELD_VR" GroupID="G_MODS" TypeID="T_SHIELDS" Level="0" Rarity="R4" IsCapsule="false" PaysInterests="false" />
+  <item Order="30" ItemID="SHIELD_AXA" GroupID="G_MODS" TypeID="T_SHIELDS" Level="0" Rarity="R4" IsCapsule="false" PaysInterests="false" />
+
+  <item Order="31" ItemID="LA_RA" GroupID="G_MODS" TypeID="T_LAS" Level="0" Rarity="R3" IsCapsule="false" PaysInterests="false" />
+  <item Order="32" ItemID="LA_VR" GroupID="G_MODS" TypeID="T_LAS" Level="0" Rarity="R4" IsCapsule="false" PaysInterests="false" />
+  <item Order="33" ItemID="LA_SB" GroupID="G_MODS" TypeID="T_LAS" Level="0" Rarity="R4" IsCapsule="false" PaysInterests="false" />
+  
+  <item Order="34" ItemID="HS_CO" GroupID="G_MODS" TypeID="T_HSS" Level="0" Rarity="R2" IsCapsule="false" PaysInterests="false" />
+  <item Order="35" ItemID="HS_RA" GroupID="G_MODS" TypeID="T_HSS" Level="0" Rarity="R3" IsCapsule="false" PaysInterests="false" />
+  <item Order="36" ItemID="HS_VR" GroupID="G_MODS" TypeID="T_HSS" Level="0" Rarity="R4" IsCapsule="false" PaysInterests="false" />
+  
+  <item Order="37" ItemID="MH_CO" GroupID="G_MODS" TypeID="T_MHS" Level="0" Rarity="R2" IsCapsule="false" PaysInterests="false" />
+  <item Order="38" ItemID="MH_RA" GroupID="G_MODS" TypeID="T_MHS" Level="0" Rarity="R3" IsCapsule="false" PaysInterests="false" />
+  <item Order="39" ItemID="MH_VR" GroupID="G_MODS" TypeID="T_MHS" Level="0" Rarity="R4" IsCapsule="false" PaysInterests="false" />
+  
+  <item Order="40" ItemID="FA_RA" GroupID="G_MODS" TypeID="T_ATTACK" Level="0" Rarity="R3" IsCapsule="false" PaysInterests="false" />
+  <item Order="41" ItemID="TU_RA" GroupID="G_MODS" TypeID="T_ATTACK" Level="0" Rarity="R3" IsCapsule="false" PaysInterests="false" />
+  
+  <item Order="42" ItemID="CUBE_1" GroupID="G_CUBES" TypeID="T_CUBES" Level="1" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="43" ItemID="CUBE_2" GroupID="G_CUBES" TypeID="T_CUBES" Level="2" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="44" ItemID="CUBE_3" GroupID="G_CUBES" TypeID="T_CUBES" Level="3" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="45" ItemID="CUBE_4" GroupID="G_CUBES" TypeID="T_CUBES" Level="4" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="46" ItemID="CUBE_5" GroupID="G_CUBES" TypeID="T_CUBES" Level="5" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="47" ItemID="CUBE_6" GroupID="G_CUBES" TypeID="T_CUBES" Level="6" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="48" ItemID="CUBE_7" GroupID="G_CUBES" TypeID="T_CUBES" Level="7" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+  <item Order="49" ItemID="CUBE_8" GroupID="G_CUBES" TypeID="T_CUBES" Level="8" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+ 
+  <item Order="50" ItemID="MEDIA" GroupID="G_MEDIAS" TypeID="T_MEDIAS" Level="0" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+
+  <item Order="51" ItemID="CAPS_MUFG" GroupID="G_CAPS" TypeID="T_CAPS" Level="0" Rarity="R4" IsCapsule="true" PaysInterests="true" />
+  <item Order="52" ItemID="CAPS_RA" GroupID="G_CAPS" TypeID="T_CAPS" Level="0" Rarity="R3" IsCapsule="true" PaysInterests="false" />
+
+  <item Order="53" ItemID="KEY" GroupID="G_KEYS" TypeID="T_KEYS" Level="0" Rarity="R1" IsCapsule="false" PaysInterests="false" />
+</items>

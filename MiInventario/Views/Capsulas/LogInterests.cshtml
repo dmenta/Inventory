@@ -19,18 +19,16 @@ else {
 @using (Html.BeginForm("LogInterests", "Capsulas", FormMethod.Post, new { @class = "form-horizontal" })) {
   @Html.HiddenFor(model => model.IdCapsula)
 
-  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+  <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
     <table class="table table-condensed table-striped">
       <colgroup>
-        <col class="col-lg-7 col-md-7 col-sm-7 col-xs-7" />
-        <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
+        <col class="col-lg-9 col-md-9 col-sm-9 col-xs-9" />
         <col class="col-lg-3 col-md-3 col-sm-3 col-xs-3" />
       </colgroup>
       <thead>
         <tr>
           <th>Item</th>
           <th>Qty</th>
-          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -43,9 +41,6 @@ else {
             <td class="cantidadItem">
               @Html.HiddenFor(model => Model.Items[i].CurrentItem.ItemID)
               @Html.TextBoxFor(model => Model.Items[i].Cantidad, new { @class = "form-control text-right input-sm" })
-            </td>
-            <td>
-              @Html.ActionLink("Delete", "DeleteItem", new { @id = Model.IdCapsula, itemID = item.CurrentItem.ItemID })
             </td>
           </tr>
         }

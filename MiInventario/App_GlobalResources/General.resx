@@ -121,7 +121,7 @@
     <value>(empty)</value>
   </data>
   <data name="InterestsByDate_DateFormat_Day" xml:space="preserve">
-    <value>yyyy-MMM-dd HH \h\s.</value>
+    <value>yyyy-MMM-dd</value>
   </data>
   <data name="InterestsByDate_DateFormat_Month" xml:space="preserve">
     <value>yyyy-MMM</value>

@@ -136,20 +136,11 @@
     <Reference Include="Microsoft.Owin.Security">
       <HintPath>..\packages\Microsoft.Owin.Security.2.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Security.Facebook">
-      <HintPath>..\packages\Microsoft.Owin.Security.Facebook.2.1.0\lib\net45\Microsoft.Owin.Security.Facebook.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Owin.Security.Cookies">
       <HintPath>..\packages\Microsoft.Owin.Security.Cookies.2.1.0\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Owin.Security.OAuth">
       <HintPath>..\packages\Microsoft.Owin.Security.OAuth.2.1.0\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security.Google">
-      <HintPath>..\packages\Microsoft.Owin.Security.Google.2.1.0\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security.Twitter">
-      <HintPath>..\packages\Microsoft.Owin.Security.Twitter.2.1.0\lib\net45\Microsoft.Owin.Security.Twitter.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Owin.Security.MicrosoftAccount">
       <HintPath>..\packages\Microsoft.Owin.Security.MicrosoftAccount.2.1.0\lib\net45\Microsoft.Owin.Security.MicrosoftAccount.dll</HintPath>
@@ -236,9 +227,8 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\Items.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="App_Data\Items - Copy.xml" />
+    <Content Include="App_Data\Items.xml" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap\bootstrap.css">
       <DependentUpon>bootstrap.less</DependentUpon>
@@ -356,6 +346,7 @@
     <Content Include="Content\bootstrap\variables.css.map">
       <DependentUpon>variables.css</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\Pato-Inventario.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -368,9 +359,7 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -427,6 +416,8 @@
     <Content Include="Views\Capsulas\InterestsDateItemChart.cshtml" />
     <Content Include="Views\Capsulas\InterestsCharts.cshtml" />
     <Content Include="Views\Capsulas\_InterestsChartTitle.cshtml" />
+    <Content Include="Views\Capsulas\InterestsDateTotal.cshtml" />
+    <Content Include="Views\Capsulas\SendToUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Base\" />
@@ -471,12 +462,6 @@
     <Content Include="App_GlobalResources\General.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>General.Designer.cs</LastGenOutput>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="App_GlobalResources\Groups.es.resx">
-      <Generator>GlobalResourceProxyGenerator</Generator>
-      <LastGenOutput>Groups.es.designer.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <PropertyGroup>

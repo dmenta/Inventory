@@ -68,11 +68,13 @@ else
                         <td class="cantidadItem">
                             @if (Model.Items[i].CantidadEnCapsula > 0)
                             {
-                                <text>(</text>@Html.DisplayFor(model => Model.Items[i].CantidadEnCapsula)<text>)</text>
+                                @String.Format("({0})", Model.Items[i].CantidadEnCapsula);
                             }
                         </td>
                         <td class="cantidadItem">
-                            @Html.TextBoxFor(model => Model.Items[i].CantidadCargar, new { @class = "form-control text-right input-sm" })
+                            @if (item.CantidadSuelta > 0) {
+                                @Html.TextBoxFor(model => Model.Items[i].CantidadCargar, new { @class = "form-control text-right input-sm" });
+                            }
                         </td>
                     </tr>
                 }

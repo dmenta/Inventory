@@ -34,11 +34,13 @@
 <hr />
 <h4 id="chartTitle"></h4>
 <div>
+    @*<img src="@Url.Action("InterestsDateItemChart", "Capsulas", new { grouping = Model.Grouping, itemID = Model.ItemID, accumulate = Model.Accumulate})" alt="Chart" />*@
     <img src="@Url.Action("InterestsChart", "Capsulas", new { grouping = Model.Grouping, itemID = Model.ItemID, accumulate = Model.Accumulate})" alt="Chart" />
 </div>
 
 @section scripts{
     <script type="text/javascript">
+        //var pattern = "InterestsDateItemChart?grouping=XXX&itemID=YYY&accumulate=ZZZ";
         var pattern = "InterestsChart?grouping=XXX&itemID=YYY&accumulate=ZZZ";
 
         function updateTitulo() {

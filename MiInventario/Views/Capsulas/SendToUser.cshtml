@@ -1,0 +1,31 @@
+﻿@model MiInventario.Models.CapsulasSendToViewModel
+@{
+    ViewBag.Title = Model.IdCapsula;
+}
+
+<h2>Send Capsule to User @Model.UserID</h2>
+<p>
+    Are you sure you wnat to send capsule @Model.IdCapsula [@if (Model.Descripcion != null)
+    {
+        <text>@Model.Descripcion</text>
+    }
+    else
+    {
+        @Html.Partial("_ItemDescription", Model.ItemEncapsulado)
+    }] to user @Model.UserID?
+</p>
+@using (Html.BeginForm("SendToUser", "Capsulas", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    <fieldset>
+        <div class="form-group">
+            <div class="col-lg-10 col-lg-offset-2">
+                @Html.HiddenFor(model => model.IdCapsula)
+                @Html.HiddenFor(model => model.UserID)
+                <input type="submit" value="Confirm" class="btn btn-primary" />
+            </div>
+        </div>
+    </fieldset>
+}
+<p>
+    @Html.ActionLink("Back to Capsules", "Index") | @Html.ActionLink("Back to View Capsule", "List", new { @id = Model.IdCapsula })
+</p>

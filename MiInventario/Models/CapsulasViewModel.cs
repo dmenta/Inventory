@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 
@@ -20,6 +21,14 @@ namespace MiInventario.Models
         public ItemViewModel ItemEncapsulado { get; set; }
         public int Total { get; set; }
         public bool Spawnable { get; set; }
+    }
+
+    public class CapsulasSendToViewModel
+    {
+        public string IdCapsula { get; set; }
+        public string Descripcion { get; set; }
+        public string UserID { get; set; }
+        public ItemViewModel ItemEncapsulado { get; set; }
     }
     public class CapsulasCreateViewModel
     {
@@ -132,12 +141,39 @@ namespace MiInventario.Models
         public IEnumerable<CapsulaFechaTotalViewModel> Totales { get; set; }
     }
 
+
     public class DateInfoModel
     {
         public DateTime Fecha { get; set; }
         public int TotalCapsules { get; set; }
         public int DifferentItems { get; set; }
         public int TotalItems { get; set; }
+        public int RealDays { get; set; }
+        public double Average
+        {
+            get { return (double)TotalItems / TotalCapsules / RealDays; }
+        }
+
+    }
+
+    public class CapsulasInterestsByDateTotalViewModel
+    {
+        public string Title
+        {
+            get
+            {
+                return Resources.General.ResourceManager.GetString(string.Format("InterestsByDate_Title_{0}", Grouping.ToString()));
+            }
+        }
+        public DateGrouping Grouping { get; set; }
+        public IEnumerable<DateInfoTotalModel> DateInfo { get; set; }
+        public int TotalItems { get; set; }
+        public IEnumerable<ItemInventoryViewModel> Totals { get; set; }
+        public Dictionary<string, int> Maximos { get; set; }
+    }
+    public class DateInfoTotalModel : DateInfoModel
+    {
+        public Dictionary<string, int> Items { get; set; }
     }
     public class CapsulaFechaTotalViewModel
     {

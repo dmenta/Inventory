@@ -21,5 +21,18 @@ namespace MiInventario
 
             return email.Split('@')[0];
         }
+
+        public static int DaysInYear(this DateTime fecha)
+        {
+            var thisYear = new DateTime(fecha.Year, 1, 1);
+            var nextYear = new DateTime(fecha.Year + 1, 1, 1);
+
+            return (nextYear - thisYear).Days;
+        }
+
+        public static int DaysInMonth(this DateTime fecha)
+        {
+            return DateTime.DaysInMonth(fecha.Year, fecha.Month);
+        }
     }
 }

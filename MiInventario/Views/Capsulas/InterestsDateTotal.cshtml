@@ -1,7 +1,8 @@
-﻿@model MiInventario.Models.CapsulasInterestsByDateViewModel
+﻿@model MiInventario.Models.CapsulasInterestsByDateTotalViewModel
 @{
     ViewBag.Title = Model.Title;
     string dateFormat = Resources.General.ResourceManager.GetString(string.Format("InterestsByDate_DateFormat_{0}", Model.Grouping.ToString()));
+    IEnumerable<string> items = Model.Totals.Select(p => p.CurrentItem.ItemID).ToArray();
 }
 
 <h2>@ViewBag.Title</h2>
@@ -9,30 +10,25 @@
     <table class="table table-condensed table-striped table-hover" style="font-size:0.9em">
         <thead>
             <tr>
-                <th class="corner"></th>
-                <th>Caps</th>
-                <th>Qty</th>
-                <th>Avg</th>
-                @foreach (var idC in Model.Capsulas)
+                <th class="corner rotate"><div><span></span></div></th>
+                <th class="rotate"><div><span>Caps</span></div></th>
+                <th class="rotate"><div><span>Qty</span></div></th>
+                <th class="rotate"><div><span>Avg</span></div></th>
+                @foreach (var item in Model.Totals)
                 {
-                    <th>@idC</th>
+                    <th class="text-nowrap rotate"><div><span>@Html.Partial("_ItemDescription", item)</span></div></th>
                 }
             </tr>
         </thead>
         <tfoot>
             <tr>
                 <td class="fecha">Total</td>
-                <td class="cantidadTotal">@Model.TotalCapsules</td>
+                <td class="cantidadTotal"></td>
                 <td class="cantidadTotal">@Model.TotalItems</td>
                 <td class="cantidadTotal"></td>
-                @foreach (var capsula in Model.Totales)
+                @foreach (var total in Model.Totals)
                 {
-                    <td class="text-nowrap">
-                        @foreach (var elemento in capsula.Items)
-                        {
-                            <div><span>@elemento.Cantidad</span>@Html.Partial("_ItemDescription", elemento)</div>
-                        }
-                    </td>
+                    <td class="cantidadItem">@total.Cantidad</td>
                 }
             </tr>
         </tfoot>
@@ -44,21 +40,22 @@
                     <td class="cantidadTotal">@info.TotalCapsules</td>
                     <td class="cantidadTotal">@info.TotalItems</td>
                     <td class="cantidadTotal">@info.Average.ToString("N2")</td>
-                    @foreach (var idC in Model.Capsulas)
+                    @foreach (var itemID in items)
                     {
-                        var capsula = Model.Filas.SingleOrDefault(p => p.Fecha == info.Fecha && p.IdCapsula == idC);
-                        if (capsula == null)
+                        var itemActual = info.Items.SingleOrDefault(p => p.Key == itemID);
+                        if (itemActual.Key == null)
                         {
                             <td></td>
                             continue;
                         }
-
-                        <td class="text-nowrap">
-                            @foreach (var total in capsula.Items)
-                            {
-                                <div><span>@total.Cantidad</span>@Html.Partial("_ItemDescription", total)</div>
-                            }
-                        </td>
+                        if (itemActual.Value == Model.Maximos[itemID])
+                        {
+                            <td class="cantidadItem text-warning"><strong>@itemActual.Value</strong></td>
+                        }
+                        else
+                        {
+                            <td class="cantidadItem">@itemActual.Value</td>
+                        }
                     }
                 </tr>
             }

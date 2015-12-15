@@ -373,6 +373,11 @@ string temp = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
             using (InventarioEntities db = new InventarioEntities())
             {
 
+                if (db.Capsulas.Any(p => p.IdCapsula == capsula.IdCapsula))
+                {
+                    ModelState.AddModelError("Duplicate", "There is another capsule with the same ID");
+                }
+
                 if (ModelState.IsValid)
                 {
                     string user = User.Identity.GetUserName();

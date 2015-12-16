@@ -34,26 +34,19 @@ namespace MiInventario.Models
         {
             var results = new List<ValidationResult>();
 
-            if (Cantidad < CantidadDescargar)
-                results.Add(new ValidationResult("La cantidad a descargar no puede ser mayor que la cantidad en la capsula"));
+            if (CantidadDescargar < 0 || Cantidad < CantidadDescargar)
+            {
+                results.Add(new ValidationResult("Quantity must be a value bewteen 0 and the current quantity in the capsule."));
+            }
 
             return results;
         }
     }
-    public class ItemLoadViewModel : ItemViewModel, IValidatableObject
+    public class ItemLoadViewModel : ItemViewModel
     {
         public int CantidadSuelta { get; set; }
         public int CantidadEnCapsula { get; set; }
         public int CantidadCargar { get; set; }
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            var results = new List<ValidationResult>();
-
-            if (CantidadSuelta < CantidadCargar)
-                results.Add(new ValidationResult("La cantidad a cargar no puede ser mayor que la cantidad en el inventario"));
-
-            return results;
-        }
     }
 
     public class ItemDifferenceViewModel : ItemViewModel

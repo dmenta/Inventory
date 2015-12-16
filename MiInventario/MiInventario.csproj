@@ -346,6 +346,9 @@
     <Content Include="Content\bootstrap\variables.css.map">
       <DependentUpon>variables.css</DependentUpon>
     </Content>
+    <Content Include="Content\Coda-Regular.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\PublishProfiles\Pato-Inventario.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

@@ -75,13 +75,31 @@ namespace MiInventario.Models
         public bool UnloadAll { get; set; }
         public List<ItemUnloadViewModel> Items { get; set; }
     }
-    public class CapsulaLoadViewModel
+    public class CapsulaLoadViewModel : IValidatableObject
     {
         public string IdCapsula { get; set; }
         public string Descripcion { get; set; }
         public int Total { get; set; }
         public bool Spawnable { get; set; }
         public List<ItemLoadViewModel> Items { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            var results = new List<ValidationResult>();
+
+            if (Items.Sum(p => p.CantidadCargar + p.CantidadEnCapsula) > 100)
+            {
+                results.Add(new ValidationResult("Total Quantity on capsule exceeds 100."));
+            }
+            else
+            {
+                if (Items.Any(p => p.CantidadCargar < 0 || p.CantidadSuelta < p.CantidadCargar))
+                {
+                    results.Add(new ValidationResult("Quantity must be a value bewteen 0 and the current quantity in inventory."));
+                }
+            }
+            return results;
+        }
     }
 
     public class CapsulasDeleteViewModel
@@ -102,7 +120,12 @@ namespace MiInventario.Models
     {
         public string IdCapsula { get; set; }
         public int Total { get; set; }
+
+        [Required]
         public string ItemID { get; set; }
+
+        [Required]
+        [Range(1, 100, ErrorMessage = "Quantity must be a value between 1 and 100.")]
         public int Cantidad { get; set; }
         public List<ItemViewModel> AddeableItems { get; set; }
     }

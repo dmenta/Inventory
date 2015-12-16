@@ -13,6 +13,7 @@ using System.IO;
 using System.Web.UI.WebControls;
 using System.Drawing;
 using System.Data.Entity;
+using System.Drawing.Text;
 
 namespace MiInventario.Controllers
 {
@@ -148,9 +149,12 @@ namespace MiInventario.Controllers
 
                 string dateFormat = Resources.General.ResourceManager.GetString(string.Format("InterestsChart_DateFormat_{0}", model.Grouping.ToString()));
 
+                PrivateFontCollection pfc = new PrivateFontCollection();
+                pfc.AddFontFile(Server.MapPath("~/Content/Coda-Regular.ttf"));
+
                 using (Chart chart = new Chart())
                 {
-                    chart.Font.Name = "Coda";
+                    chart.Font.Name = pfc.Families[0].Name;
                     chart.Font.Size = FontUnit.Point(8);
                     chart.Width = 1000;
                     chart.Height = 400;
@@ -161,7 +165,7 @@ namespace MiInventario.Controllers
                     chart.Palette = ChartColorPalette.None;
                     chart.PaletteCustomColors = new[] { Color.Orange, Color.LightGray };
 
-                    using (Font fuente = new Font("Coda", 8, GraphicsUnit.Point))
+                    using (Font fuente = new Font(pfc.Families[0], 8, GraphicsUnit.Point))
                     {
                         ChartArea area = new ChartArea();
                         area.BackColor = Color.Transparent;
@@ -195,7 +199,7 @@ namespace MiInventario.Controllers
 
                         Series itemsSerie = new Series("Items");
                         itemsSerie.Font = fuente;
-                        itemsSerie.ChartType = SeriesChartType.Line;
+                        itemsSerie.ChartType = SeriesChartType.Spline;
                         itemsSerie.Points.DataBindXY(model.DateInfo.Select(p => p.Fecha.ToString(dateFormat)).ToArray(), model.DateInfo.Select(p => p.TotalItems).ToArray());
                         itemsSerie.IsValueShownAsLabel = grouping != DateGrouping.Day;
                         itemsSerie.LabelForeColor = Color.Orange;
@@ -536,11 +540,27 @@ string temp = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
                     return new HttpNotFoundResult();
                 }
 
-                db.CapsulasItems.Add(new CapsulasItems { IdCapsula = addedItem.IdCapsula, ItemID = addedItem.ItemID, Cantidad = addedItem.Cantidad });
+                if (ModelState.IsValid)
+                {
+                    db.CapsulasItems.Add(new CapsulasItems { IdCapsula = addedItem.IdCapsula, ItemID = addedItem.ItemID, Cantidad = addedItem.Cantidad });
 
-                db.SaveChanges();
+                    db.SaveChanges();
 
-                return RedirectToAction("List", new { id = addedItem.IdCapsula });
+                    return RedirectToAction("List", new { id = addedItem.IdCapsula });
+                }
+                else
+                {
+                    var itemsCargados = capsula.CapsulasItems.Select(p => p.ItemID).ToList();
+
+                    addedItem.Total = capsula.CapsulasItems.Sum(s => s.Cantidad);
+                    addedItem.AddeableItems = ItemsXml.Where(p => !p.IsCapsule && !itemsCargados.Contains(p.ItemID))
+                        .Select(q => new ItemViewModel
+                        {
+                            CurrentItem = q,
+                        }).ToList();
+
+                    return View(addedItem);
+                }
             }
         }
 
@@ -686,18 +706,21 @@ string temp = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
                     return new HttpNotFoundResult();
                 }
 
-                foreach (ItemInventoryViewModel item in capsula.Items)
+                if (capsula.Items != null)
                 {
-                    string itemID = item.CurrentItem.ItemID;
-                    CapsulasItems capsulaItem = db.CapsulasItems.SingleOrDefault(p => p.IdCapsula == capsula.IdCapsula && p.ItemID == itemID);
-
-                    if (capsulaItem != null)
+                    foreach (ItemInventoryViewModel item in capsula.Items)
                     {
-                        capsulaItem.Cantidad = item.Cantidad;
-                    }
-                }
+                        string itemID = item.CurrentItem.ItemID;
+                        CapsulasItems capsulaItem = db.CapsulasItems.SingleOrDefault(p => p.IdCapsula == capsula.IdCapsula && p.ItemID == itemID);
 
-                db.SaveChanges();
+                        if (capsulaItem != null)
+                        {
+                            capsulaItem.Cantidad = item.Cantidad;
+                        }
+                    }
+
+                    db.SaveChanges();
+                }
 
                 return RedirectToAction("List", new { id = capsula.IdCapsula });
             }
@@ -721,35 +744,38 @@ string temp = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
                     return new HttpNotFoundResult();
                 }
 
-                foreach (var item in capsula.Items.Where(p => p.CantidadDescargar > 0))
+                if (capsula.Items != null)
                 {
-                    CapsulasItems capsulaItem = db.CapsulasItems.SingleOrDefault(p => p.IdCapsula == capsula.IdCapsula && p.ItemID == item.CurrentItem.ItemID);
-
-                    if (capsulaItem != null)
+                    foreach (var item in capsula.Items.Where(p => p.CantidadDescargar > 0))
                     {
-                        if (capsulaItem.Cantidad == item.CantidadDescargar)
-                        {
-                            db.CapsulasItems.Remove(capsulaItem);
-                        }
-                        else
-                        {
-                            capsulaItem.Cantidad -= item.CantidadDescargar;
-                        }
+                        CapsulasItems capsulaItem = db.CapsulasItems.SingleOrDefault(p => p.IdCapsula == capsula.IdCapsula && p.ItemID == item.CurrentItem.ItemID);
 
-                        Inventarios inv = db.Inventarios.SingleOrDefault(p => p.IdUsuario == user && p.ItemID == item.CurrentItem.ItemID);
+                        if (capsulaItem != null)
+                        {
+                            if (capsulaItem.Cantidad == item.CantidadDescargar)
+                            {
+                                db.CapsulasItems.Remove(capsulaItem);
+                            }
+                            else
+                            {
+                                capsulaItem.Cantidad -= item.CantidadDescargar;
+                            }
 
-                        if (inv != null)
-                        {
-                            inv.Cantidad += item.CantidadDescargar;
-                        }
-                        else
-                        {
-                            db.Inventarios.Add(new Inventarios { IdUsuario = user, ItemID = item.CurrentItem.ItemID, Cantidad = item.CantidadDescargar });
+                            Inventarios inv = db.Inventarios.SingleOrDefault(p => p.IdUsuario == user && p.ItemID == item.CurrentItem.ItemID);
+
+                            if (inv != null)
+                            {
+                                inv.Cantidad += item.CantidadDescargar;
+                            }
+                            else
+                            {
+                                db.Inventarios.Add(new Inventarios { IdUsuario = user, ItemID = item.CurrentItem.ItemID, Cantidad = item.CantidadDescargar });
+                            }
                         }
                     }
-                }
 
-                db.SaveChanges();
+                    db.SaveChanges();
+                }
 
                 return RedirectToAction("List", new { id = capsula.IdCapsula });
             }
@@ -773,40 +799,44 @@ string temp = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
                     return new HttpNotFoundResult();
                 }
 
-                if (capsula.Items.Any(p => p.CantidadCargar > p.CantidadSuelta))
+                if (capsula.Items != null)
                 {
-                    return View(capsula);
-                }
 
-                foreach (var item in capsula.Items.Where(p => p.CantidadCargar > 0))
-                {
-                    CapsulasItems capsulaItem = db.CapsulasItems.SingleOrDefault(p => p.IdCapsula == capsula.IdCapsula && p.ItemID == item.CurrentItem.ItemID);
-
-                    if (capsulaItem != null)
+                    if (capsula.Items.Any(p => p.CantidadCargar > p.CantidadSuelta))
                     {
-                        capsulaItem.Cantidad += item.CantidadCargar;
-                    }
-                    else
-                    {
-                        db.CapsulasItems.Add(new CapsulasItems { IdCapsula = capsula.IdCapsula, ItemID = item.CurrentItem.ItemID, Cantidad = item.CantidadCargar });
+                        return View(capsula);
                     }
 
-                    Inventarios inv = db.Inventarios.SingleOrDefault(p => p.IdUsuario == user && p.ItemID == item.CurrentItem.ItemID);
-
-                    if (inv != null)
+                    foreach (var item in capsula.Items.Where(p => p.CantidadCargar > 0))
                     {
-                        if (inv.Cantidad == item.CantidadCargar)
+                        CapsulasItems capsulaItem = db.CapsulasItems.SingleOrDefault(p => p.IdCapsula == capsula.IdCapsula && p.ItemID == item.CurrentItem.ItemID);
+
+                        if (capsulaItem != null)
                         {
-                            db.Inventarios.Remove(inv);
+                            capsulaItem.Cantidad += item.CantidadCargar;
                         }
                         else
                         {
-                            inv.Cantidad -= item.CantidadCargar;
+                            db.CapsulasItems.Add(new CapsulasItems { IdCapsula = capsula.IdCapsula, ItemID = item.CurrentItem.ItemID, Cantidad = item.CantidadCargar });
+                        }
+
+                        Inventarios inv = db.Inventarios.SingleOrDefault(p => p.IdUsuario == user && p.ItemID == item.CurrentItem.ItemID);
+
+                        if (inv != null)
+                        {
+                            if (inv.Cantidad == item.CantidadCargar)
+                            {
+                                db.Inventarios.Remove(inv);
+                            }
+                            else
+                            {
+                                inv.Cantidad -= item.CantidadCargar;
+                            }
                         }
                     }
-                }
 
-                db.SaveChanges();
+                    db.SaveChanges();
+                }
 
                 return RedirectToAction("List", new { id = capsula.IdCapsula });
             }
@@ -826,6 +856,17 @@ string temp = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
                     return new HttpNotFoundResult();
                 }
 
+                if (capsula.Items == null)
+                {
+                    return RedirectToAction("List", new { id = capsula.IdCapsula });
+                }
+                
+                if (capsula.Items.Sum(p => p.Cantidad) > 100)
+                {
+                    ModelState.AddModelError("Masde100", "Total Quantity on capsule exceeds 100.");
+                    return LogInterests(capsula.IdCapsula);
+                }
+
                 Dictionary<string, int> v_nuevos = new Dictionary<string, int>();
 
                 foreach (ItemInventoryViewModel item in capsula.Items)
@@ -836,7 +877,8 @@ string temp = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
                     {
                         if (capsulaItem.Cantidad > item.Cantidad)
                         {
-                            break;
+                            ModelState.AddModelError("Masde100", "Quantity must be equal or greater than quantity on capsule.");
+                            return LogInterests(capsula.IdCapsula);
                         }
                         else if (capsulaItem.Cantidad < item.Cantidad)
                         {

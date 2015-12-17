@@ -61,7 +61,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to VC.
+        ///   Looks up a localized string similar to Very Common.
         /// </summary>
         internal static string R1 {
             get {
@@ -70,7 +70,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CO.
+        ///   Looks up a localized string similar to Common.
         /// </summary>
         internal static string R2 {
             get {
@@ -79,7 +79,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to RA.
+        ///   Looks up a localized string similar to Rare.
         /// </summary>
         internal static string R3 {
             get {
@@ -88,7 +88,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to VR.
+        ///   Looks up a localized string similar to Very Rare.
         /// </summary>
         internal static string R4 {
             get {

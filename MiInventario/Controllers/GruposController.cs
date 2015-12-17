@@ -43,6 +43,25 @@ namespace MiInventario.Controllers
         }
 
         [HttpGet]
+        public JsonResult ItemDetail(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return Json("Item invalid", JsonRequestBehavior.AllowGet);
+            }
+            var detalle = ItemsXml.SingleOrDefault(p => p.ItemID == id);
+            if (detalle == null)
+            {
+                return Json("Item invalid", JsonRequestBehavior.AllowGet);
+            }
+
+            var typeDesc = Resources.TypesDescriptions.ResourceManager.GetString(detalle.TypeID);
+
+            var info = new { ItemID = id, Level = detalle.Level, Name = detalle.Nombre(), Rarity = detalle.Rarity, RarityName = detalle.RarityName(), TypeDescription = typeDesc };
+            return Json(info, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
         public ActionResult ViewAll()
         {
             return View(RecuperarGrupos());

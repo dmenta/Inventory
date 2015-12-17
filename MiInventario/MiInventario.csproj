@@ -172,6 +172,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Types.resx</DependentUpon>
     </Compile>
+    <Compile Include="App_GlobalResources\TypesDescriptions.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TypesDescriptions.resx</DependentUpon>
+    </Compile>
     <Compile Include="Code\DateGrouping.cs" />
     <Compile Include="Code\ItemsHierarchy.cs" />
     <Compile Include="Code\Utils.cs" />
@@ -227,7 +232,6 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\Items - Copy.xml" />
     <Content Include="App_Data\Items.xml" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap\bootstrap.css">
@@ -245,6 +249,14 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="images\RESO_1.png" />
+    <Content Include="images\RESO_2.png" />
+    <Content Include="images\RESO_3.png" />
+    <Content Include="images\RESO_4.png" />
+    <Content Include="images\RESO_5.png" />
+    <Content Include="images\RESO_6.png" />
+    <Content Include="images\RESO_7.png" />
+    <Content Include="images\RESO_8.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <EntityDeploy Include="Modelo.edmx">
@@ -351,6 +363,7 @@
     </Content>
     <None Include="Properties\PublishProfiles\Pato-Inventario.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\itemDetail.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -464,6 +477,12 @@
     <Content Include="App_GlobalResources\General.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>General.Designer.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_GlobalResources\TypesDescriptions.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>TypesDescriptions.Designer.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <PropertyGroup>

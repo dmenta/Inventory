@@ -4,19 +4,13 @@
 }
 
 <h2>Add Item to @Model.IdCapsula (@Model.Total)</h2>
-@if (@Model.Total > 100) {
-  <div class="alert alert-dismissible alert-danger">
-    <button type="button" class="close" data-dismiss="alert">×</button>
-    <strong>Oh snap!</strong> La cantidad total de la cápsula supera lo permitido.
-  </div>
-}
 @foreach (var item in ViewContext.ViewData.ModelState)
 {
     if (item.Value.Errors.Any())
     {
-        <div class="alert alert-dismissible alert-danger">
+        <div class="alert alert-dismissible alert-warning">
             <button type="button" class="close" data-dismiss="alert">×</button>
-            <strong>Oh snap!</strong> @(string.Join("; ", item.Value.Errors.Select(x => x.ErrorMessage)))
+            @(string.Join("; ", item.Value.Errors.Select(x => x.ErrorMessage)))
         </div>
     }
 }

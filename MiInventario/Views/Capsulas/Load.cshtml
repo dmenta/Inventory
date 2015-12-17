@@ -11,18 +11,11 @@ else
 {
     <h3>@Model.Descripcion [@Model.IdCapsula] (@Model.Total)</h3>
 }
-@if (@Model.Total > 100)
-{
-    <div class="alert alert-dismissible alert-danger">
-        <button type="button" class="close" data-dismiss="alert">×</button>
-        <strong>Oh snap!</strong> La cantidad total de la cápsula supera lo permitido.
-    </div>
-}
 @if (!ViewData.ModelState.IsValid)
 {
-    <div class="alert alert-dismissible alert-danger">
+    <div class="alert alert-dismissible alert-warning">
         <button type="button" class="close" data-dismiss="alert">×</button>
-        <strong>Oh snap!</strong> @string.Join("; ", ViewData.ModelState.Values
+        @string.Join("; ", ViewData.ModelState.Values
                                         .SelectMany(x => x.Errors)
                                         .Select(x => x.ErrorMessage))
     </div>

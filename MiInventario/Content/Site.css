@@ -28,15 +28,15 @@ textarea {
     color: #b5b2b5;
 }
 
-.rareza2,.rarezaR2 {
+.rareza2, .rarezaR2 {
     color: #84f7b5;
 }
 
-.rareza3,.rarezaR3 {
+.rareza3, .rarezaR3 {
     color: #ad8eff;
 }
 
-.rareza4,.rarezaR4 {
+.rareza4, .rarezaR4 {
     color: #ff8ef7;
 }
 
@@ -111,30 +111,58 @@ td {
 th {
     color: #9b9b9b;
 }
-tfoot .nombreTotales{
-    background-color:#9a408a;
+
+tfoot .nombreTotales {
+    background-color: #9a408a;
     color: #e4d1d1;
-    text-align:center;
+    text-align: center;
 }
+
 #chartTitle {
     color: white;
 }
 
 th.rotate {
-  /* Something you can count on */
-  height: 140px;
-  /*white-space: nowrap;*/
+    /* Something you can count on */
+    height: 140px;
+    /*white-space: nowrap;*/
 }
 
-th.rotate > div {
-  transform: 
-    /* Magic Numbers */
-    translate(23px, -10px)
-    /* 45 is really 360 - 45 */
-    rotate(270deg);
-  width: 20px;
-}
-th.rotate > div > span {
-  /*border-bottom: 1px solid #ccc;
+    th.rotate > div {
+        transform:
+        /* Magic Numbers */
+        translate(23px, -10px)
+        /* 45 is really 360 - 45 */
+        rotate(270deg);
+        width: 20px;
+    }
+
+        th.rotate > div > span {
+            /*border-bottom: 1px solid #ccc;
   padding: 5px 50px;*/
+        }
+
+#dialog {
+    background-color: #111111;
+    border: 1px solid teal;
+    cursor: default;
+    display: none;
+    text-align: center;
+    width: 250px;
+    z-index: 50;
+    padding: 25px 25px 20px;
+}
+#headerDetail{
+    margin-bottom: 0px;
+}
+#detailRarity{
+    font-size: 0.9em;
+}
+
+#detailTypeDescription{
+    font-size: 0.9em;
+}
+
+#detailImage {
+    height: 200px;
 }

@@ -117,16 +117,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="R1" xml:space="preserve">
-    <value>Very Common</value>
+  <data name="T_ATTACK" xml:space="preserve">
+    <value>Mod that increases power of Portal attacks against enemy agents</value>
   </data>
-  <data name="R2" xml:space="preserve">
-    <value>Common</value>
+  <data name="T_CAPS" xml:space="preserve">
+    <value>A storage container that can hold other objects</value>
   </data>
-  <data name="R3" xml:space="preserve">
-    <value>Rare</value>
+  <data name="T_CUBES" xml:space="preserve">
+    <value>Store of XM wich can be used to recharge Scanner</value>
   </data>
-  <data name="R4" xml:space="preserve">
-    <value>Very Rare</value>
+  <data name="T_HSS" xml:space="preserve">
+    <value>Mod that reduce cooldown time between Portal hacks</value>
+  </data>
+  <data name="T_KEYS" xml:space="preserve">
+    <value>Use to create Links and remote recharge the Portal</value>
+  </data>
+  <data name="T_LAS" xml:space="preserve">
+    <value>Mod that increases Portal link range</value>
+  </data>
+  <data name="T_MEDIAS" xml:space="preserve">
+    <value>Media</value>
+  </data>
+  <data name="T_MHS" xml:space="preserve">
+    <value>Mod that increases hacking capacity of a Portal</value>
+  </data>
+  <data name="T_RESOS" xml:space="preserve">
+    <value>XM object used to power-up a Portal and align it to a Faction</value>
+  </data>
+  <data name="T_SHIELDS" xml:space="preserve">
+    <value>Mod wich shields Portal from attacks</value>
+  </data>
+  <data name="T_USS" xml:space="preserve">
+    <value>A variation of the Exotic Matter Pulse weapon with a more powerful blast that occurs within a smaler radius</value>
+  </data>
+  <data name="T_VIRUS" xml:space="preserve">
+    <value>Virus</value>
+  </data>
+  <data name="T_XMPS" xml:space="preserve">
+    <value>Exotic Matter Pulse weapons wich can destroy enemy Resonators and Mods and neutralize enemy Portals</value>
   </data>
 </root>

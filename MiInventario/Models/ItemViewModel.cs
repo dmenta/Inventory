@@ -21,8 +21,9 @@ namespace MiInventario.Models
     public class ItemEditViewModel : ItemViewModel
     {
 
-        [Range(0, 2000, ErrorMessage = "Cantidad no puede ser mayor a 2000")]
+        [Range(0, 2000, ErrorMessage = "Quantity exceeds 2000 items.")]
         public int Cantidad { get; set; }
+        [Range(0, 2000, ErrorMessage = "Quantity on capsules exceeds 2000 items.")]
         public int CantidadCapsulas { get; set; }
     }
     public class ItemUnloadViewModel : ItemViewModel, IValidatableObject

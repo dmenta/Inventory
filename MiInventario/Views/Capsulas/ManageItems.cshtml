@@ -11,13 +11,7 @@ else
 {
     <h3>@Model.Descripcion [@Model.IdCapsula] (@Model.Total)</h3>
 }
-@if (@Model.Total > 100)
-{
-    <div class="alert alert-dismissible alert-danger">
-        <button type="button" class="close" data-dismiss="alert">×</button>
-        <strong>Oh snap!</strong> La cantidad total de la cápsula supera lo permitido.
-    </div>
-}
+
 @using (Html.BeginForm("ManageItems", "Capsulas", FormMethod.Post, new { @class = "form-horizontal" }))
 {
     @Html.HiddenFor(model => model.IdCapsula)

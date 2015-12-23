@@ -25,7 +25,7 @@
         function updateTable() {
             var grp = $("select").first().val();
             var urlTabla = '@(Url.Action("_InterestsDateTotal", "Capsulas", null, Request.Url.Scheme))?grouping=' + grp;
-            urlTabla.replace(/\:[0-9]+/, '');
+            urlTabla=urlTabla.replace(/\:[0-9]+/, '');
 
             $.ajax({
                 url: urlTabla,

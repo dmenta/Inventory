@@ -24,19 +24,15 @@
 
         function updateTable() {
             var grp = $("select").first().val();
-            var urlTitulo = '@(Url.Action("_InterestsDateTotal", "Capsulas", null, Request.Url.Scheme))?grouping=' + grp;
+            var urlTabla = '@(Url.Action("_InterestsDateTotal", "Capsulas", null, Request.Url.Scheme))?grouping=' + grp;
+            urlTabla.replace(/\:[0-9]+/, '');
 
             $.ajax({
-                url: urlTitulo,
+                url: urlTabla,
                 dataType: "html",
                 success: function (data) {
                     $("#tableContainer").html(data);
                     $("#reportTitle").text("Interest by " + grp);
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    alert(xhr.status);
-                    alert(ajaxOptions);
-                    alert(thrownError);
                 }
             });
         }

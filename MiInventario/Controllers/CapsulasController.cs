@@ -860,7 +860,7 @@ string temp = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
                 {
                     return RedirectToAction("List", new { id = capsula.IdCapsula });
                 }
-                
+
                 if (capsula.Items.Sum(p => p.Cantidad) > 100)
                 {
                     ModelState.AddModelError("Masde100", "Total Quantity on capsule exceeds 100.");
@@ -1084,7 +1084,18 @@ string temp = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
         }
 
         [HttpGet]
-        public ActionResult InterestsDateTotal(DateGrouping id)
+        public ActionResult InterestsDateTotal(DateGrouping? grouping)
+        {
+            if (!grouping.HasValue)
+            {
+                grouping = DateGrouping.Week;
+            }
+
+            return View(grouping.Value);
+        }
+
+        [HttpGet]
+        public ActionResult _InterestsDateTotal(DateGrouping grouping)
         {
             DateTime inicio = DateTime.Now;
 
@@ -1103,7 +1114,7 @@ string temp = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
                     }).ToList();
 
                 var items = reproduccionesDB
-                            .GroupBy(r => new { Fecha = GetResolvedDate(id, r.Fecha) })
+                            .GroupBy(r => new { Fecha = GetResolvedDate(grouping, r.Fecha) })
                             .Select(s => new DateInfoTotalModel
                             {
                                 Fecha = s.Key.Fecha,
@@ -1120,14 +1131,14 @@ string temp = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
                  .Select(i => new ItemInventoryViewModel { CurrentItem = ItemsXml.Single(j => j.ItemID == i.Key), Cantidad = i.Sum(j => j.Cantidad) }).OrderBy(k => k.CurrentItem.Order);
 
                 var maximos = reproduccionesDB
-                            .GroupBy(r => new { Fecha = GetResolvedDate(id, r.Fecha), ItemID = r.ItemID })
+                            .GroupBy(r => new { Fecha = GetResolvedDate(grouping, r.Fecha), ItemID = r.ItemID })
                             .Select(s => new { ItemID = s.Key.ItemID, Cantidad = s.Sum(p => p.Cantidad) })
                             .GroupBy(h => h.ItemID)
                             .Select(i => new { ItemID = i.Key, Maximo = i.Max(j => j.Cantidad) })
                             .ToDictionary(h => h.ItemID, i => i.Maximo);
 
                 var model = new CapsulasInterestsByDateTotalViewModel();
-                model.Grouping = id;
+                model.Grouping = grouping;
                 model.DateInfo = items.OrderByDescending(b => b.Fecha);
                 model.Totals = totals;
                 model.Maximos = maximos;
@@ -1135,7 +1146,169 @@ string temp = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
 
                 TimeSpan tiempo = DateTime.Now.Subtract(inicio);
 
-                return View(model);
+                return PartialView("_InterestsDateTotal", model);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult InterestsPercentageRarity(DateGrouping? grouping, bool? percentage)
+        {
+            if (!grouping.HasValue)
+            {
+                grouping = DateGrouping.Week;
+            }
+            if (!percentage.HasValue)
+            {
+                percentage = false;
+            }
+            return View(new InterestsPercentageRarityViewModel() { Grouping = grouping.Value, Percentage = percentage.Value });
+        }
+
+        [HttpGet]
+        public FileResult InterestsPercentageRarityChart(DateGrouping grouping, bool percentage)
+        {
+            DateTime inicio = DateTime.Now;
+
+            var type = SeriesChartType.StackedColumn;
+            if (percentage)
+            {
+                type = SeriesChartType.StackedColumn100;
+            }
+
+
+            using (InventarioEntities db = new InventarioEntities())
+            {
+                string user = User.Identity.GetUserName();
+
+                string dateFormat = Resources.General.ResourceManager.GetString(string.Format("InterestsChart_DateFormat_{0}", grouping.ToString()));
+
+                var rarityDef = new[] { 
+                        new { Rarity = "R1", Name = "Very Common", Color="#b5b2b5" }, 
+                        new { Rarity = "R2", Name = "Common", Color="#84f7b5" }, 
+                        new { Rarity = "R3", Name = "Rare", Color="#ad8eff" }, 
+                        new { Rarity = "R4", Name = "Very Rare", Color="#ff8ef7" } 
+                    };
+
+                var dbData = db.ReproduccionesItems.Where(p => p.Reproducciones.IdUsuario == user)
+                                    .GroupBy(r => new { Fecha = DbFunctions.TruncateTime(r.Reproducciones.Fecha).Value, ItemID = r.ItemID })
+                                    .Select(s => new
+                                    {
+                                        Fecha = s.Key.Fecha,
+                                        ItemID = s.Key.ItemID,
+                                        Cantidad = s.Sum(m => m.Cantidad),
+                                    }).ToList()
+                                    .GroupBy(r => new { Rarity = ItemsXml.Single(j => j.ItemID == r.ItemID).Rarity, Fecha = GetResolvedDate(grouping, r.Fecha) })
+                                    .Select(s => new
+                                    {
+                                        Rarity = s.Key.Rarity,
+                                        Date = s.Key.Fecha,
+                                        Qty = s.Sum(w => w.Cantidad)
+                                    });
+
+                var dates = dbData.Select(p => GetResolvedDate(grouping, p.Date)).Distinct().ToArray();
+                var rarityies = dbData.Select(p => p.Rarity).Distinct().ToArray();
+
+                var points = from date in dates
+                             from rarity in rarityies
+                             select new
+                             {
+                                 Rarity = rarity,
+                                 Date = date
+                             };
+
+                var matrix = from point in points
+                             join data in dbData on new { point.Rarity, point.Date } equals new { data.Rarity, data.Date } into joineddbData
+                             from subData in joineddbData.DefaultIfEmpty()
+                             select new
+                             {
+                                 Rarity = point.Rarity,
+                                 Date = point.Date,
+                                 Qty = subData == null ? 0 : subData.Qty
+                             };
+
+                var itemsQtyDate = matrix
+                                .OrderByDescending(a => a.Rarity)
+                                .ThenBy(d => d.Date)
+                                .GroupBy(b => b.Rarity)
+                                .Select(c => new
+                                {
+                                    Rarity = c.Key,
+                                    Name = rarityDef.Single(p => p.Rarity == c.Key).Name,
+                                    Color = System.Drawing.ColorTranslator.FromHtml(rarityDef.Single(p => p.Rarity == c.Key).Color),
+                                    Fechas = c.Select(o => o.Date.ToString(dateFormat)).ToArray(),
+                                    Valores = c.Select(o => o.Qty).ToArray()
+                                }
+                                );
+
+
+                PrivateFontCollection pfc = new PrivateFontCollection();
+                pfc.AddFontFile(Server.MapPath("~/Content/Coda-Regular.ttf"));
+
+                using (Chart chart = new Chart())
+                {
+                    chart.Font.Name = pfc.Families[0].Name;
+                    chart.Font.Size = FontUnit.Point(8);
+                    chart.Width = 1000;
+                    chart.Height = 400;
+                    chart.BackColor = Color.FromArgb(255, 0x27, 0x2B, 0x30);
+                    chart.BorderlineDashStyle = ChartDashStyle.Solid;
+                    chart.BorderlineColor = Color.Gray;
+                    chart.BorderlineWidth = 1;
+                    Legend legend = new Legend();
+                    legend.BackColor = Color.Transparent;
+                    legend.ForeColor = Color.White;
+                    chart.Legends.Add(legend);
+                    chart.Palette = ChartColorPalette.None;
+                    chart.PaletteCustomColors = itemsQtyDate.Select(p => p.Color).ToArray();
+
+                    using (Font fuente = new Font(pfc.Families[0], 8, GraphicsUnit.Point))
+                    {
+                        ChartArea area = new ChartArea();
+                        area.BackColor = Color.Transparent;
+                        area.ShadowColor = Color.Transparent;
+                        area.BorderColor = Color.FromArgb(255, 0x88, 0x88, 0x88);
+                        area.BorderDashStyle = ChartDashStyle.Solid;
+
+                        var ejeX = area.AxisX;
+                        ejeX.LabelStyle.Font = fuente;
+                        ejeX.LabelStyle.ForeColor = Color.White;
+                        ejeX.LineColor = Color.FromArgb(255, 0x99, 0x99, 0x99);
+                        ejeX.IsLabelAutoFit = false;
+                        ejeX.IsMarginVisible = true;
+                        ejeX.MajorGrid.LineColor = Color.FromArgb(255, 0x99, 0x99, 0x99);
+                        ejeX.MajorTickMark.LineColor = Color.FromArgb(255, 0xAA, 0xAA, 0xAA);
+
+                        var interval = Math.Max(dates.Count() / 25, 1);
+                        ejeX.Interval = interval;
+                        ejeX.LabelStyle.Angle = -90;
+
+                        var ejeY = area.AxisY;
+                        ejeY.LabelStyle.Font = fuente;
+                        ejeY.LabelStyle.ForeColor = Color.White;
+                        ejeY.LineColor = Color.FromArgb(255, 0x99, 0x99, 0x99);
+                        ejeY.IsLabelAutoFit = false;
+                        ejeY.IsMarginVisible = true;
+                        ejeY.MajorGrid.LineColor = Color.FromArgb(255, 0x99, 0x99, 0x99);
+                        ejeY.MajorTickMark.LineColor = Color.FromArgb(255, 0xAA, 0xAA, 0xAA);
+
+                        chart.ChartAreas.Add(area);
+
+                        foreach (var item in itemsQtyDate)
+                        {
+                            Series itemsSerie = new Series(item.Name);
+                            itemsSerie.Font = fuente;
+                            itemsSerie.ChartType = type;
+                            itemsSerie.Points.DataBindXY(item.Fechas, item.Valores);
+                            itemsSerie.IsValueShownAsLabel = grouping != DateGrouping.Day;
+                            chart.Series.Add(itemsSerie);
+                        }
+
+                        MemoryStream ms = new MemoryStream();
+                        chart.SaveImage(ms, ChartImageFormat.Png);
+                        return File(ms.ToArray(), "image/png");
+                    }
+                }
+
             }
         }
 

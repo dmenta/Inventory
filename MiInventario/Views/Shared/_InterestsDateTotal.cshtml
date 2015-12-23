@@ -1,0 +1,60 @@
+﻿@model MiInventario.Models.CapsulasInterestsByDateTotalViewModel
+@{
+    string dateFormat = Resources.General.ResourceManager.GetString(string.Format("InterestsByDate_DateFormat_{0}", Model.Grouping.ToString()));
+    IEnumerable<string>
+    items = Model.Totals.Select(p => p.CurrentItem.ItemID).ToArray();
+}
+<table class="table table-condensed table-striped table-hover" style="font-size:0.9em">
+    <thead>
+        <tr>
+            <th class="corner rotate"><div><span></span></div></th>
+            <th class="rotate"><div><span>Caps</span></div></th>
+            <th class="rotate"><div><span>Qty</span></div></th>
+            <th class="rotate"><div><span>Avg</span></div></th>
+            @foreach (var item in Model.Totals)
+            {
+                <th class="text-nowrap rotate"><div><span>@Html.Partial("_ItemDescription", item)</span></div></th>
+            }
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <td class="fecha">Total</td>
+            <td class="cantidadTotal"></td>
+            <td class="cantidadTotal">@Model.TotalItems</td>
+            <td class="cantidadTotal"></td>
+            @foreach (var total in Model.Totals)
+            {
+                <td class="cantidadItem">@total.Cantidad</td>
+            }
+        </tr>
+    </tfoot>
+    <tbody>
+        @foreach (var info in Model.DateInfo)
+        {
+            <tr>
+                <td class="fecha text-nowrap">@info.Fecha.ToString(dateFormat)</td>
+                <td class="cantidadTotal">@info.TotalCapsules</td>
+                <td class="cantidadTotal">@info.TotalItems</td>
+                <td class="cantidadTotal">@info.Average.ToString("N2")</td>
+                @foreach (var itemID in items)
+                {
+                    var itemActual = info.Items.SingleOrDefault(p => p.Key == itemID);
+                    if (itemActual.Key == null)
+                    {
+                        <td></td>
+                        continue;
+                    }
+                    if (itemActual.Value == Model.Maximos[itemID])
+                    {
+                        <td class="cantidadItem text-warning"><strong>@itemActual.Value</strong></td>
+                    }
+                    else
+                    {
+                        <td class="cantidadItem">@itemActual.Value</td>
+                    }
+                }
+            </tr>
+        }
+    </tbody>
+</table>

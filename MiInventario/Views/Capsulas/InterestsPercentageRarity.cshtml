@@ -1,0 +1,60 @@
+﻿@model MiInventario.Models.InterestsPercentageRarityViewModel
+@{
+    ViewBag.Title = "Interest per Rarity";
+}
+
+<h2>@ViewBag.Title</h2>
+<div class="form-horizontal">
+    <div class="form-group">
+        <span class="col-lg-2 control-label">Grouping</span>
+        <div class="col-lg-10">
+            @Html.DropDownList("Grouping", Enum.GetValues(typeof(MiInventario.Code.DateGrouping)).Cast<MiInventario.Code.DateGrouping>().Select(x => new SelectListItem { Text = x.ToString(), Value = x.ToString(), Selected = (x==Model.Grouping) }), new { @class = "form-control input-sm" })
+            <div class="checkbox">
+                <label>
+                    @if (Model.Percentage)
+                    {
+                        <input type="checkbox" checked="checked" />
+                    }
+                    else
+                    {
+                        <input type="checkbox" />
+                    }
+                    Percentage
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+<h4 id="chartTitle"></h4>
+<div>
+    <img src="@Url.Action("InterestsPercentageRarityChart", "Capsulas", new { grouping = Model.Grouping,  percentage = Model.Percentage})" alt="@ViewBag.Title" />
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+
+        var pattern = "InterestsPercentageRarityChart?grouping=XXX&percentage=YYY";
+
+        function updateTitulo() {
+            var grp = $("select").first().val();
+            var per = $(":checkbox").first().is(':checked');
+            $("#chartTitle").text("Interest per Rarity per " + grp + " by " + (per?"Percentage":"Quantity"));
+        }
+
+        $(document).ready(function () {
+            $("select,:checkbox")
+              .change(function () {
+                  var grp = $("select").first().val();
+                  var per = $(":checkbox").first().is(':checked');
+                  var newImg = pattern.replace('XXX', grp).replace('YYY', per);
+                  $("img").attr('src', newImg);
+
+                  updateTitulo();
+              });
+
+            updateTitulo();
+        });
+
+    </script>
+}

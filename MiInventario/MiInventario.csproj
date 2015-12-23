@@ -433,6 +433,8 @@
     <Content Include="Views\Capsulas\_InterestsChartTitle.cshtml" />
     <Content Include="Views\Capsulas\InterestsDateTotal.cshtml" />
     <Content Include="Views\Capsulas\SendToUser.cshtml" />
+    <Content Include="Views\Capsulas\InterestsPercentageRarity.cshtml" />
+    <Content Include="Views\Shared\_InterestsDateTotal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Base\" />

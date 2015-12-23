@@ -32,21 +32,25 @@
                         <ul class="dropdown-menu" role="menu">
                             <li>@Html.ActionLink("View", "Index", "Capsulas")</li>
                             <li>@Html.ActionLink("Add", "Add", "Capsulas")</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Interests <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
                             <li class="divider"></li>
                             <li>@Html.ActionLink("Last Spawn", "LastSpawn", "Capsulas")</li>
-                            <li>@Html.ActionLink("Interests Capsule by Day", "InterestsDateCapsule", "Capsulas", new { grouping = MiInventario.Code.DateGrouping.Day }, null)</li>
-                            <li>@Html.ActionLink("Interests Capsule by Week", "InterestsDateCapsule", "Capsulas", new { grouping = MiInventario.Code.DateGrouping.Week }, null)</li>
-                            <li>@Html.ActionLink("Interests Capsule by Month", "InterestsDateCapsule", "Capsulas", new { grouping = MiInventario.Code.DateGrouping.Month }, null)</li>
-                            <li>@Html.ActionLink("Interests Capsule by Year", "InterestsDateCapsule", "Capsulas", new { grouping = MiInventario.Code.DateGrouping.Year }, null)</li>
-                            <li>@Html.ActionLink("Interests Capsule Total", "InterestsTotalCapsule", "Capsulas")</li>
+                            <li>@Html.ActionLink("Item Total", "InterestsTotalByItem", "Capsulas")</li>
                             <li class="divider"></li>
-                            <li>@Html.ActionLink("Interests Item by Day", "InterestsDateTotal", "Capsulas", new { @id = MiInventario.Code.DateGrouping.Day }, null)</li>
-                            <li>@Html.ActionLink("Interests Item by Week", "InterestsDateTotal", "Capsulas", new { @id = MiInventario.Code.DateGrouping.Week }, null)</li>
-                            <li>@Html.ActionLink("Interests Item by Month", "InterestsDateTotal", "Capsulas", new { @id = MiInventario.Code.DateGrouping.Month }, null)</li>
-                            <li>@Html.ActionLink("Interests Item by Year", "InterestsDateTotal", "Capsulas", new { @id = MiInventario.Code.DateGrouping.Year }, null)</li>
-                            <li>@Html.ActionLink("Interests Item Total", "InterestsTotalByItem", "Capsulas")</li>
+                            <li>@Html.ActionLink("Item by Date", "InterestsDateTotal", "Capsulas")</li>
                             <li class="divider"></li>
-                            <li>@Html.ActionLink("Interests Charts", "InterestsCharts", "Capsulas")</li>
+                            <li>@Html.ActionLink("Chart by Item-Date", "InterestsCharts", "Capsulas")</li>
+                            <li>@Html.ActionLink("Chart by Rarity-Date", "InterestsPercentageRarity", "Capsulas")</li>
+                            <li class="divider"></li>
+                            <li>@Html.ActionLink("Capsule by Day", "InterestsDateCapsule", "Capsulas", new { grouping = MiInventario.Code.DateGrouping.Day }, null)</li>
+                            <li>@Html.ActionLink("Capsule by Week", "InterestsDateCapsule", "Capsulas", new { grouping = MiInventario.Code.DateGrouping.Week }, null)</li>
+                            <li>@Html.ActionLink("Capsule by Month", "InterestsDateCapsule", "Capsulas", new { grouping = MiInventario.Code.DateGrouping.Month }, null)</li>
+                            <li>@Html.ActionLink("Capsule by Year", "InterestsDateCapsule", "Capsulas", new { grouping = MiInventario.Code.DateGrouping.Year }, null)</li>
+                            <li>@Html.ActionLink("Capsule Total", "InterestsTotalCapsule", "Capsulas")</li>
                         </ul>
                     </li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>

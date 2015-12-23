@@ -222,4 +222,10 @@ namespace MiInventario.Models
 
         public string ChartTitle { get; set; }
     }
+
+    public class InterestsPercentageRarityViewModel
+    {
+        public Code.DateGrouping Grouping { get; set; }
+        public bool Percentage { get; set; }
+    }
 }

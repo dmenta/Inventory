@@ -32,7 +32,11 @@
                 success: function (data) {
                     $("#tableContainer").html(data);
                     $("#reportTitle").text("Interest by " + grp);
-
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(ajaxOptions);
+                    alert(thrownError);
                 }
             });
         }

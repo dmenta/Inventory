@@ -249,6 +249,7 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="images\loading.gif" />
     <Content Include="images\RESO_1.png" />
     <Content Include="images\RESO_2.png" />
     <Content Include="images\RESO_3.png" />

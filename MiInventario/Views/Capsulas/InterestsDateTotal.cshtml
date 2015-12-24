@@ -3,7 +3,7 @@
     ViewBag.Title = "Interests by Date";
 }
 
-<h2 id="reportTitle">@ViewBag.Title</h2>
+<h2><span id="reportTitle">@ViewBag.Title</span> <img id="imgLoading" src='@Url.Content("~/images/loading.gif")' style="vertical-align:baseline;height: 20px;display:none" /></h2>
 <div class="form-horizontal">
     <div class="form-group">
         <span class="col-lg-2 control-label">Grouping</span>
@@ -25,7 +25,9 @@
         function updateTable() {
             var grp = $("select").first().val();
             var urlTabla = '@(Url.Action("_InterestsDateTotal", "Capsulas", null, Request.Url.Scheme))?grouping=' + grp;
-            urlTabla=urlTabla.replace(/\:[0-9]+/, '');
+            if (urlTabla.indexOf('localhost') < 0) {
+                urlTabla = urlTabla.replace(/\:[0-9]+/, '');
+            }
 
             $.ajax({
                 url: urlTabla,
@@ -38,6 +40,14 @@
         }
 
         $(document).ready(function () {
+            $(document).ajaxStart(function () {
+                $("#imgLoading").show();
+            });
+
+            $(document).ajaxStop(function () {
+                $("#imgLoading").hide();
+            });
+
             $("select")
               .change(function () {
                   updateTable();
@@ -45,6 +55,8 @@
 
             updateTable();
         });
+
+
 
     </script>
 }

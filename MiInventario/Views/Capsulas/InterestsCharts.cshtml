@@ -3,7 +3,7 @@
     ViewBag.Title = "Interests Charts";
 }
 
-<h2>Interests Charts</h2>
+<h2>Interests Charts <img id="imgLoading" src='@Url.Content("~/images/loading.gif")' style="vertical-align:baseline;height: 20px;display:none" /></h2>
 <div class="form-horizontal">
     <div class="form-group">
         <span class="col-lg-2 control-label">Grouping</span>
@@ -48,6 +48,9 @@
             var item = $("select").last().val();
             var acc = $(":checkbox").first().is(':checked');
             var urlTitulo = '@(Url.Action("_InterestsChartTitle", "Capsulas", null, Request.Url.Scheme))?grouping=' + grp + '&itemID=' + item + '&accumulative=' + (acc ? 'True' : 'False');
+            if (urlTitulo.indexOf('localhost') < 0) {
+                urlTitulo = urlTabla.replace(/\:[0-9]+/, '');
+            }
 
             $.ajax({
                 url: urlTitulo,
@@ -59,6 +62,14 @@
         }
 
         $(document).ready(function () {
+            $(document).ajaxStart(function () {
+                $("#imgLoading").show();
+            });
+
+            $(document).ajaxStop(function () {
+                $("#imgLoading").hide();
+            });
+
             $("select,:checkbox")
               .change(function () {
                   var grp = $("select").first().val();

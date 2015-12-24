@@ -49,7 +49,7 @@
             var acc = $(":checkbox").first().is(':checked');
             var urlTitulo = '@(Url.Action("_InterestsChartTitle", "Capsulas", null, Request.Url.Scheme))?grouping=' + grp + '&itemID=' + item + '&accumulative=' + (acc ? 'True' : 'False');
             if (urlTitulo.indexOf('localhost') < 0) {
-                urlTitulo = urlTabla.replace(/\:[0-9]+/, '');
+                urlTitulo = urlTitulo.replace(/\:[0-9]+/, '');
             }
 
             $.ajax({

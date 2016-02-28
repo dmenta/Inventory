@@ -196,6 +196,8 @@
     <Compile Include="Controllers\CapsulasController.cs" />
     <Compile Include="Controllers\GruposController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\InventoryController.cs" />
+    <Compile Include="Controllers\ItemsQty.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -221,6 +223,7 @@
     <Compile Include="Models\CapsulasViewModel.cs" />
     <Compile Include="Models\GrupoViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\InventoryViewModel.cs" />
     <Compile Include="Models\ItemViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reproducciones.cs">
@@ -364,6 +367,7 @@
     </Content>
     <None Include="Properties\PublishProfiles\Pato-Inventario.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\InventoryRender.js" />
     <Content Include="Scripts\itemDetail.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -436,6 +440,7 @@
     <Content Include="Views\Capsulas\SendToUser.cshtml" />
     <Content Include="Views\Capsulas\InterestsPercentageRarity.cshtml" />
     <Content Include="Views\Shared\_InterestsDateTotal.cshtml" />
+    <Content Include="Views\Inventory\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Base\" />

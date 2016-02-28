@@ -1,0 +1,153 @@
+﻿@using System.Linq
+@using MiInventario.Models
+
+@model System.Collections.Generic.IEnumerable<GroupViewModel>
+@{
+  ViewBag.Title = "Inventory";
+}
+
+<h2>@ViewBag.Title <img id="imgLoading" src='@Url.Content("~/images/loading.gif")' style="vertical-align:baseline;height: 20px;display:none" /></h2>
+<div class="form-horizontal">
+  <div class="form-group">
+    <span class="col-lg-2 control-label">Group</span>
+    <div class="col-lg-10">
+      @Html.DropDownList("Grouping", Model.Select(p => new SelectListItem() { Value = p.GroupID, Text = p.Name, Selected = p.GroupID == "G_RESOS" }), new { @id = "Groups", @class = "form-control input-sm" })
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-lg-offset-2 col-lg-10">
+      <button type="button" class="btn btn-info" id="edit">Edit</button>
+      <button type="button" class="btn btn-default" id="cancel" disabled>Cancel</button>
+      <button type="button" class="btn btn-primary" id="save" disabled>Save</button>
+    </div>
+  </div>
+</div>
+<div id="resultado">
+
+</div>
+<div class="clearfix"></div>
+<div>
+  <p class="bottomLinks">
+    @Html.ActionLink("Back to Inventory", "Index")
+  </p>
+</div>
+
+@section scripts{
+  <script src="~/bundles/InventoryRender"></script>
+  <script type="text/javascript">
+    function ShowGroups(viewing) {
+      $('#edit').prop('disabled', true);
+
+      $.ajax({
+        url: viewing?'Items':'ItemsEdit',
+        method: 'POST',
+        dataType: "json",
+        data: { groupID: $('#Groups').val() },
+        success: function (data) {
+          var nuevosItems = ''
+
+          $.each(data, function (key, group) {
+            $.each(group.Tipos, function (key, tipo) {
+              if (viewing) {
+                nuevosItems += RenderType(tipo);
+                $('#edit').prop('disabled', false);
+              }
+              else {
+                nuevosItems += RenderTypeEdit(tipo);
+              }
+            });
+          });
+
+          $('#resultado').html(nuevosItems);
+        },
+        error: function (requestObject, error, errorThrown) {
+          alert(errorThrown);
+        },
+      });
+    }
+
+    $(document).ready(function () {
+      $(document).ajaxStart(function () {
+        $("#imgLoading").show();
+      });
+
+      $(document).ajaxStop(function () {
+        $("#imgLoading").hide();
+      });
+
+      ShowGroups(true);
+
+      $('#edit').click(function () {
+        $('#Groups').prop('disabled', true);
+
+        $('#edit').prop('disabled', true);
+        $('#cancel').prop('disabled', false);
+        $('#save').prop('disabled', false);
+
+        ShowGroups(false);
+      });
+      $('#cancel').click(function () {
+        $('#Groups').prop('disabled', false);
+
+        $('#edit').prop('disabled', false);
+        $('#cancel').prop('disabled', true);
+        $('#save').prop('disabled', true);
+
+        ShowGroups(true);
+      });
+
+      $('#save').click(function () {
+        $('#Groups').prop('disabled', false);
+
+        var items = [];
+        $('.newQty').each(function (key, info) {
+          var inp = $(info);
+          var id = inp.data("itemid");
+          var oldQty = inp.data("originalqty");
+          var newQty = inp.val();
+
+          if (parseInt(oldQty) != newQty) {
+            item = { "ItemID": id, "Qty": newQty };
+            items.push(item);
+          }
+        });
+
+        if (items.length == 0) {
+          $('#edit').prop('disabled', false);
+          $('#cancel').prop('disabled', true);
+          $('#save').prop('disabled', true);
+
+          ShowGroups(true);
+          return;
+        }
+
+        $.ajax({
+          url: 'SaveNewQty',
+          method: 'POST',
+          data: JSON.stringify({ "items": items }),
+          contentType: 'application/json',
+          traditional: true,
+          success: function (data) {
+            $('#edit').prop('disabled', false);
+            $('#cancel').prop('disabled', true);
+            $('#save').prop('disabled', true);
+
+            alert(data);
+
+            ShowGroups(true);
+          },
+          error: function (requestObject, error, errorThrown) {
+            alert(errorThrown);
+          },
+        });
+      });
+
+      $('#Groups').change(function () {
+        ShowGroups(true);
+      });
+    });
+
+  </script>
+}
+
+

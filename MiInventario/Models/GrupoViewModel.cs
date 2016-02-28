@@ -17,6 +17,10 @@ namespace MiInventario.Models
     {
         public string TypeID { get; set; }
         public IEnumerable<ItemInventoryViewModel> Items { get; set; }
+
+        public int Cantidad { get; set; }
+
+        public int CantidadEnCapsulas { get; set; }
     }
 
     public class GrupoEditViewModel

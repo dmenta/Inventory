@@ -366,7 +366,7 @@ string temp = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
                     .Select(s => new
                     {
                         ItemID = s.ItemID,
-                        Nombre = s.Nombre()
+                        Nombre = s.Nombre
                     }).ToDictionary(x => x.ItemID, y => y.Nombre);
 
                 return View(model);
@@ -397,7 +397,7 @@ string temp = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
                     .Select(s => new
                     {
                         ItemID = s.ItemID,
-                        Nombre = s.Nombre()
+                        Nombre = s.Nombre
                     }).ToDictionary(x => x.ItemID, y => y.Nombre);
 
 
@@ -426,7 +426,7 @@ string temp = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
                     .Select(s => new
                     {
                         ItemID = s.ItemID,
-                        Nombre = s.Nombre()
+                        Nombre = s.Nombre
                     }).ToDictionary(x => x.ItemID, y => y.Nombre);
 
                 return View(model);
@@ -458,7 +458,7 @@ string temp = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
                     .Select(s => new
                     {
                         ItemID = s.ItemID,
-                        Nombre = s.Nombre()
+                        Nombre = s.Nombre
                     }).ToDictionary(x => x.ItemID, y => y.Nombre);
 
                 return View(capsula);

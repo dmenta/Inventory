@@ -57,7 +57,7 @@ namespace MiInventario.Controllers
 
             var typeDesc = Resources.TypesDescriptions.ResourceManager.GetString(detalle.TypeID);
 
-            var info = new { ItemID = id, Level = detalle.Level, Name = detalle.Nombre(), Rarity = detalle.Rarity, RarityName = detalle.RarityName(), TypeDescription = typeDesc };
+            var info = new { ItemID = id, Level = detalle.Level, Name = detalle.Nombre, Rarity = detalle.Rarity, RarityName = detalle.RarityName(), TypeDescription = typeDesc };
             return Json(info, JsonRequestBehavior.AllowGet);
         }
 

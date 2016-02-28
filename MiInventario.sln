@@ -1,9 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiInventario2", "MiInventario\MiInventario.csproj", "{3505688C-DEC3-42F5-B574-9B5EC39607CB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiInventario", "MiInventario\MiInventario.csproj", "{3505688C-DEC3-42F5-B574-9B5EC39607CB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{89A08925-18A3-4B13-B488-39E12D567800}"
+	ProjectSection(SolutionItems) = preProject
+		SpawnsDataMigration.sql = SpawnsDataMigration.sql
+		SpawnsTableCreation.sql = SpawnsTableCreation.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

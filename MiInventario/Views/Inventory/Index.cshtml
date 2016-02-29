@@ -135,7 +135,7 @@
       }
       else {
         $.ajax({
-          url: 'SaveNewQty',
+          url: '/Inventory/SaveNewQty',
           method: 'POST',
           data: JSON.stringify({ "items": items }),
           contentType: 'application/json',

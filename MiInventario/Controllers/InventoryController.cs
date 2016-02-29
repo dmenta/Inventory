@@ -56,6 +56,7 @@ namespace MiInventario.Controllers
         var inventario = db.Inventarios
             .Where(s => s.IdUsuario == user)
             .Select(u => new { ItemID = u.ItemID, Cantidad = u.Cantidad }).ToList();
+        double elapsed = (DateTime.Now - inicio).TotalMilliseconds;
 
         var itemsGrupos = ItemsXml
           .Where(z => (string.IsNullOrWhiteSpace(groupID) || z.GroupID == groupID) && (ignoreZeroQuantity || (inventario.Any(y => y.ItemID == z.ItemID) || enCapsulas.Any(y => y.ItemID == z.ItemID))))
@@ -71,6 +72,11 @@ namespace MiInventario.Controllers
             CantidadCapsulas = enCapsulas.SingleOrDefault(s => s.ItemID == y.ItemID) == null ? 0 : enCapsulas.Single(s => s.ItemID == y.ItemID).CantidadCapsulas
           })
           .ToList();
+
+        if (itemsGrupos.Count == 0)
+        {
+          return Json(new { Result = false }, JsonRequestBehavior.DenyGet);
+        }
 
         var grupos = itemsGrupos
           .GroupBy(d => d.GroupID)
@@ -98,9 +104,8 @@ namespace MiInventario.Controllers
               })
             })
           });
-        double elapsed = (DateTime.Now - inicio).TotalMilliseconds;
 
-        return Json(grupos, JsonRequestBehavior.DenyGet);
+        return Json(new { Result = true, Groups = grupos }, JsonRequestBehavior.DenyGet);
       }
     }
 

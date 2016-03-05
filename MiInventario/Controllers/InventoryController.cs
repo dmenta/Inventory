@@ -58,20 +58,20 @@ namespace MiInventario.Controllers {
         model.UsuarioB = usuarioB;
 
         var inventarioA = db.Inventarios
-.Where(s => s.IdUsuario == usuarioA)
-.Select(u => new ItemBasico { ItemID = u.ItemID, Cantidad = u.Cantidad }).ToList();
+                          .Where(s => s.IdUsuario == usuarioA)
+                          .Select(u => new ItemBasico { ItemID = u.ItemID, Cantidad = u.Cantidad }).ToList();
         var inventarioB = db.Inventarios
-.Where(s => s.IdUsuario == usuarioB)
-.Select(u => new ItemBasico { ItemID = u.ItemID, Cantidad = u.Cantidad }).ToList();
+                          .Where(s => s.IdUsuario == usuarioB)
+                          .Select(u => new ItemBasico { ItemID = u.ItemID, Cantidad = u.Cantidad }).ToList();
 
         var capsulasA = db.CapsulasItems
-.Where(s => s.Capsulas.IdUsuario == usuarioA)
-.GroupBy(t => t.ItemID)
-.Select(u => new ItemBasico { ItemID = u.Key, Cantidad = u.Sum(v => v.Cantidad) });
+                          .Where(s => s.Capsulas.IdUsuario == usuarioA)
+                          .GroupBy(t => t.ItemID)
+                          .Select(u => new ItemBasico { ItemID = u.Key, Cantidad = u.Sum(v => v.Cantidad) });
         var capsulasB = db.CapsulasItems
-.Where(s => s.Capsulas.IdUsuario == usuarioB)
-.GroupBy(t => t.ItemID)
-.Select(u => new ItemBasico { ItemID = u.Key, Cantidad = u.Sum(v => v.Cantidad) });
+                          .Where(s => s.Capsulas.IdUsuario == usuarioB)
+                          .GroupBy(t => t.ItemID)
+                          .Select(u => new ItemBasico { ItemID = u.Key, Cantidad = u.Sum(v => v.Cantidad) });
 
         foreach (var itemC in capsulasA) {
           var itemI = inventarioA.SingleOrDefault(f => f.ItemID == itemC.ItemID);
@@ -130,22 +130,6 @@ namespace MiInventario.Controllers {
       }
 
       return View(model);
-    }
-
-    [HttpGet]
-    public JsonResult ItemDetail(string id) {
-      if (string.IsNullOrEmpty(id)) {
-        return Json("Item invalid", JsonRequestBehavior.AllowGet);
-      }
-      var detalle = ItemsXml.SingleOrDefault(p => p.ItemID == id);
-      if (detalle == null) {
-        return Json("Item invalid", JsonRequestBehavior.AllowGet);
-      }
-
-      var typeDesc = Resources.TypesDescriptions.ResourceManager.GetString(detalle.TypeID);
-
-      var info = new { ItemID = id, Level = detalle.Level, Name = detalle.Nombre, Rarity = detalle.Rarity, RarityName = detalle.RarityName(), TypeDescription = typeDesc };
-      return Json(info, JsonRequestBehavior.AllowGet);
     }
 
     [HttpPost]

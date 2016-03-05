@@ -1,12 +1,5 @@
 ﻿@model MiInventario.Models.ItemViewModel
-@if (Model.CurrentItem.Level > 0)
-{
-    <span class="@string.Format("nivel{0}", Model.CurrentItem.Level) itemDetailPopUp" detailpopupitem="@Model.CurrentItem.ItemID">@string.Format("L{0}", Model.CurrentItem.Level)</span>
+@if (Model.CurrentItem.Level > 0) {
+  <span class="@string.Format("nivel{0}", Model.CurrentItem.Level)">@string.Format("L{0}", Model.CurrentItem.Level)</span>
 }
-<span class="@string.Format("rareza{0}", Model.CurrentItem.Rarity) itemDetailPopUp" detailPopupItem="@Model.CurrentItem.ItemID">
-    @Model.CurrentItem.Nombre
-    @*@if (Model.CurrentItem.Level == 0)
-        {
-            <text>@Model.CurrentItem.RarityName()</text>
-        }*@
-</span>
+<span class="@string.Format("rareza{0}", Model.CurrentItem.Rarity)">@Model.CurrentItem.Nombre</span>

@@ -6,24 +6,33 @@
   ViewBag.Title = "Inventory Manage";
 }
 
-<h2>@ViewBag.Title <img id="imgLoading" src='@Url.Content("~/images/loading.gif")' style="vertical-align:baseline;height: 20px;display:none" /></h2>
-<div class="form-horizontal">
+<div class="col-lg-12">
+  <h2>@ViewBag.Title <img id="imgLoading" src='@Url.Content("~/images/loading.gif")' style="vertical-align:baseline;height: 20px;display:none" /></h2>
+</div>
+<div class="form-horizontal col-lg-12">
   <div class="form-group">
-    <span class="col-lg-1 control-label">Group</span>
-    <div class="col-lg-11">
+    <div class="col-lg-12">
       @Html.DropDownList("Grouping", Model.Groups.Select(p => new SelectListItem() { Value = p.Key, Text = p.Value, Selected = false }), new { @id = "Groups", @class = "form-control input-sm" })
     </div>
   </div>
   <div class="form-group">
-    <div class="col-lg-offset-1 col-lg-10">
-      <button type="button" class="btn btn-primary" id="edit">Edit</button>
-      <button type="button" class="btn btn-default" style="display:none" id="cancel" disabled>Cancel</button>
-      <button type="button" class="btn btn-primary" style="display:none" id="save" disabled>Save</button>
+    <div class="col-lg-11">
+      <button type="button" class="btn btn-primary edit">Edit</button>
+      <button type="button" class="btn btn-default cancel edition" style="display:none" disabled>Cancel</button>
+      <button type="button" class="btn btn-primary save edition" style="display:none" disabled>Save</button>
     </div>
   </div>
 </div>
 <div id="resultado"></div>
-
+<div class="form-horizontal col-lg-12">
+  <div class="form-group">
+    <div class="col-lg-12">
+      <button type="button" class="btn btn-primary edit">Edit</button>
+      <button type="button" class="btn btn-default cancel edition" style="display:none" disabled>Cancel</button>
+      <button type="button" class="btn btn-primary save edition" style="display:none" disabled>Save</button>
+    </div>
+  </div>
+</div>
 <div class="clearfix"></div>
 
 @section scripts{
@@ -86,33 +95,32 @@
 
     function SetDisabled() {
       $('#Groups').prop('disabled', true);
-      $('#edit').prop('disabled', true);
-      $('#cancel').prop('disabled', true);
-      $('#save').prop('disabled', true);
+      $('.edit').prop('disabled', true);
+      $('.edition').prop('disabled', true);
     }
 
     function SetViewing() {
       $('#Groups').prop('disabled', false);
-      $('#edit').prop('disabled', false);
-      $('#edit').show();
-      $('#cancel').hide();
-      $('#save').hide();
+      $('.edit').prop('disabled', false).show();
+      $('.edition').hide();
     }
 
     function SetEditing() {
       $('#Groups').prop('disabled', true);
-      $('#edit').prop('disabled', true);
-      $('#edit').hide();
-      $('#cancel').prop('disabled', false);
-      $('#cancel').show();
-      $('#save').prop('disabled', false);
-      $('#save').show();
+      $('.edit').prop('disabled', true).hide();
+      $('.edition').prop('disabled', false).show();
     }
 
     function InitializeState() {
       var groupID = '@Model.GroupID';
-      $('#Groups').val(groupID);
-      ChangeState(@Json.Encode(Model.Editing));
+      var groupSel = $('#Groups');
+      groupSel.val(groupID);
+
+      var data = { groupID: groupID, groupText: $("option:selected", groupSel).text(), editing: @Json.Encode(Model.Editing) };
+      SetTitle(data.groupText, data.editing);
+      history.replaceState(data, document.title, '/Inventory/Manage/' + data.groupID + '?editing=' + data.editing.toString());
+
+      ShowGroups(@Json.Encode(Model.Editing));
     }
 
     function ChangeState(editing) {
@@ -140,14 +148,14 @@
 
       InitializeState();
 
-      $('#edit').click(function () {
+      $('.edit').click(function () {
         ChangeState(true);
       });
-      $('#cancel').click(function () {
+      $('.cancel').click(function () {
         ChangeState(false);
       });
 
-      $('#save').click(function () {
+      $('.save').click(function () {
         SetDisabled();
 
         var items = [];

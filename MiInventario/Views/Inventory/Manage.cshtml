@@ -1,0 +1,194 @@
+﻿@using System.Linq
+@using MiInventario.Models
+
+@model MiInventario.Models.InventoryManageViewModel
+@{
+  ViewBag.Title = "Inventory Manage";
+}
+
+<h2>@ViewBag.Title <img id="imgLoading" src='@Url.Content("~/images/loading.gif")' style="vertical-align:baseline;height: 20px;display:none" /></h2>
+<div class="form-horizontal">
+  <div class="form-group">
+    <span class="col-lg-1 control-label">Group</span>
+    <div class="col-lg-11">
+      @Html.DropDownList("Grouping", Model.Groups.Select(p => new SelectListItem() { Value = p.Key, Text = p.Value, Selected = false }), new { @id = "Groups", @class = "form-control input-sm" })
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-lg-offset-1 col-lg-10">
+      <button type="button" class="btn btn-primary" id="edit">Edit</button>
+      <button type="button" class="btn btn-default" style="display:none" id="cancel" disabled>Cancel</button>
+      <button type="button" class="btn btn-primary" style="display:none" id="save" disabled>Save</button>
+    </div>
+  </div>
+</div>
+<div id="resultado"></div>
+
+<div class="clearfix"></div>
+
+@section scripts{
+  <script src="~/bundles/InventoryRender"></script>
+  <script type="text/javascript">
+    function SetHistory(editing) {
+      event.preventDefault();
+      var groupSel = $('#Groups');
+      var data = { groupID: groupSel.val(), groupText: $("option:selected", groupSel).text(), editing: editing };
+
+      history.pushState(data, document.title, '/Inventory/Manage/' + data.groupID + '?editing=' + editing.toString());
+      SetTitle(data.groupText, data.editing);
+    }
+
+    function SetTitle(groupText, editing) {
+      document.title = '@ViewBag.Title ' + groupText + (editing ? ' [editing]' : '');
+    }
+
+    function ShowGroups(editing) {
+      SetDisabled();
+
+      $.ajax({
+        url: editing ? '/Inventory/ItemsEdit' : '/Inventory/Items',
+        method: 'POST',
+        dataType: "json",
+        data: { groupID: $('#Groups').val() },
+        success: function (data) {
+          var nuevosItems = ''
+
+          if (!data.Result) {
+            $('#resultado').html('<div class="col-lg-6 alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">×</button>There are no items in this group</div>');
+          }
+          else {
+            $.each(data.Groups, function (key, group) {
+              $.each(group.Types, function (key, type) {
+                if (editing) {
+                  nuevosItems += RenderTypeEdit(type);
+                }
+                else {
+                  nuevosItems += RenderType(type);
+                }
+              });
+            });
+
+            $('#resultado').html(nuevosItems);
+          }
+
+          if (editing) {
+            SetEditing();
+          }
+          else {
+            SetViewing();
+          }
+        },
+        error: function (requestObject, error, errorThrown) {
+          alert(errorThrown);
+        },
+      });
+    }
+
+    function SetDisabled() {
+      $('#Groups').prop('disabled', true);
+      $('#edit').prop('disabled', true);
+      $('#cancel').prop('disabled', true);
+      $('#save').prop('disabled', true);
+    }
+
+    function SetViewing() {
+      $('#Groups').prop('disabled', false);
+      $('#edit').prop('disabled', false);
+      $('#edit').show();
+      $('#cancel').hide();
+      $('#save').hide();
+    }
+
+    function SetEditing() {
+      $('#Groups').prop('disabled', true);
+      $('#edit').prop('disabled', true);
+      $('#edit').hide();
+      $('#cancel').prop('disabled', false);
+      $('#cancel').show();
+      $('#save').prop('disabled', false);
+      $('#save').show();
+    }
+
+    function InitializeState() {
+      var groupID = '@Model.GroupID';
+      $('#Groups').val(groupID);
+      ChangeState(@Json.Encode(Model.Editing));
+    }
+
+    function ChangeState(editing) {
+      ShowGroups(editing);
+      SetHistory(editing);
+    }
+
+    $(document).ready(function () {
+      $(document).ajaxStart(function () {
+        $("#imgLoading").show();
+      });
+
+      $(document).ajaxStop(function () {
+        $("#imgLoading").hide();
+      });
+
+      $(window).bind('popstate', function (e) {
+        var newState = e.originalEvent.state;
+        if (newState != null) {
+          SetTitle(newState.groupText, newState.editing);
+          $('#Groups').val(newState.groupID);
+          ShowGroups(newState.editing);
+        }
+      });
+
+      InitializeState();
+
+      $('#edit').click(function () {
+        ChangeState(true);
+      });
+      $('#cancel').click(function () {
+        ChangeState(false);
+      });
+
+      $('#save').click(function () {
+        SetDisabled();
+
+        var items = [];
+        $('.newQty').each(function (key, info) {
+          var inp = $(info);
+          var id = inp.data("itemid");
+          var oldQty = inp.data("originalqty");
+          var newQty = inp.val();
+
+          if (parseInt(oldQty) != newQty) {
+            item = { "ItemID": id, "Qty": newQty };
+            items.push(item);
+          }
+        });
+
+        if (items.length == 0) {
+          ChangeState(false);
+        }
+        else {
+          $.ajax({
+            url: '/Inventory/SaveNewQty',
+            method: 'POST',
+            data: JSON.stringify({ "items": items }),
+            contentType: 'application/json',
+            traditional: true,
+            success: function (data) {
+              ChangeState(false);
+            },
+            error: function (requestObject, error, errorThrown) {
+              alert(errorThrown);
+            },
+          });
+        }
+      });
+
+      $('#Groups').change(function () {
+        ChangeState(false);
+      });
+    });
+
+  </script>
+}
+
+

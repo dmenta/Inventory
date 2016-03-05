@@ -16,7 +16,7 @@ namespace MiInventario
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Grupos", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Inventory", action = "Index", id = UrlParameter.Optional }
             );
         }
     }

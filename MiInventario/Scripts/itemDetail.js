@@ -7,7 +7,7 @@
         dialog.hide();
         $.ajax({
             dataType: "json",
-            url: '/Grupos/ItemDetail',
+            url: '/Inventory/ItemDetail',
             data: 'id=' + $(this).attr('detailPopupItem'),
             success: function (result) {
                 $("#dialog").css({ top: posY + 'px', left: posX + 'px', position: 'absolute' });

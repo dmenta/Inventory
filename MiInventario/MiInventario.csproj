@@ -193,11 +193,11 @@
     </Compile>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\Capsules2Controller.cs" />
     <Compile Include="Controllers\CapsulasController.cs" />
-    <Compile Include="Controllers\GruposController.cs" />
+    <Compile Include="Models\CapsuleModel.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InventoryController.cs" />
-    <Compile Include="Controllers\ItemsQty.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -221,7 +221,6 @@
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CapsulasViewModel.cs" />
-    <Compile Include="Models\GrupoViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\InventoryViewModel.cs" />
     <Compile Include="Models\ItemViewModel.cs" />
@@ -367,6 +366,7 @@
     </Content>
     <None Include="Properties\PublishProfiles\Pato-Inventario.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\History.js" />
     <Content Include="Scripts\InventoryRender.js" />
     <Content Include="Scripts\itemDetail.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -420,16 +420,11 @@
     <Content Include="Views\Capsulas\List.cshtml" />
     <Content Include="Views\Capsulas\LogInterests.cshtml" />
     <Content Include="Views\Capsulas\ManageItems.cshtml" />
-    <Content Include="Views\Grupos\Edit.cshtml" />
-    <Content Include="Views\Grupos\Index.cshtml" />
-    <Content Include="Views\Grupos\List.cshtml" />
-    <Content Include="Views\Grupos\ViewAll.cshtml" />
-    <Content Include="Views\Shared\_ShowItems.cshtml" />
     <Content Include="Views\Shared\_ShowItemsCapsule.cshtml" />
     <Content Include="Views\Capsulas\Edit.cshtml" />
     <Content Include="Views\Capsulas\Unload.cshtml" />
     <Content Include="Views\Capsulas\Load.cshtml" />
-    <Content Include="Views\Grupos\Difference.cshtml" />
+    <Content Include="Views\Inventory\Difference.cshtml" />
     <Content Include="Views\Shared\_ShowItemsDifference.cshtml" />
     <Content Include="Views\Shared\_ItemDescription.cshtml" />
     <Content Include="Views\Capsulas\InterestsDateCapsule.cshtml" />
@@ -440,6 +435,8 @@
     <Content Include="Views\Capsulas\SendToUser.cshtml" />
     <Content Include="Views\Capsulas\InterestsPercentageRarity.cshtml" />
     <Content Include="Views\Shared\_InterestsDateTotal.cshtml" />
+    <Content Include="Views\Inventory\Manage.cshtml" />
+    <Content Include="Views\Capsules2\Manage.cshtml" />
     <Content Include="Views\Inventory\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>

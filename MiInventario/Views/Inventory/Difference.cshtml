@@ -5,9 +5,9 @@
 
 <h2>Difference</h2>
 <h3>@MiInventario.Utils.GetUsernamFromEmail(Model.UsuarioA) - @MiInventario.Utils.GetUsernamFromEmail(@Model.UsuarioB)</h3>
-@foreach (MiInventario.Models.GrupoDifferenceViewModel grupo in Model.Grupos) {
-  foreach (MiInventario.Models.TipoDifferenceViewModel tipo in grupo.Tipos) {
-    @Html.Partial("_ShowItemsDifference", tipo.Items)
+@foreach (MiInventario.Models.GroupDifferenceViewModel group in Model.Groups) {
+  foreach (MiInventario.Models.TypeDifferenceViewModel type in group.Types) {
+    @Html.Partial("_ShowItemsDifference", type.Items)
   }
 }
 <div class="clearfix"></div>

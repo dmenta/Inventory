@@ -4,12 +4,12 @@
 }
 
 <h2>Total Interests</h2>
-@foreach (string grupo in Model.Select(p => p.CurrentItem.GroupID).Distinct())
+@foreach (string group in Model.Select(p => p.CurrentItem.GroupID).Distinct())
 {
-    <div class="grupo">
-        @foreach (string tipo in Model.Where(p => p.CurrentItem.GroupID == grupo).Select(q => q.CurrentItem.TypeID).Distinct())
+    <div class="group">
+        @foreach (string type in Model.Where(p => p.CurrentItem.GroupID == group).Select(q => q.CurrentItem.TypeID).Distinct())
         {
-            @Html.Partial("_ShowItemsCapsule", Model.Where(p => p.CurrentItem.TypeID == tipo))
+            @Html.Partial("_ShowItemsCapsule", Model.Where(p => p.CurrentItem.TypeID == type))
         }
     </div>
 }

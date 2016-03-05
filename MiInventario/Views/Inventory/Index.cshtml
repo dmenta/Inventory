@@ -1,161 +1,56 @@
-﻿@using System.Linq
-@using MiInventario.Models
-
-@model System.Collections.Generic.IEnumerable<GroupViewModel>
+﻿@model IEnumerable<MiInventario.Models.GroupViewModel>
 @{
-  ViewBag.Title = "Inventory";
+  ViewBag.Title = "Inventario";
 }
 
-<h2>@ViewBag.Title <img id="imgLoading" src='@Url.Content("~/images/loading.gif")' style="vertical-align:baseline;height: 20px;display:none" /></h2>
-<div class="form-horizontal">
-  <div class="form-group">
-    <span class="col-lg-1 control-label">Group</span>
-    <div class="col-lg-11">
-      @Html.DropDownList("Grouping", Model.Select(p => new SelectListItem() { Value = p.GroupID, Text = p.Name, Selected = p.GroupID == "G_RESOS" }), new { @id = "Groups", @class = "form-control input-sm" })
+<h2>Inventory</h2>
+@if (Model.Sum(p => p.Total + p.TotalCapsulas) > 2000)
+{
+    <div class="alert alert-dismissible alert-danger">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        La cantidad total de items supera lo permitido (2000).
     </div>
-  </div>
-  <div class="form-group">
-    <div class="col-lg-offset-1 col-lg-10">
-      <button type="button" class="btn btn-primary" id="edit">Edit</button>
-      <button type="button" class="btn btn-default" style="display:none" id="cancel" disabled>Cancel</button>
-      <button type="button" class="btn btn-primary" style="display:none" id="save" disabled>Save</button>
-    </div>
-  </div>
+}
+<div class="col-lg-5 col-md-6 col-sm-7 col-xs-12">
+  <table class="table table-condensed table-striped">
+    <colgroup>
+      <col class="col-lg-6 col-md-6 col-sm-6 col-xs-6" />
+      <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
+      <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
+      <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Total</th>
+        <th>Caps</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var group in Model) {
+        <tr>
+          <td>@Html.ActionLink(Resources.Groups.ResourceManager.GetString(group.GroupID), "Manage", new { @id = group.GroupID, editing = false})</td>
+          <td class="cantidadItem">
+            @group.Total
+          </td>
+          <td class="cantidadCapsula">
+            (@group.TotalCapsulas)
+          </td>
+            <td class="text-center">@Html.ActionLink("Edit", "Manage", new { @id = group.GroupID, editing = true })</td>
+        </tr>
+      }
+      <tr>
+        <td>@Html.ActionLink(Resources.Groups.G_ALL, "Manage", new { @id = "G_ALL", editing = false })</td>
+        <td class="cantidadItem">
+          @Model.Sum(p => p.Total + p.TotalCapsulas)
+        </td>
+        <td class="cantidadCapsula">
+          (@Model.Sum(p => p.TotalCapsulas))
+        </td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-<div id="resultado"></div>
-
 <div class="clearfix"></div>
-
-@section scripts{
-  <script src="~/bundles/InventoryRender"></script>
-  <script type="text/javascript">
-  function ShowGroups(viewing) {
-    SetDisabled();
-
-    $.ajax({
-      url: viewing ? '/Inventory/Items' : '/Inventory/ItemsEdit',
-      method: 'POST',
-      dataType: "json",
-      data: { groupID: $('#Groups').val() },
-      success: function (data) {
-        var nuevosItems = ''
-
-        if (!data.Result) {
-          $('#resultado').html('<div class="col-lg-6 alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">×</button>There are no items in this group</div>');
-        }
-        else {
-          $.each(data.Groups, function (key, group) {
-            $.each(group.Tipos, function (key, tipo) {
-              if (viewing) {
-                nuevosItems += RenderType(tipo);
-              }
-              else {
-                nuevosItems += RenderTypeEdit(tipo);
-              }
-            });
-          });
-
-          $('#resultado').html(nuevosItems);
-        }
-
-        if (viewing) {
-          SetViewing();
-        }
-        else {
-          SetEditing();
-        }
-      },
-      error: function (requestObject, error, errorThrown) {
-        alert(errorThrown);
-      },
-    });
-  }
-
-  function SetDisabled() {
-    $('#Groups').prop('disabled', true);
-    $('#edit').prop('disabled', true);
-    $('#cancel').prop('disabled', true);
-    $('#save').prop('disabled', true);
-  }
-
-  function SetViewing() {
-    $('#Groups').prop('disabled', false);
-    $('#edit').prop('disabled', false);
-    $('#edit').show();
-    $('#cancel').hide();
-    $('#save').hide();
-  }
-
-  function SetEditing() {
-    $('#Groups').prop('disabled', true);
-    $('#edit').prop('disabled', true);
-    $('#edit').hide();
-    $('#cancel').prop('disabled', false);
-    $('#cancel').show();
-    $('#save').prop('disabled', false);
-    $('#save').show();
-  }
-
-  $(document).ready(function () {
-    $(document).ajaxStart(function () {
-      $("#imgLoading").show();
-    });
-
-    $(document).ajaxStop(function () {
-      $("#imgLoading").hide();
-    });
-
-    ShowGroups(true);
-
-    $('#edit').click(function () {
-      ShowGroups(false);
-    });
-    $('#cancel').click(function () {
-      ShowGroups(true);
-    });
-
-    $('#save').click(function () {
-      SetDisabled();
-
-      var items = [];
-      $('.newQty').each(function (key, info) {
-        var inp = $(info);
-        var id = inp.data("itemid");
-        var oldQty = inp.data("originalqty");
-        var newQty = inp.val();
-
-        if (parseInt(oldQty) != newQty) {
-          item = { "ItemID": id, "Qty": newQty };
-          items.push(item);
-        }
-      });
-
-      if (items.length == 0) {
-        ShowGroups(true);
-      }
-      else {
-        $.ajax({
-          url: '/Inventory/SaveNewQty',
-          method: 'POST',
-          data: JSON.stringify({ "items": items }),
-          contentType: 'application/json',
-          traditional: true,
-          success: function (data) {
-            ShowGroups(true);
-          },
-          error: function (requestObject, error, errorThrown) {
-            alert(errorThrown);
-          },
-        });
-      }
-    });
-
-    $('#Groups').change(function () {
-      ShowGroups(true);
-    });
-  });
-
-  </script>
-}
-
-

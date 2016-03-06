@@ -1,4 +1,4 @@
-﻿@model MiInventario.Models.CapsulasSendToViewModel
+﻿@model MiInventario.Models.Capsules.SendToViewModel
 @{
     ViewBag.Title = Model.IdCapsula;
 }
@@ -14,7 +14,7 @@
         @Html.Partial("_ItemDescription", Model.ItemEncapsulado)
     }] to user @Model.UserID?
 </p>
-@using (Html.BeginForm("SendToUser", "Capsulas", FormMethod.Post, new { @class = "form-horizontal" }))
+@using (Html.BeginForm("SendToUser", "Capsules", FormMethod.Post, new { @class = "form-horizontal" }))
 {
     <fieldset>
         <div class="form-group">

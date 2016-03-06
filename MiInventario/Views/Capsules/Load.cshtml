@@ -1,4 +1,4 @@
-﻿@model MiInventario.Models.CapsulaLoadViewModel
+﻿@model MiInventario.Models.Capsules.LoadViewModel
 @{
     ViewBag.Title = "Load Items";
 }
@@ -20,7 +20,7 @@ else
                                         .Select(x => x.ErrorMessage))
     </div>
 }
-@using (Html.BeginForm("Load", "Capsulas", FormMethod.Post, new { @class = "form-horizontal" }))
+@using (Html.BeginForm("Load", "Capsules", FormMethod.Post, new { @class = "form-horizontal" }))
 {
     @Html.HiddenFor(model => model.IdCapsula)
     @Html.HiddenFor(model => model.Total)
@@ -38,7 +38,7 @@ else
                     <th>Item</th>
                     <th>Qty</th>
                     <th>Caps.</th>
-                    <th>Unload</th>
+                    <th>Load</th>
                 </tr>
             </thead>
             <tbody>

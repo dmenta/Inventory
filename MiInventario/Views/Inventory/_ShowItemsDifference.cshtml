@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MiInventario.Models.ItemDifferenceViewModel>
+﻿@model IEnumerable<MiInventario.Models.Inventory.ItemDifferenceViewModel>
 @if (Model.Any(p => p.DiferenciaA > 0 || p.DiferenciaB > 0))
 {
     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
@@ -20,7 +20,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (MiInventario.Models.ItemDifferenceViewModel item in Model.Where(p => p.DiferenciaA > 0 || p.DiferenciaB > 0))
+                @foreach (MiInventario.Models.Inventory.ItemDifferenceViewModel item in Model.Where(p => p.DiferenciaA > 0 || p.DiferenciaB > 0))
                 {
                     <tr>
                         <td class="nombre">

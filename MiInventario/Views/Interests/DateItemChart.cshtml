@@ -1,4 +1,4 @@
-﻿@model MiInventario.Models.CapsulasInterestsByDateViewModel
+﻿@model MiInventario.Models.Interests.ByDateViewModel
 @{
     string temp = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
 <Chart _Template_=""All"" BackColor=""#272B30"" 
@@ -51,7 +51,7 @@
             yValues: Model.DateInfo.Select(p => p.TotalItems).ToArray())
         .AddSeries(
         chartType: "Column",
-            name: "Capsulas",
+            name: "Capsules",
             xValue: Model.DateInfo.Select(p => p.Fecha.ToString(dateFormat)).ToArray(),
             yValues: Model.DateInfo.Select(p => p.TotalCapsules).ToArray())
         .Write("png");

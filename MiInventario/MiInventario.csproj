@@ -193,8 +193,10 @@
     </Compile>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
-    <Compile Include="Controllers\Capsules2Controller.cs" />
-    <Compile Include="Controllers\CapsulasController.cs" />
+    <Compile Include="Controllers\CapsulesController.cs" />
+    <Compile Include="Controllers\InterestsController.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Models\CapsuleModel.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InventoryController.cs" />
@@ -220,8 +222,9 @@
       <DependentUpon>Modelo.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\CapsulasViewModel.cs" />
+    <Compile Include="Models\CapsulesViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\InterestViewModel.cs" />
     <Compile Include="Models\InventoryViewModel.cs" />
     <Compile Include="Models\ItemViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -407,34 +410,33 @@
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Capsulas\Add.cshtml" />
-    <Content Include="Views\Capsulas\AddItem.cshtml" />
-    <Content Include="Views\Capsulas\Delete.cshtml" />
-    <Content Include="Views\Capsulas\DeleteItem.cshtml" />
-    <Content Include="Views\Capsulas\Index.cshtml" />
-    <Content Include="Views\Capsulas\InterestsTotalByItem.cshtml" />
-    <Content Include="Views\Capsulas\InterestsTotalCapsule.cshtml" />
-    <Content Include="Views\Capsulas\LastSpawn.cshtml" />
-    <Content Include="Views\Capsulas\List.cshtml" />
-    <Content Include="Views\Capsulas\LogInterests.cshtml" />
-    <Content Include="Views\Capsulas\ManageItems.cshtml" />
+    <Content Include="Views\Capsules\Add.cshtml" />
+    <Content Include="Views\Capsules\AddItem.cshtml" />
+    <Content Include="Views\Capsules\Delete.cshtml" />
+    <Content Include="Views\Capsules\DeleteItem.cshtml" />
+    <Content Include="Views\Capsules\Index.cshtml" />
+    <Content Include="Views\Interests\TotalByItem.cshtml" />
+    <Content Include="Views\Interests\TotalCapsule.cshtml" />
+    <Content Include="Views\Interests\LastSpawn.cshtml" />
+    <Content Include="Views\Capsules\List.cshtml" />
+    <Content Include="Views\Capsules\LogInterests.cshtml" />
+    <Content Include="Views\Capsules\ManageItems.cshtml" />
     <Content Include="Views\Shared\_ShowItemsCapsule.cshtml" />
-    <Content Include="Views\Capsulas\Edit.cshtml" />
-    <Content Include="Views\Capsulas\Unload.cshtml" />
-    <Content Include="Views\Capsulas\Load.cshtml" />
+    <Content Include="Views\Capsules\Edit.cshtml" />
+    <Content Include="Views\Capsules\Unload.cshtml" />
+    <Content Include="Views\Capsules\Load.cshtml" />
     <Content Include="Views\Inventory\Difference.cshtml" />
-    <Content Include="Views\Shared\_ShowItemsDifference.cshtml" />
+    <Content Include="Views\Inventory\_ShowItemsDifference.cshtml" />
     <Content Include="Views\Shared\_ItemDescription.cshtml" />
-    <Content Include="Views\Capsulas\InterestsDateCapsule.cshtml" />
-    <Content Include="Views\Capsulas\InterestsDateItemChart.cshtml" />
-    <Content Include="Views\Capsulas\InterestsCharts.cshtml" />
-    <Content Include="Views\Capsulas\_InterestsChartTitle.cshtml" />
-    <Content Include="Views\Capsulas\InterestsDateTotal.cshtml" />
-    <Content Include="Views\Capsulas\SendToUser.cshtml" />
-    <Content Include="Views\Capsulas\InterestsPercentageRarity.cshtml" />
-    <Content Include="Views\Shared\_InterestsDateTotal.cshtml" />
+    <Content Include="Views\Interests\DateCapsule.cshtml" />
+    <Content Include="Views\Interests\DateItemChart.cshtml" />
+    <Content Include="Views\Interests\DateCharts.cshtml" />
+    <Content Include="Views\Interests\_ChartTitle.cshtml" />
+    <Content Include="Views\Interests\DateTotal.cshtml" />
+    <Content Include="Views\Capsules\SendToUser.cshtml" />
+    <Content Include="Views\Interests\PercentageRarity.cshtml" />
+    <Content Include="Views\Interests\_DateTotal.cshtml" />
     <Content Include="Views\Inventory\Manage.cshtml" />
-    <Content Include="Views\Capsules2\Manage.cshtml" />
     <Content Include="Views\Inventory\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>

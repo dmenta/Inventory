@@ -1,4 +1,4 @@
-﻿using MiInventario.Models;
+﻿using MiInventario.Models.Inventory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -114,7 +114,7 @@ namespace MiInventario.Controllers {
       Dictionary<string, string> groups = GroupsXml.Select(p => new { GroupID = p.GroupID, Name = Resources.Groups.ResourceManager.GetString(p.GroupID) }).ToDictionary(p => p.GroupID, q => q.Name);
       groups.Add(GroupIDAll, Resources.Groups.ResourceManager.GetString(GroupIDAll));
 
-      var model = new InventoryManageViewModel { Groups = groups };
+      var model = new ManageViewModel { Groups = groups };
       if (!string.IsNullOrEmpty(id)) {
         if (groups.ContainsKey(id)) {
           model.GroupID = id;

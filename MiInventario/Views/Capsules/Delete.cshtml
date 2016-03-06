@@ -1,10 +1,10 @@
-﻿@model MiInventario.Models.CapsulasDeleteViewModel
+﻿@model MiInventario.Models.Capsules.DeleteViewModel
 @{
   ViewBag.Title = Model.IdCapsula;
 }
 
 <h2>Delete @Model.IdCapsula (@Model.Total)</h2>
-@using (Html.BeginForm("Delete", "Capsulas", FormMethod.Post, new { @class = "form-horizontal" })) {
+@using (Html.BeginForm("Delete", "Capsules", FormMethod.Post, new { @class = "form-horizontal" })) {
   <fieldset>
     <div class="form-group">
       <div class="col-lg-10 col-lg-offset-2">

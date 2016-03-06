@@ -1,4 +1,4 @@
-﻿@model MiInventario.Models.CapsulasDeleteItemViewModel
+﻿@model MiInventario.Models.Capsules.DeleteItemViewModel
 @{
   ViewBag.Title = Model.IdCapsula;
 }
@@ -10,7 +10,7 @@
   </p>
 }
 
-@using (Html.BeginForm("DeleteItem", "Capsulas", FormMethod.Post)) {
+@using (Html.BeginForm("DeleteItem", "Capsules", FormMethod.Post)) {
   @Html.HiddenFor(model => model.IdCapsula)
   @Html.HiddenFor(model => model.Item.CurrentItem.ItemID)
   <p>

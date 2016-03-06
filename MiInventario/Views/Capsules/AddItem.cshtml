@@ -1,4 +1,4 @@
-﻿@model MiInventario.Models.CapsulasAddItemViewModel
+﻿@model MiInventario.Models.Capsules.AddItemViewModel
 @{
   ViewBag.Title = Model.IdCapsula;
 }
@@ -15,7 +15,7 @@
     }
 }
 
-@using (Html.BeginForm("AddItem", "Capsulas", FormMethod.Post, new { @class = "form-horizontal" })) {
+@using (Html.BeginForm("AddItem", "Capsules", FormMethod.Post, new { @class = "form-horizontal" })) {
   <fieldset>
     @Html.HiddenFor(model => model.IdCapsula)
     <div class="form-group">

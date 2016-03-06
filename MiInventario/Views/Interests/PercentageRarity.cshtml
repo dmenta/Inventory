@@ -1,4 +1,4 @@
-﻿@model MiInventario.Models.InterestsPercentageRarityViewModel
+﻿@model MiInventario.Models.Interests.PercentageRarityViewModel
 @{
     ViewBag.Title = "Interest per Rarity";
 }
@@ -28,13 +28,13 @@
 <hr />
 <h4 id="chartTitle"></h4>
 <div>
-    <img src="@Url.Action("InterestsPercentageRarityChart", "Capsulas", new { grouping = Model.Grouping,  percentage = Model.Percentage})" alt="@ViewBag.Title" />
+    <img src="@Url.Action("PercentageRarityChart", "Interests", new { grouping = Model.Grouping, percentage = Model.Percentage })" alt="@ViewBag.Title" />
 </div>
 
 @section scripts{
     <script type="text/javascript">
 
-        var pattern = "InterestsPercentageRarityChart?grouping=XXX&percentage=YYY";
+        var pattern = "PercentageRarityChart?grouping=XXX&percentage=YYY";
 
         function updateTitulo() {
             var grp = $("select").first().val();

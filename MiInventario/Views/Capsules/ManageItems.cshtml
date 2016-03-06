@@ -1,4 +1,4 @@
-﻿@model MiInventario.Models.CapsulasManageViewModel
+﻿@model MiInventario.Models.Capsules.ManageViewModel
 @{
     ViewBag.Title = "Manage Items";
 }
@@ -12,7 +12,7 @@ else
     <h3>@Model.Descripcion [@Model.IdCapsula] (@Model.Total)</h3>
 }
 
-@using (Html.BeginForm("ManageItems", "Capsulas", FormMethod.Post, new { @class = "form-horizontal" }))
+@using (Html.BeginForm("ManageItems", "Capsules", FormMethod.Post, new { @class = "form-horizontal" }))
 {
     @Html.HiddenFor(model => model.IdCapsula)
 

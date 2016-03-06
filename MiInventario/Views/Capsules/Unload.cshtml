@@ -1,4 +1,4 @@
-﻿@model MiInventario.Models.CapsulaUnloadViewModel
+﻿@model MiInventario.Models.Capsules.UnloadViewModel
 @{
     ViewBag.Title = "Unload Items";
 }
@@ -21,7 +21,7 @@ else
                                         .Select(x => x.ErrorMessage))
     </div>
 }
-@using (Html.BeginForm("Unload", "Capsulas", FormMethod.Post, new { @class = "form-horizontal" }))
+@using (Html.BeginForm("Unload", "Capsules", FormMethod.Post, new { @class = "form-horizontal" }))
 {
     @Html.HiddenFor(model => model.IdCapsula)
     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">

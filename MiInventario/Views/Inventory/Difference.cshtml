@@ -1,12 +1,12 @@
-﻿@model MiInventario.Models.DifferenceViewModel
+﻿@model MiInventario.Models.Inventory.DifferenceViewModel
 @{
   ViewBag.Title = "Difference";
 }
 
 <h2>Difference</h2>
 <h3>@MiInventario.Utils.GetUsernamFromEmail(Model.UsuarioA) - @MiInventario.Utils.GetUsernamFromEmail(@Model.UsuarioB)</h3>
-@foreach (MiInventario.Models.GroupDifferenceViewModel group in Model.Groups) {
-  foreach (MiInventario.Models.TypeDifferenceViewModel type in group.Types) {
+@foreach (MiInventario.Models.Inventory.GroupDifferenceViewModel group in Model.Groups) {
+  foreach (MiInventario.Models.Inventory.TypeDifferenceViewModel type in group.Types) {
     @Html.Partial("_ShowItemsDifference", type.Items)
   }
 }

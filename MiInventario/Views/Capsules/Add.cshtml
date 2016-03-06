@@ -1,4 +1,4 @@
-﻿@model MiInventario.Models.CapsulasCreateViewModel
+﻿@model MiInventario.Models.Capsules.CreateViewModel
 @{
     ViewBag.Title = "Add";
 }
@@ -15,7 +15,7 @@
     }
 }
 
-@using (Html.BeginForm("Add", "Capsulas", FormMethod.Post, new { @class = "form-horizontal" }))
+@using (Html.BeginForm("Add", "Capsules", FormMethod.Post, new { @class = "form-horizontal" }))
 {
     <fieldset>
         <div class="form-group">

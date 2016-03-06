@@ -88,4 +88,9 @@ namespace MiInventario.Models.Interests {
     public Code.DateGrouping Grouping { get; set; }
     public bool Percentage { get; set; }
   }
+
+  public class DateTotalViewModel {
+    public DateGrouping Grouping { get; set; }
+    public int Periods { get; set; }
+  }
 }

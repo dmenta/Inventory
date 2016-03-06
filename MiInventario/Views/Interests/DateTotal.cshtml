@@ -1,14 +1,17 @@
-﻿@model MiInventario.Code.DateGrouping
+﻿@model MiInventario.Models.Interests.DateTotalViewModel
 @{
-  ViewBag.Title = "Interests by Date";
+  ViewBag.Title = "Interests of last " + Model.Periods + " " + Model.Grouping;
 }
 
-<h2><span id="reportTitle">@ViewBag.Title</span> <img id="imgLoading" src='@Url.Content("~/images/loading.gif")' style="vertical-align:baseline;height: 20px;display:none" /></h2>
+<h2>Interests Total <img id="imgLoading" src='@Url.Content("~/images/loading.gif")' style="vertical-align:baseline;height: 20px;display:none" /></h2>
 <div class="form-horizontal">
   <div class="form-group">
-    <span class="col-lg-2 control-label">Grouping</span>
+    <span class="col-lg-1 control-label">Last</span>
+    <div class="col-lg-1">
+      <input type="number" min="1" step="1" class="form-control input-sm text-right" id="periods" value="@Model.Periods" />
+    </div>
     <div class="col-lg-10">
-      @Html.DropDownList("Grouping", Enum.GetValues(typeof(MiInventario.Code.DateGrouping)).Cast<MiInventario.Code.DateGrouping>().Select(x => new SelectListItem { Text = x.ToString(), Value = x.ToString(), Selected = (x == Model) }), new { @class = "form-control input-sm" })
+      @Html.DropDownList("Grouping", Enum.GetValues(typeof(MiInventario.Code.DateGrouping)).Cast<MiInventario.Code.DateGrouping>().Select(x => new SelectListItem { Text = x.ToString(), Value = x.ToString(), Selected = (x == Model.Grouping) }), new { @id = "grouping", @class = "form-control input-sm", style = "float: left" })
     </div>
   </div>
 </div>
@@ -23,19 +26,44 @@
   <script type="text/javascript">
 
     function updateTable() {
-      var grp = $("select").first().val();
+      var grp = $("#grouping").val();
+      var per = $('#periods').val();
 
       $.ajax({
         url: '/Interests/_DateTotal',
         method: 'GET',
         cache: false,
         dataType: "html",
-        data: {grouping: grp},
+        data: { grouping: grp, periods: per },
         success: function (data) {
           $("#tableContainer").html(data);
-          $("#reportTitle").text("Interest by " + grp);
         }
       });
+    }
+
+    function SetHistory() {
+      event.preventDefault();
+      var grp = $("#grouping").val();
+      var per = $('#periods').val();
+
+      var data = { grouping: grp, periods: per };
+
+      history.pushState(data, document.title, '/Interests/DateTotal?grouping=' + data.grouping + '&periods=' + data.periods.toString());
+      SetTitle(data.grouping, data.periods);
+    }
+
+    function SetTitle(grouping, periods) {
+      document.title = 'Interests of last ' + periods.toString() + ' ' + grouping;
+    }
+
+    function InitializeState() {
+      var grp = $("#grouping").val();
+      var per = $('#periods').val();
+
+      var data = { grouping: grp, periods: per };
+
+      SetTitle(data.grouping, data.periods);
+      history.replaceState(data, document.title, '/Interests/DateTotal?grouping=' + data.grouping + '&periods=' + data.periods.toString());
     }
 
     $(document).ready(function () {
@@ -47,12 +75,40 @@
         $("#imgLoading").hide();
       });
 
-      $("select")
-        .change(function () {
+      $(window).bind('popstate', function (e) {
+        var newState = e.originalEvent.state;
+        if (newState != null) {
+          SetTitle(newState.grouping, newState.periods);
+          $("#grouping").val(newState.grouping);
+          $("#periods").val(newState.periods);
           updateTable();
-        });
+        }
+      });
+
+      $("#grouping").change(function () {
+        updateTable();
+        SetHistory();
+      });
+
+      $('#periods').focus(function () {
+        var inp = $(this);
+        inp.data('current', inp.val());
+      });
+
+      $('#periods').change(function () {
+        var inp = $(this);
+        var newVal = Number(inp.val());
+        if (newVal > 0 && Math.floor(newVal) == newVal) {
+          updateTable();
+          SetHistory();
+        }
+        else {
+          inp.val(inp.data('current'));
+        }
+      });
 
       updateTable();
+      InitializeState();
     });
 
 

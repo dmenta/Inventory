@@ -14,12 +14,13 @@ using System.Web.UI.WebControls;
 using System.Drawing;
 using System.Data.Entity;
 using System.Drawing.Text;
+using MiInventario.Models;
 
 namespace MiInventario.Controllers {
   [Authorize]
   public class InterestsController : BaseController {
     [HttpGet]
-    public ActionResult DateCharts() {
+    public ActionResult DateCharts(DateGrouping? grouping, string itemID, bool? accumulative) {
       using (InventarioEntities db = new InventarioEntities()) {
         string user = User.Identity.GetUserName();
 
@@ -30,10 +31,17 @@ namespace MiInventario.Controllers {
             .ToList();
 
         ChartsViewModel model = new ChartsViewModel();
-        model.Grouping = DateGrouping.Week;
-        model.Accumulate = true;
+        model.Grouping = grouping??DateGrouping.Week;
+        model.Accumulative = accumulative.GetValueOrDefault();
+        model.ItemID = itemID;
         model.ViewableItems = ItemsXml.Where(p => reproduccionesDB.Contains(p.ItemID)).Select(q => new { q.ItemID, Description = q.Description() }).ToDictionary(r => r.ItemID, s => s.Description);
-
+        model.ChartTitle = new ChartTitleViewModel {
+          Grouping = model.Grouping,
+          Item = new ItemViewModel() {
+            CurrentItem = ItemsXml.SingleOrDefault(p => p.ItemID == model.ItemID)
+          },
+          Accumulative = model.Accumulative
+        };
         return View(model);
       }
     }
@@ -49,7 +57,7 @@ namespace MiInventario.Controllers {
     }
 
     [HttpGet]
-    public ActionResult DateItemChart(DateGrouping grouping, string itemID, bool accumulate) {
+    public ActionResult DateItemChart(DateGrouping grouping, string itemID, bool accumulative) {
       DateTime inicio = DateTime.Now;
 
       using (InventarioEntities db = new InventarioEntities()) {
@@ -74,7 +82,7 @@ namespace MiInventario.Controllers {
                       TotalItems = s.SelectMany(n => n.Items).Where(b => string.IsNullOrEmpty(itemID) || b.ItemID == itemID).DefaultIfEmpty().Sum(p => p == null ? 0 : p.Cantidad)
                     }).OrderBy(i => i.Fecha).ToList();
 
-        if (accumulate) {
+        if (accumulative) {
           int actualItemQty = 0;
           int actualCapsQty = 0;
           foreach (DateInfoModel info in model.DateInfo) {
@@ -91,7 +99,7 @@ namespace MiInventario.Controllers {
         return View(model);
       }
     }
-    public ActionResult InterestsChart(DateGrouping grouping, string itemID, bool accumulate) {
+    public ActionResult InterestsChart(DateGrouping grouping, string itemID, bool accumulative) {
       DateTime inicio = DateTime.Now;
 
       using (InventarioEntities db = new InventarioEntities()) {
@@ -116,7 +124,7 @@ namespace MiInventario.Controllers {
                       TotalItems = s.SelectMany(n => n.Items).Where(b => string.IsNullOrEmpty(itemID) || b.ItemID == itemID).DefaultIfEmpty().Sum(p => p == null ? 0 : p.Cantidad)
                     }).OrderBy(i => i.Fecha).ToList();
 
-        if (accumulate) {
+        if (accumulative) {
           int actualItemQty = 0;
           int actualCapsQty = 0;
           foreach (DateInfoModel info in model.DateInfo) {

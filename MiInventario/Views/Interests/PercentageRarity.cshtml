@@ -2,7 +2,6 @@
 @{
   ViewBag.Title = "Interest per Rarity per " + Model.Grouping + " by " + (Model.Percentage ? "Percentage" : "Quantity");
 }
-
 <h2>@ViewBag.Title</h2>
 <div class="form-horizontal">
   <div class="form-group">
@@ -11,12 +10,7 @@
       @Html.DropDownList("Grouping", Enum.GetValues(typeof(MiInventario.Code.DateGrouping)).Cast<MiInventario.Code.DateGrouping>().Select(x => new SelectListItem { Text = x.ToString(), Value = x.ToString(), Selected = (x == Model.Grouping) }), new { @id = "grouping", @class = "form-control input-sm" })
       <div class="checkbox">
         <label>
-          @if (Model.Percentage) {
-            <input type="checkbox" checked="checked" id="percentage" />
-          }
-          else {
-            <input type="checkbox" id="percentage" />
-          }
+          <input type="checkbox" @(Model.Percentage ? "checked=\"checked\"" : "") id="percentage" />
           Percentage
         </label>
       </div>
@@ -28,7 +22,6 @@
 <div>
   <img src="@Url.Action("PercentageRarityChart", "Interests", new { grouping = Model.Grouping, percentage = Model.Percentage })" alt="@ViewBag.Title" />
 </div>
-
 @section scripts{
   <script type="text/javascript">
 
@@ -44,46 +37,26 @@
     $(document).ready(function () {
       $('#grouping,#percentage').change(function () {
         UpdateImage();
-        SetHistory();
+        historyManager.setState();
       });
 
-      $(window).bind('popstate', function (e) {
-        var newState = e.originalEvent.state;
-        if (newState != null) {
-          SetTitle(newState.grouping, newState.percentage);
-          $("#grouping").val(newState.grouping);
-          $("#percentage").prop('checked', newState.percentage);
+      historyManager.init({
+        data: function () {
+          return { grouping: $("#grouping").val(), percentage: $("#percentage").is(':checked') };
+        },
+        title: function (data) {
+          return "Interest per Rarity per " + data.grouping + " by " + (data.percentage ? "Percentage" : "Quantity");
+        },
+        url: function (data) {
+          return '/Interests/PercentageRarity?grouping=' + data.grouping + '&percentage=' + data.percentage;
+        },
+        change: function (data) {
+          $("#grouping").val(data.grouping);
+          $("#percentage").prop('checked', data.percentage);
 
           UpdateImage();
         }
       });
-
-      InitializeState();
     });
-
-    function SetHistory() {
-      event.preventDefault();
-      var grp = $("#grouping").val();
-      var per = $("#percentage").is(':checked');
-
-      var data = { grouping: grp, percentage: per };
-
-      history.pushState(data, document.title, '/Interests/PercentageRarity?grouping=' + data.grouping + '&percentage=' + data.percentage);
-      SetTitle(data.grouping, data.percentage);
-    }
-
-    function SetTitle(grouping, percentage) {
-      document.title = "Interest per Rarity per " + grouping + " by " + (percentage ? "Percentage" : "Quantity");
-    }
-
-    function InitializeState() {
-      var grp = $("#grouping").val();
-      var per = $("#percentage").is(':checked');
-
-      var data = { grouping: grp, percentage: per };
-
-      SetTitle(data.grouping, data.percentage);
-      history.replaceState(data, document.title, '/Interests/PercentageRarity?grouping=' + data.grouping + '&percentage=' + data.percentage);
-    }
   </script>
 }

@@ -2,7 +2,6 @@
 @{
   ViewBag.Title = "Interests of last " + Model.Periods + " " + Model.Grouping;
 }
-
 <h2>Interests Total <img id="imgLoading" src='@Url.Content("~/images/loading.gif")' style="vertical-align:baseline;height: 20px;display:none" /></h2>
 <div class="form-horizontal">
   <div class="form-group">
@@ -21,7 +20,6 @@
 <p>
   @Html.ActionLink("Back to Capsules", "Index")
 </p>
-
 @section scripts{
   <script type="text/javascript">
 
@@ -41,31 +39,6 @@
       });
     }
 
-    function SetHistory() {
-      event.preventDefault();
-      var grp = $("#grouping").val();
-      var per = $('#periods').val();
-
-      var data = { grouping: grp, periods: per };
-
-      history.pushState(data, document.title, '/Interests/DateTotal?grouping=' + data.grouping + '&periods=' + data.periods.toString());
-      SetTitle(data.grouping, data.periods);
-    }
-
-    function SetTitle(grouping, periods) {
-      document.title = 'Interests of last ' + periods.toString() + ' ' + grouping;
-    }
-
-    function InitializeState() {
-      var grp = $("#grouping").val();
-      var per = $('#periods').val();
-
-      var data = { grouping: grp, periods: per };
-
-      SetTitle(data.grouping, data.periods);
-      history.replaceState(data, document.title, '/Interests/DateTotal?grouping=' + data.grouping + '&periods=' + data.periods.toString());
-    }
-
     $(document).ready(function () {
       $(document).ajaxStart(function () {
         $("#imgLoading").show();
@@ -75,19 +48,9 @@
         $("#imgLoading").hide();
       });
 
-      $(window).bind('popstate', function (e) {
-        var newState = e.originalEvent.state;
-        if (newState != null) {
-          SetTitle(newState.grouping, newState.periods);
-          $("#grouping").val(newState.grouping);
-          $("#periods").val(newState.periods);
-          updateTable();
-        }
-      });
-
       $("#grouping").change(function () {
         updateTable();
-        SetHistory();
+        historyManager.setState();
       });
 
       $('#periods').focus(function () {
@@ -100,7 +63,7 @@
         var newVal = Number(inp.val());
         if (newVal > 0 && Math.floor(newVal) == newVal) {
           updateTable();
-          SetHistory();
+          historyManager.setState();
         }
         else {
           inp.val(inp.data('current'));
@@ -108,10 +71,24 @@
       });
 
       updateTable();
-      InitializeState();
+
+      historyManager.init({
+        data: function () {
+          return { grouping: $("#grouping").val(), periods: $('#periods').val() };
+        },
+        title: function (data) {
+          return 'Interests of last ' + data.periods.toString() + ' ' + data.grouping;
+        },
+        url: function (data) {
+          return '/Interests/DateTotal?grouping=' + data.grouping + '&periods=' + data.periods.toString();
+        },
+        change: function (data) {
+          $("#grouping").val(data.grouping);
+          $("#periods").val(data.periods);
+
+          updateTable();
+        }
+      });
     });
-
-
-
   </script>
 }

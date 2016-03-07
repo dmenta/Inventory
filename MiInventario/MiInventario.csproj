@@ -369,6 +369,8 @@
     </Content>
     <None Include="Properties\PublishProfiles\Pato-Inventario.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\history-manager.intellisense.js" />
+    <Content Include="Scripts\history-manager.js" />
     <Content Include="Scripts\inventory-render.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

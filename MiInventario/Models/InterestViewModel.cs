@@ -79,9 +79,9 @@ namespace MiInventario.Models.Interests {
     public Dictionary<string, string> ViewableItems { get; set; }
     public DateGrouping Grouping { get; set; }
     public string ItemID { get; set; }
-    public bool Accumulate { get; set; }
+    public bool Accumulative { get; set; }
 
-    public string ChartTitle { get; set; }
+    public ChartTitleViewModel ChartTitle { get; set; }
   }
 
   public class PercentageRarityViewModel {

@@ -1,11 +1,9 @@
 ﻿@using System.Linq
 @using MiInventario.Models
-
 @model MiInventario.Models.Inventory.ManageViewModel
 @{
   ViewBag.Title = "Inventory Manage";
 }
-
 <div class="col-lg-12">
   <h2>@ViewBag.Title <img id="imgLoading" src='@Url.Content("~/images/loading.gif")' style="vertical-align:baseline;height: 20px;display:none" /></h2>
 </div>
@@ -34,23 +32,9 @@
   </div>
 </div>
 <div class="clearfix"></div>
-
 @section scripts{
   <script src="~/bundles/inventory-render"></script>
   <script type="text/javascript">
-    function SetHistory(editing) {
-      event.preventDefault();
-      var groupSel = $('#Groups');
-      var data = { groupID: groupSel.val(), groupText: $("option:selected", groupSel).text(), editing: editing };
-
-      history.pushState(data, document.title, '/Inventory/Manage/' + data.groupID + '?editing=' + editing.toString());
-      SetTitle(data.groupText, data.editing);
-    }
-
-    function SetTitle(groupText, editing) {
-      document.title = '@ViewBag.Title ' + groupText + (editing ? ' [editing]' : '');
-    }
-
     function ShowGroups(editing) {
       SetDisabled();
 
@@ -85,6 +69,7 @@
           }
           else {
             SetViewing();
+            $('#Groups').focus();
           }
         },
         error: function (requestObject, error, errorThrown) {
@@ -111,21 +96,9 @@
       $('.edition').prop('disabled', false).show();
     }
 
-    function InitializeState() {
-      var groupID = '@Model.GroupID';
-      var groupSel = $('#Groups');
-      groupSel.val(groupID);
-
-      var data = { groupID: groupID, groupText: $("option:selected", groupSel).text(), editing: @Json.Encode(Model.Editing) };
-      SetTitle(data.groupText, data.editing);
-      history.replaceState(data, document.title, '/Inventory/Manage/' + data.groupID + '?editing=' + data.editing.toString());
-
-      ShowGroups(@Json.Encode(Model.Editing));
-    }
-
     function ChangeState(editing) {
       ShowGroups(editing);
-      SetHistory(editing);
+      historyManager.setState();
     }
 
     $(document).ready(function () {
@@ -136,17 +109,6 @@
       $(document).ajaxStop(function () {
         $("#imgLoading").hide();
       });
-
-      $(window).bind('popstate', function (e) {
-        var newState = e.originalEvent.state;
-        if (newState != null) {
-          SetTitle(newState.groupText, newState.editing);
-          $('#Groups').val(newState.groupID);
-          ShowGroups(newState.editing);
-        }
-      });
-
-      InitializeState();
 
       $('.edit').click(function () {
         ChangeState(true);
@@ -194,9 +156,28 @@
       $('#Groups').change(function () {
         ChangeState(false);
       });
+
+      $('#Groups').val('@Model.GroupID');
+      ShowGroups(@Json.Encode(Model.Editing));
+
+      historyManager.init({
+        data: function () {
+          var groupSel = $('#Groups');
+          return { groupID: groupSel.val(), groupText: $("option:selected", groupSel).text(), editing: $('.edition').css('display') != 'none' };
+        },
+        title: function (data) {
+          return '@ViewBag.Title ' + data.groupText + (data.editing ? ' [editing]' : '');
+        },
+        url: function (data) {
+          return '/Inventory/Manage/' + data.groupID + '?editing=' + data.editing.toString();
+        },
+        change: function (data) {
+          $('#Groups').val(data.groupID);
+          ShowGroups(data.editing);
+        }
+      });
     });
 
   </script>
 }
-
 

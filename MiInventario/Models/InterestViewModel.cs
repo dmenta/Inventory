@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Web;
+using System.Web.Script.Serialization;
 
 namespace MiInventario.Models.Interests {
   public class ChartTitleViewModel {
@@ -42,15 +43,20 @@ namespace MiInventario.Models.Interests {
 
 
   public class DateInfoModel {
+
+    [ScriptIgnoreAttribute]
     public DateTime Fecha { get; set; }
+
     public int TotalCapsules { get; set; }
-    public int DifferentItems { get; set; }
+
     public int TotalItems { get; set; }
+
+    [ScriptIgnoreAttribute]
     public int RealDays { get; set; }
+
     public double Average {
       get { return (double)TotalItems / TotalCapsules / RealDays; }
     }
-
   }
 
   public class ByDateTotalViewModel {
@@ -64,9 +70,15 @@ namespace MiInventario.Models.Interests {
     public int TotalItems { get; set; }
     public IEnumerable<ItemInventoryViewModel> Totals { get; set; }
     public Dictionary<string, int> Maximos { get; set; }
+
+    public string[] Items { get; set; }
+
+    public Dictionary<string, string> DateFormats { get; set; }
   }
   public class DateInfoTotalModel : DateInfoModel {
     public Dictionary<string, int> Items { get; set; }
+
+    public string FormattedDate { get; set; }
   }
   public class FechaTotalViewModel {
     public string IdCapsula { get; set; }

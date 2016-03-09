@@ -5,9 +5,10 @@
 <h2>Interests Total <img id="imgLoading" src='@Url.Content("~/images/loading.gif")' style="vertical-align:baseline;height: 20px;display:none" /></h2>
 <div class="form-horizontal">
   <div class="form-group">
+    <div class="col-lg-offset-1 col-lg-11" style="margin-bottom:5px; color: #909090">(0 means all data)</div>
     <span class="col-lg-1 control-label">Last</span>
     <div class="col-lg-1">
-      <input type="number" min="1" step="1" class="form-control input-sm text-right" id="periods" value="@Model.Periods" />
+      <input type="number" min="0" max="2000" step="1" class="form-control input-sm text-right" id="periods" value="@Model.Periods" />
     </div>
     <div class="col-lg-10">
       @Html.DropDownList("Grouping", Enum.GetValues(typeof(MiInventario.Code.DateGrouping)).Cast<MiInventario.Code.DateGrouping>().Select(x => new SelectListItem { Text = x.ToString(), Value = x.ToString(), Selected = (x == Model.Grouping) }), new { @id = "grouping", @class = "form-control input-sm", style = "float: left" })
@@ -21,6 +22,7 @@
   @Html.ActionLink("Back to Capsules", "Index")
 </p>
 @section scripts{
+  <script src="~/Scripts/inventory-render.js"></script>
   <script type="text/javascript">
 
     function updateTable() {
@@ -28,13 +30,13 @@
       var per = $('#periods').val();
 
       $.ajax({
-        url: '/Interests/_DateTotal',
+        url: '/Interests/ByItemDate',
         method: 'GET',
         cache: false,
-        dataType: "html",
+        dataType: 'json',
         data: { grouping: grp, periods: per },
         success: function (data) {
-          $("#tableContainer").html(data);
+          $("#tableContainer").html(RenderInterests(data));
         }
       });
     }
@@ -61,7 +63,7 @@
       $('#periods').change(function () {
         var inp = $(this);
         var newVal = Number(inp.val());
-        if (newVal > 0 && Math.floor(newVal) == newVal) {
+        if (newVal >= 0 && Math.floor(newVal) == newVal && newVal <= 2000) {
           updateTable();
           historyManager.setState();
         }
@@ -90,5 +92,58 @@
         }
       });
     });
+
+    function RenderInterests(data) {
+      var html = '';
+      html += '<table class="table table-condensed table-striped table-hover" style="font-size:0.9em">';
+      html += '<thead>';
+      html += ' <tr>';
+      html += '<th class="corner rotate"><div><span></span></div></th>';
+      html += '<th class="rotate"><div><span>Caps</span></div></th>';
+      html += '<th class="rotate"><div><span>Qty</span></div></th>';
+      html += '<th class="rotate"><div><span>Avg</span></div></th>';
+      $.each(data.Totals, function (key, item) {
+        html += '<th class="text-nowrap rotate"><div><span>' + RenderItemDescription(item.CurrentItem) + '</span></div></th>';
+      });
+      html += '</tr>';
+      html += ' </thead>';
+      html += '<tfoot>';
+      html += ' <tr>';
+      html += '<td class="fecha">Total</td>';
+      html += '<td class="cantidadTotal"></td>';
+      html += '<td class="cantidadTotal">' + data.TotalItems + '</td>';
+      html += '<td class="cantidadTotal"></td>';
+      $.each(data.Totals, function (key, total) {
+        html += '<td class="cantidadItem">' + total.Cantidad + '</td>';
+      });
+      html += '</tr>';
+      html += '</tfoot>';
+      html += '<tbody>';
+      $.each(data.DateInfo, function (key, info) {
+        html += '<tr>';
+        html += '<td class="fecha text-nowrap">' + info.FormattedDate + '</td>';
+        html += '<td class="cantidadTotal">' + info.TotalCapsules + '</td>';
+        html += '<td class="cantidadTotal">' + info.TotalItems + '</td>';
+        html += '<td class="cantidadTotal">' + info.Average.toFixed(2) + '</td>';
+        $.each(data.Items, function (key, itemID) {
+          var cantidad = info.Items[itemID];
+          if (cantidad == null || cantidad===0) {
+            html += '<td></td>';
+            return;
+          }
+          if (cantidad == data.Maximos[itemID]) {
+            html += '<td class="cantidadItem text-warning"><strong>' + cantidad + '</strong></td>';
+          }
+          else {
+            html += '<td class="cantidadItem">' + cantidad + '</td>';
+          }
+        });
+        html += '</tr>';
+      });
+      html += '</tbody>';
+      html += '</table>';
+
+      return html;
+    }
   </script>
 }

@@ -1,8 +1,7 @@
 ﻿@model MiInventario.Models.Interests.ByDateTotalViewModel
 @{
     string dateFormat = Resources.General.ResourceManager.GetString(string.Format("InterestsByDate_DateFormat_{0}", Model.Grouping.ToString()));
-    IEnumerable<string>
-    items = Model.Totals.Select(p => p.CurrentItem.ItemID).ToArray();
+    IEnumerable<string> items = Model.Totals.Select(p => p.CurrentItem.ItemID).ToArray();
 }
 <table class="table table-condensed table-striped table-hover" style="font-size:0.9em">
     <thead>

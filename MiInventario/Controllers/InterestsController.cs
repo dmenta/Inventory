@@ -56,49 +56,6 @@ namespace MiInventario.Controllers {
       return PartialView("_ChartTitle", model);
     }
 
-    [HttpGet]
-    public ActionResult DateItemChart(DateGrouping grouping, string itemID, bool accumulative) {
-      DateTime inicio = DateTime.Now;
-
-      using (InventarioEntities db = new InventarioEntities()) {
-        string user = User.Identity.GetUserName();
-
-        var reproduccionesDB = db.ReproduccionesItems.Where(p => p.Reproducciones.IdUsuario == user)
-            .GroupBy(z => new { z.Reproducciones.Fecha, z.Reproducciones.IdCapsula })
-            .Select(s => new {
-              IdCapsula = s.Key.IdCapsula,
-              Fecha = s.Key.Fecha,
-              Items = s.GroupBy(x => x.ItemID).Select(y => new { ItemID = y.Key, Cantidad = y.Sum(t => t.Cantidad) }),
-            }).ToList();
-
-        var model = new ByDateViewModel();
-        model.Grouping = grouping;
-        model.DateInfo = reproduccionesDB
-                    .GroupBy(r => r.Fecha.GetResolvedDate(grouping))
-                    .Select(s => new DateInfoModel {
-                      Fecha = s.Key,
-                      TotalCapsules = s.Where(n => n.Items.Any(q => string.IsNullOrEmpty(itemID) || q.ItemID == itemID)).Select(z => z.IdCapsula).Distinct().Count(),
-                      DifferentItems = s.SelectMany(n => n.Items).Where(b => string.IsNullOrEmpty(itemID) || b.ItemID == itemID).Select(h => h.ItemID).Distinct().Count(),
-                      TotalItems = s.SelectMany(n => n.Items).Where(b => string.IsNullOrEmpty(itemID) || b.ItemID == itemID).DefaultIfEmpty().Sum(p => p == null ? 0 : p.Cantidad)
-                    }).OrderBy(i => i.Fecha).ToList();
-
-        if (accumulative) {
-          int actualItemQty = 0;
-          int actualCapsQty = 0;
-          foreach (DateInfoModel info in model.DateInfo) {
-            info.TotalItems += actualItemQty;
-            actualItemQty = info.TotalItems;
-
-            info.TotalCapsules += actualCapsQty;
-            actualCapsQty = info.TotalCapsules;
-          }
-        }
-
-        TimeSpan tiempo = DateTime.Now.Subtract(inicio);
-
-        return View(model);
-      }
-    }
     public ActionResult InterestsChart(DateGrouping grouping, string itemID, bool accumulative) {
       DateTime inicio = DateTime.Now;
 
@@ -120,7 +77,6 @@ namespace MiInventario.Controllers {
                     .Select(s => new DateInfoModel {
                       Fecha = s.Key,
                       TotalCapsules = s.Where(n => n.Items.Any(q => string.IsNullOrEmpty(itemID) || q.ItemID == itemID)).Select(z => z.IdCapsula).Distinct().Count(),
-                      DifferentItems = s.SelectMany(n => n.Items).Where(b => string.IsNullOrEmpty(itemID) || b.ItemID == itemID).Select(h => h.ItemID).Distinct().Count(),
                       TotalItems = s.SelectMany(n => n.Items).Where(b => string.IsNullOrEmpty(itemID) || b.ItemID == itemID).DefaultIfEmpty().Sum(p => p == null ? 0 : p.Cantidad)
                     }).OrderBy(i => i.Fecha).ToList();
 
@@ -347,7 +303,7 @@ ForeColor=""White""
                       Items = s.GroupBy(u => u.ItemID).Select(v => new { ItemID = v.Key, Cantidad = v.Sum(w => w.Cantidad) }).ToDictionary(m => m.ItemID, n => n.Cantidad)
                     }).ToList();
 
-        var differentItems = reproduccionesDB.Select(h => h.ItemID).Distinct().Select(i => new Models.ItemViewModel { CurrentItem = ItemsXml.Single(j => j.ItemID == i) }).OrderBy(k => k.CurrentItem.Order);
+        //var differentItems = reproduccionesDB.Select(h => h.ItemID).Distinct().Select(i => new Models.ItemViewModel { CurrentItem = ItemsXml.Single(j => j.ItemID == i) }).OrderBy(k => k.CurrentItem.Order);
 
         var totals = reproduccionesDB
          .GroupBy(q => q.ItemID)
@@ -368,6 +324,81 @@ ForeColor=""White""
         model.TotalItems = totals.Sum(p => p.Cantidad);
 
         return PartialView("_DateTotal", model);
+      }
+    }
+
+    
+    [HttpGet]
+    public JsonResult ByItemDate(DateGrouping grouping, int periods) {
+      DateTime startDate=new DateTime(2000,1,1); // all data
+
+      if (periods < 0) {
+        periods = 4;
+      }
+
+      if (periods > 0) {
+        switch (grouping) {
+          case DateGrouping.Year:
+            startDate = DateTime.Now.Date.GetResolvedDate(DateGrouping.Year).AddYears(1 - periods);
+            break;
+          case DateGrouping.Month:
+            startDate = DateTime.Now.Date.GetResolvedDate(DateGrouping.Month).AddMonths(1 - periods);
+            break;
+          case DateGrouping.Week:
+            startDate = DateTime.Now.Date.GetResolvedDate(DateGrouping.Week).AddDays((1 - periods) * 7);
+            break;
+          case DateGrouping.Day:
+          default:
+            startDate = DateTime.Now.Date.AddDays(1 - periods);
+            break;
+        }
+      }
+
+      string dateFormat = Resources.General.ResourceManager.GetString(string.Format("InterestsByDate_DateFormat_{0}", grouping.ToString()));
+
+      using (InventarioEntities db = new InventarioEntities()) {
+        string user = User.Identity.GetUserName();
+
+        var reproduccionesDB = db.ReproduccionesItems.Where(p => p.Reproducciones.IdUsuario == user && DbFunctions.TruncateTime(p.Reproducciones.Fecha).Value>=startDate)
+            .GroupBy(r => new { Fecha = DbFunctions.TruncateTime(r.Reproducciones.Fecha).Value, IdCapsula = r.Reproducciones.IdCapsula, ItemID = r.ItemID })
+            .Select(s => new {
+              IdCapsula = s.Key.IdCapsula,
+              Fecha = s.Key.Fecha,
+              ItemID = s.Key.ItemID,
+              Cantidad = s.Sum(m => m.Cantidad),
+            }).ToList();
+
+        var items = reproduccionesDB
+                    .GroupBy(r => new { Fecha = r.Fecha.GetResolvedDate(grouping) })
+                    .Select(s => new DateInfoTotalModel {
+                      Fecha = s.Key.Fecha,
+                      FormattedDate = s.Key.Fecha.ToString(dateFormat),
+                      TotalCapsules = s.Select(h => h.IdCapsula).Distinct().Count(),
+                      TotalItems = s.Sum(p => p.Cantidad),
+                      RealDays = (int)(s.Max(h => h.Fecha) - s.Min(i => i.Fecha)).TotalDays + 1,
+                      Items = s.GroupBy(u => u.ItemID).Select(v => new { ItemID = v.Key, Cantidad = v.Sum(w => w.Cantidad) }).ToDictionary(m => m.ItemID, n => n.Cantidad)
+                    }).ToList();
+
+        var totals = reproduccionesDB
+         .GroupBy(q => q.ItemID)
+         .Select(i => new Models.ItemInventoryViewModel { CurrentItem = ItemsXml.Single(j => j.ItemID == i.Key), Cantidad = i.Sum(j => j.Cantidad) }).OrderBy(k => k.CurrentItem.Order);
+
+        var maximos = reproduccionesDB
+                    .GroupBy(r => new { Fecha = r.Fecha.GetResolvedDate(grouping), ItemID = r.ItemID })
+                    .Select(s => new { ItemID = s.Key.ItemID, Cantidad = s.Sum(p => p.Cantidad) })
+                    .GroupBy(h => h.ItemID)
+                    .Select(i => new { ItemID = i.Key, Maximo = i.Max(j => j.Cantidad) })
+                    .ToDictionary(h => h.ItemID, i => i.Maximo);
+
+        var model = new ByDateTotalViewModel();
+        model.Grouping = grouping;
+        model.DateInfo = items.OrderByDescending(b => b.Fecha);
+        model.Totals = totals;
+        model.Maximos = maximos;
+        model.TotalItems = totals.Sum(p => p.Cantidad);
+        model.Items = model.Totals.Select(p => p.CurrentItem.ItemID).ToArray();
+
+        return Json(model, JsonRequestBehavior.AllowGet);
       }
     }
 

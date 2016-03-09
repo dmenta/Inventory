@@ -62,9 +62,19 @@
     @RenderBody()
     <hr />
     <footer>
-      <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+      <p>
+        &copy; @DateTime.Now.Year - reptilicusteam
+      </p>
+      @if (HttpContext.Current.IsDebuggingEnabled) {
+        <ul>
+          @foreach (string data in Utils.GetConnectionData()) {
+            <li>@data</li>
+          }
+        </ul>
+      }
     </footer>
   </div>
+
   <div id="dialog">
     <h4 id="headerDetail"><span id="detailLevel" class=""></span> <span id="detailName"></span></h4>
     <p id="detailRarity"></p>

@@ -42,5 +42,16 @@ namespace MiInventario {
           return new DateTime(fecha.Year, fecha.Month, fecha.Day);
       }
     }
+
+    public static IEnumerable<string> GetConnectionData() {
+      // Data Source=(local)\Desarrollo;Initial Catalog=Inventory;User ID=sa;Password=superi6644;
+      IEnumerable<string> data = null;
+      if (HttpContext.Current.IsDebuggingEnabled) {
+        data = System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+          .Where(p => p.IndexOf("user", StringComparison.OrdinalIgnoreCase) != 0 && p.IndexOf("password", StringComparison.OrdinalIgnoreCase) != 0);
+      }
+
+      return data;
+    }
   }
 }

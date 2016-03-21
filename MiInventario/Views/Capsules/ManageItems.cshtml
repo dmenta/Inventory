@@ -2,19 +2,12 @@
 @{
     ViewBag.Title = "Manage Items";
 }
-<h2>Manage Items</h2>
-@if (string.IsNullOrEmpty(Model.Descripcion))
-{
-    <h3>@Model.IdCapsula (@Model.Total)</h3>
-}
-else
-{
-    <h3>@Model.Descripcion [@Model.IdCapsula] (@Model.Total)</h3>
-}
+<h2>@ViewBag.Title</h2>
+@Html.Partial("_CapsuleHeader", Model)
 
 @using (Html.BeginForm("ManageItems", "Capsules", FormMethod.Post, new { @class = "form-horizontal" }))
 {
-    @Html.HiddenFor(model => model.IdCapsula)
+    @Html.HiddenFor(model => model.CapsuleId)
 
     <div class="col-lg-4 col-md-5 col-sm-6 col-xs-12">
         <table class="table table-condensed table-striped">
@@ -40,10 +33,10 @@ else
                         </td>
                         <td class="cantidadItem">
                             @Html.HiddenFor(model => Model.Items[i].CurrentItem.ItemID)
-                            @Html.TextBoxFor(model => Model.Items[i].Cantidad, new { @class = "form-control text-right input-sm" })
+                            @Html.TextBoxFor(model => Model.Items[i].Quantity, new { @class = "form-control text-right input-sm" })
                         </td>
                         <td class="text-center">
-                            @Html.ActionLink("Delete", "DeleteItem", new { @id = Model.IdCapsula, itemID = item.CurrentItem.ItemID })
+                            @Html.ActionLink("Delete", "DeleteItem", new { @id = Model.CapsuleId, itemID = item.CurrentItem.ItemID })
                         </td>
                     </tr>
                 }
@@ -57,5 +50,5 @@ else
 }
 <div class="clearfix"></div>
 <p>
-    @Html.ActionLink("Back to Capsules", "Index") | @Html.ActionLink("Back to View Capsule", "List", new { @id = Model.IdCapsula })
+    @Html.ActionLink("Back to Capsules", "Index") | @Html.ActionLink("Back to View Capsule", "List", new { @id = Model.CapsuleId })
 </p>

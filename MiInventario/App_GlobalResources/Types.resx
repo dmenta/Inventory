@@ -156,4 +156,7 @@
   <data name="T_CUBES" xml:space="preserve">
     <value>Power Cube</value>
   </data>
+  <data name="T_KL" xml:space="preserve">
+    <value>Key Locker</value>
+  </data>
 </root>

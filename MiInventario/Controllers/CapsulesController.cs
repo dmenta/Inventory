@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
 using System.Globalization;
 using MiInventario.Code;
 using System.Threading.Tasks;
@@ -14,6 +13,7 @@ using System.Web.UI.WebControls;
 using System.Drawing;
 using System.Data.Entity;
 using System.Drawing.Text;
+using System.Net;
 
 namespace MiInventario.Controllers {
   [Authorize]
@@ -22,444 +22,196 @@ namespace MiInventario.Controllers {
 
     [HttpGet]
     public ActionResult Index() {
-      using (InventarioEntities db = new InventarioEntities()) {
-        string user = User.Identity.GetUserName();
-        var capsulas = db.Capsulas.Where(p => p.IdUsuario == user).ToList();
-
-        List<CapsulesViewModel> model = new List<CapsulesViewModel>();
-        foreach (var capsula in capsulas) {
-          int cantidad = capsula.CapsulasItems.Sum(s => s.Cantidad);
-
-          var capsulaV = new CapsulesViewModel();
-          capsulaV.IdCapsula = capsula.IdCapsula;
-          capsulaV.Total = cantidad;
-          capsulaV.Spawnable = ItemsXml.Any(p => p.ItemID == capsula.ItemID && p.PaysInterests);
-          capsulaV.Descripcion = capsula.Descripcion;
-
-          if (capsulaV.Descripcion == null) {
-            if (!capsula.CapsulasItems.Any()) {
-              capsulaV.Descripcion = Resources.General.ResourceManager.GetString("Capsule_Empty");
-            }
-            else if (capsula.CapsulasItems.Count() == 1) {
-              var itemIn = ItemsXml.Single(p => p.ItemID == capsula.CapsulasItems.Single().ItemID);
-              capsulaV.ItemEncapsulado = new Models.ItemViewModel { CurrentItem = itemIn };
-            }
-            else if (capsula.CapsulasItems.Count() > 1) {
-              capsulaV.Descripcion = string.Format("({0} items)", capsula.CapsulasItems.Count());
-            }
-          }
-
-          model.Add(capsulaV);
-        }
-
-        return View(model);
-      }
+      return View();
     }
 
     [HttpGet]
-    public ActionResult SendToUser(string id, string sendToUser) {
-      using (InventarioEntities db = new InventarioEntities()) {
-        string user = User.Identity.GetUserName();
-        var capsula = db.Capsulas.SingleOrDefault(p => p.IdUsuario == user && p.IdCapsula == id);
+    public JsonResult CapsulesSummary() {
+      var capsulesDB = Database.Capsules.Where(p => p.UserId == Username).ToList();
 
-        if (capsula == null) {
-          return new HttpNotFoundResult();
-        }
 
-        SendToViewModel model = new SendToViewModel();
-        model.IdCapsula = capsula.IdCapsula;
-        model.UserID = sendToUser;
-        model.Descripcion = capsula.Descripcion;
+      var capsules = capsulesDB.Select(p => new CapsuleViewModel {
+        CapsuleId = p.CapsuleId,
+        Code = p.Code,
+        TotalQuantity = p.CapsulesItems.Sum(q => q.Quantity),
+        Name = ResolveCapsuleName(p),
+        Properties = GetProperties(p.ItemId),
+        ItemInside = p.CapsulesItems.Count() == 1 ? new Models.ItemViewModel { CurrentItem = ItemsXml.Single(s => s.ItemID == p.CapsulesItems.First().ItemID) } : null,
+      }).OrderBy(m => m.Properties.Order).ThenBy(n => n.Code);
 
-        if (model.Descripcion == null) {
-          if (!capsula.CapsulasItems.Any()) {
-            model.Descripcion = Resources.General.ResourceManager.GetString("Capsule_Empty");
-          }
-          else if (capsula.CapsulasItems.Count() == 1) {
-            var itemIn = ItemsXml.Single(p => p.ItemID == capsula.CapsulasItems.Single().ItemID);
-            model.ItemEncapsulado = new Models.ItemViewModel { CurrentItem = itemIn };
-          }
-          else if (capsula.CapsulasItems.Count() > 1) {
-            model.Descripcion = string.Format("({0} items)", capsula.CapsulasItems.Count());
-          }
-        }
-
-        return View(model);
-      }
+      return Json(capsules, JsonRequestBehavior.AllowGet);
     }
 
-    [HttpPost]
-    public ActionResult SendToUser(SendToViewModel capsula) {
-      using (InventarioEntities db = new InventarioEntities()) {
-        string user = User.Identity.GetUserName();
-        var capsulaDB = db.Capsulas.SingleOrDefault(p => p.IdUsuario == user && p.IdCapsula == capsula.IdCapsula);
+    [HttpGet]
+    public ActionResult List(int id) {
+      var model = RecuperarItems(id, false);
 
-        if (capsulaDB == null) {
-          return new HttpNotFoundResult();
-        }
-
-        capsulaDB.IdUsuario = capsula.UserID;
-
-        db.SaveChanges();
-
-        return RedirectToAction("Index");
+      if (model == null) {
+        return new HttpNotFoundResult();
       }
+
+      return View(model);
     }
 
     [HttpGet]
     public ActionResult Add() {
+      var model = new AddEditViewModel();
 
-      using (InventarioEntities db = new InventarioEntities()) {
-        var model = new CreateViewModel();
-        model.Capsulas = ItemsXml.Where(p => p.IsCapsule)
-            .Select(s => new {
-              ItemID = s.ItemID,
-              Nombre = s.Nombre
-            }).ToDictionary(x => x.ItemID, y => y.Nombre);
+      model.ItemId = "CAPS_RA";
+      model.CapsuleTypes = GetValidNewCapsuleTypes(null);
 
-        return View(model);
-      }
-    }
-    public ActionResult Add(CreateViewModel capsula) {
-      using (InventarioEntities db = new InventarioEntities()) {
-
-        if (db.Capsulas.Any(p => p.IdCapsula == capsula.IdCapsula)) {
-          ModelState.AddModelError("Duplicate", "There is another capsule with the same ID");
-        }
-
-        if (ModelState.IsValid) {
-          string user = User.Identity.GetUserName();
-
-          db.Capsulas.Add(new Capsulas { IdUsuario = user, IdCapsula = capsula.IdCapsula.ToUpper(), Descripcion = capsula.Descripcion, ItemID = capsula.ItemID });
-
-          db.SaveChanges();
-
-          return RedirectToAction("Index");
-        }
-
-        capsula.Capsulas = ItemsXml.Where(p => p.IsCapsule)
-            .Select(s => new {
-              ItemID = s.ItemID,
-              Nombre = s.Nombre
-            }).ToDictionary(x => x.ItemID, y => y.Nombre);
-
-
-        return View(capsula);
-      }
-    }
-
-    [HttpGet]
-    public ActionResult Edit(string id) {
-      using (InventarioEntities db = new InventarioEntities()) {
-        string user = User.Identity.GetUserName();
-        var capsulaDB = db.Capsulas.SingleOrDefault(p => p.IdCapsula == id && p.IdUsuario == user);
-
-        if (capsulaDB == null) {
-          return new HttpNotFoundResult();
-        }
-
-        var model = new EditViewModel();
-        model.IdCapsula = capsulaDB.IdCapsula;
-        model.Descripcion = capsulaDB.Descripcion;
-        model.ItemID = capsulaDB.ItemID;
-        model.Capsulas = ItemsXml.Where(p => p.IsCapsule)
-            .Select(s => new {
-              ItemID = s.ItemID,
-              Nombre = s.Nombre
-            }).ToDictionary(x => x.ItemID, y => y.Nombre);
-
-        return View(model);
-      }
-    }
-    public ActionResult Edit(EditViewModel capsula) {
-      using (InventarioEntities db = new InventarioEntities()) {
-        string user = User.Identity.GetUserName();
-        var capsulaDB = db.Capsulas.SingleOrDefault(p => p.IdCapsula == capsula.IdCapsula && p.IdUsuario == user);
-
-        if (capsulaDB == null) {
-          return new HttpNotFoundResult();
-        }
-
-        if (ModelState.IsValid) {
-          capsulaDB.Descripcion = capsula.Descripcion;
-          capsulaDB.ItemID = capsula.ItemID;
-
-          db.SaveChanges();
-
-          return RedirectToAction("Index");
-        }
-
-        capsula.Capsulas = ItemsXml.Where(p => p.IsCapsule)
-            .Select(s => new {
-              ItemID = s.ItemID,
-              Nombre = s.Nombre
-            }).ToDictionary(x => x.ItemID, y => y.Nombre);
-
-        return View(capsula);
-      }
-    }
-
-    [HttpGet]
-    public ActionResult List(string id) {
-      return RecuperarItems(id, null);
-
-    }
-    [HttpGet]
-    public ActionResult ManageItems(string id) {
-      return RecuperarItems(id, null);
-    }
-
-    [HttpGet]
-    public ActionResult Unload(string id) {
-      return RecuperarItemsUnload(id);
-    }
-    [HttpGet]
-    public ActionResult Load(string id) {
-      return RecuperarItemsLoad(id);
-    }
-
-    [HttpGet]
-    public ActionResult LogInterests(string id) {
-      return RecuperarItems(id, true);
-    }
-
-    [HttpGet]
-    public ActionResult AddItem(string id) {
-      if (id == null) {
-        return new HttpNotFoundResult();
-      }
-
-      using (InventarioEntities db = new InventarioEntities()) {
-        string user = User.Identity.GetUserName();
-        var capsula = db.Capsulas.SingleOrDefault(p => p.IdCapsula == id && p.IdUsuario == user);
-
-        if (capsula == null) {
-          return new HttpNotFoundResult();
-        }
-
-        var itemsCargados = capsula.CapsulasItems.Select(p => p.ItemID).ToList();
-
-        AddItemViewModel model = new AddItemViewModel();
-        model.IdCapsula = id;
-        model.Total = capsula.CapsulasItems.Sum(s => s.Cantidad);
-        model.AddeableItems = ItemsXml.Where(p => !p.IsCapsule && !itemsCargados.Contains(p.ItemID))
-            .Select(q => new Models.ItemViewModel {
-              CurrentItem = q,
-            }).ToList();
-
-        return View(model);
-      }
+      return View(model);
     }
 
     [HttpPost]
-    public ActionResult AddItem(AddItemViewModel addedItem) {
-      using (InventarioEntities db = new InventarioEntities()) {
-        string user = User.Identity.GetUserName();
-        var capsula = db.Capsulas.SingleOrDefault(p => p.IdCapsula == addedItem.IdCapsula && p.IdUsuario == user);
-
-        if (capsula == null) {
-          return new HttpNotFoundResult();
-        }
-
-        if (ModelState.IsValid) {
-          db.CapsulasItems.Add(new CapsulasItems { IdCapsula = addedItem.IdCapsula, ItemID = addedItem.ItemID, Cantidad = addedItem.Cantidad });
-
-          db.SaveChanges();
-
-          return RedirectToAction("List", new { id = addedItem.IdCapsula });
-        }
-        else {
-          var itemsCargados = capsula.CapsulasItems.Select(p => p.ItemID).ToList();
-
-          addedItem.Total = capsula.CapsulasItems.Sum(s => s.Cantidad);
-          addedItem.AddeableItems = ItemsXml.Where(p => !p.IsCapsule && !itemsCargados.Contains(p.ItemID))
-              .Select(q => new Models.ItemViewModel {
-                CurrentItem = q,
-              }).ToList();
-
-          return View(addedItem);
-        }
+    public ActionResult Add(AddEditViewModel capsule) {
+      if (Database.Capsules.Any(p => p.UserId == Username && p.Code == capsule.Code)) {
+        ModelState.AddModelError("Duplicate", "There is another capsule with the same Code");
       }
+
+      var unique = !string.IsNullOrEmpty(ItemsXml.Single(p => p.IsCapsule && p.ItemID == capsule.ItemId).UniqueID);
+
+      if (!unique && capsule.Code.Length != 8) {
+        ModelState.AddModelError("Code", "Code must be 8 characters long.");
+      }
+
+      if (ModelState.IsValid) {
+        Database.Capsules.Add(new Capsules { UserId = Username, Code = capsule.Code.ToUpper(), Name = capsule.Name, ItemId = capsule.ItemId });
+
+        Database.SaveChanges();
+
+        return RedirectToAction("Index");
+      }
+
+      capsule.CapsuleTypes = GetValidNewCapsuleTypes(null);
+
+      return View(capsule);
     }
 
-    private ActionResult RecuperarItemsUnload(string id) {
-      if (id == null) {
+    [HttpGet]
+    public ActionResult Edit(int id) {
+      var capsuleDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == id && p.UserId == Username);
+
+      if (capsuleDB == null) {
         return new HttpNotFoundResult();
       }
 
-      using (InventarioEntities db = new InventarioEntities()) {
-        string user = User.Identity.GetUserName();
-        var capsula = db.Capsulas.SingleOrDefault(p => p.IdCapsula == id && p.IdUsuario == user);
+      var model = new AddEditViewModel();
+      LoadCapsule(capsuleDB, model);
 
-        if (capsula == null) {
-          return new HttpNotFoundResult();
-        }
+      model.ItemId = capsuleDB.ItemId;
+      model.CapsuleTypes = GetValidNewCapsuleTypes(model.ItemId);
 
-        UnloadViewModel model = new UnloadViewModel();
-        model.IdCapsula = id;
-        model.Descripcion = capsula.Descripcion;
-        model.Total = capsula.CapsulasItems.Sum(s => s.Cantidad);
-        model.Items = capsula.CapsulasItems.Select(p => new ItemUnloadViewModel {
-          CurrentItem = ItemsXml.Single(z => z.ItemID == p.ItemID),
-          Cantidad = p.Cantidad,
-          CantidadDescargar = 0
-        }).OrderBy(n => n.CurrentItem.Order).ToList();
-
-        return View(model);
-      }
-    }
-    private ActionResult RecuperarItemsLoad(string id) {
-      if (id == null) {
-        return new HttpNotFoundResult();
-      }
-
-      using (InventarioEntities db = new InventarioEntities()) {
-        string user = User.Identity.GetUserName();
-        var capsula = db.Capsulas.SingleOrDefault(p => p.IdCapsula == id && p.IdUsuario == user);
-
-        if (capsula == null) {
-          return new HttpNotFoundResult();
-        }
-
-        LoadViewModel model = new LoadViewModel();
-        model.IdCapsula = id;
-        model.Descripcion = capsula.Descripcion;
-        model.Total = capsula.CapsulasItems.Sum(s => s.Cantidad);
-
-        var enCapsula = capsula.CapsulasItems.Select(q => new ItemLoadViewModel {
-          CurrentItem = ItemsXml.Single(z => z.ItemID == q.ItemID),
-          CantidadEnCapsula = q.Cantidad,
-          CantidadCargar = 0
-        }).ToList();
-
-        var esCapsula = ItemsXml.Where(p => p.IsCapsule).Select(s => s.ItemID);
-
-        var inventariosDB = db.Inventarios.Where(p => p.IdUsuario == user && !esCapsula.Contains(p.ItemID))
-            .Select(q => new {
-              ItemID = q.ItemID,
-              CantidadSuelta = q.Cantidad,
-              CantidadCargar = 0
-            }).ToList();
-
-        var inventarios = inventariosDB.Select(p => new ItemLoadViewModel {
-          CurrentItem = ItemsXml.FirstOrDefault(z => z.ItemID == p.ItemID),
-          CantidadSuelta = p.CantidadSuelta,
-          CantidadCargar = p.CantidadCargar
-        }).ToList();
-
-        foreach (var item in enCapsula) {
-          var inv = inventarios.SingleOrDefault(p => p.CurrentItem.ItemID == item.CurrentItem.ItemID);
-          if (inv == null) {
-            inventarios.Add(item);
-          }
-          else {
-            inv.CantidadEnCapsula = item.CantidadEnCapsula;
-          }
-        }
-
-        model.Items = inventarios.OrderBy(p => p.CurrentItem.Order).ToList();
-
-        return View(model);
-      }
-    }
-    private ActionResult RecuperarItems(string id, bool? spawnable) {
-      if (id == null) {
-        return new HttpNotFoundResult();
-      }
-
-      using (InventarioEntities db = new InventarioEntities()) {
-        string user = User.Identity.GetUserName();
-
-        var capsulasInterests = ItemsXml.Where(p => p.PaysInterests).Select(s => s.ItemID);
-
-        var capsula = db.Capsulas.SingleOrDefault(p => p.IdCapsula == id && p.IdUsuario == user && (!spawnable.HasValue || capsulasInterests.Contains(p.ItemID)));
-
-        if (capsula == null) {
-          return new HttpNotFoundResult();
-        }
-
-        ManageViewModel model = new ManageViewModel();
-        model.IdCapsula = id;
-        model.Descripcion = capsula.Descripcion;
-        model.Total = capsula.CapsulasItems.Sum(s => s.Cantidad);
-        model.Items = capsula.CapsulasItems.Select(p => new Models.ItemInventoryViewModel {
-          CurrentItem = ItemsXml.Single(z => z.ItemID == p.ItemID),
-          Cantidad = p.Cantidad
-        }).OrderBy(x => x.CurrentItem.Order).ToList();
-
-        return View(model);
-      }
+      return View(model);
     }
 
     [HttpPost]
-    public ActionResult ManageItems(ManageViewModel capsula) {
-      using (InventarioEntities db = new InventarioEntities()) {
-        string user = User.Identity.GetUserName();
-        var capsulaDB = db.Capsulas.SingleOrDefault(p => p.IdCapsula == capsula.IdCapsula && p.IdUsuario == user);
+    public ActionResult Edit(AddEditViewModel capsule) {
+      var unique = !string.IsNullOrEmpty(ItemsXml.Single(p => p.IsCapsule && p.ItemID == capsule.ItemId).UniqueID);
 
-        if (capsulaDB == null) {
-          return new HttpNotFoundResult();
-        }
-
-        if (capsula.Items != null) {
-          foreach (Models.ItemInventoryViewModel item in capsula.Items) {
-            string itemID = item.CurrentItem.ItemID;
-            CapsulasItems capsulaItem = db.CapsulasItems.SingleOrDefault(p => p.IdCapsula == capsula.IdCapsula && p.ItemID == itemID);
-
-            if (capsulaItem != null) {
-              capsulaItem.Cantidad = item.Cantidad;
-            }
-          }
-
-          db.SaveChanges();
-        }
-
-        return RedirectToAction("List", new { id = capsula.IdCapsula });
+      if (!unique && capsule.Code.Length != 8) {
+        ModelState.AddModelError("Code", "Code must be 8 characters long.");
       }
+
+      var capsuleDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == capsule.CapsuleId && p.UserId == Username);
+
+      if (capsuleDB == null) {
+        return new HttpNotFoundResult();
+      }
+
+      if (capsuleDB.Code != capsule.Code && Database.Capsules.Any(p => p.UserId == Username && p.Code == capsule.Code)) {
+        ModelState.AddModelError("Duplicate", "There is another capsule with the same Code");
+      }
+
+      if (ModelState.IsValid) {
+        capsuleDB.Code = capsule.Code;
+        capsuleDB.Name = capsule.Name;
+        capsuleDB.ItemId = capsule.ItemId;
+
+        Database.SaveChanges();
+
+        return RedirectToAction("Index");
+      }
+
+      capsule.CapsuleTypes = GetValidNewCapsuleTypes(capsuleDB.ItemId);
+
+      return View(capsule);
+    }
+
+    [HttpGet]
+    public ActionResult ManageItems(int id) {
+      var model = RecuperarItems(id, false);
+
+      if (model == null) {
+        return new HttpNotFoundResult();
+      }
+
+      return View(model);
     }
 
     [HttpPost]
-    public ActionResult Unload(UnloadViewModel capsula) {
-      if (!ModelState.IsValid) {
-        return RecuperarItemsUnload(capsula.IdCapsula);
+    public ActionResult ManageItems(ManageViewModel capsule) {
+      var capsuleDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == capsule.CapsuleId && p.UserId == Username);
+
+      if (capsuleDB == null) {
+        return new HttpNotFoundResult();
       }
 
-      using (InventarioEntities db = new InventarioEntities()) {
-        string user = User.Identity.GetUserName();
-        var capsulaDB = db.Capsulas.SingleOrDefault(p => p.IdCapsula == capsula.IdCapsula && p.IdUsuario == user);
+      if (capsule.Items != null) {
+        foreach (Models.ItemInventoryViewModel item in capsule.Items) {
+          string itemID = item.CurrentItem.ItemID;
+          var capsulaItem = Database.CapsulesItems.SingleOrDefault(p => p.CapsuleId == capsule.CapsuleId && p.ItemID == itemID);
 
-        if (capsulaDB == null) {
-          return new HttpNotFoundResult();
-        }
-
-        if (capsula.Items != null) {
-          foreach (var item in capsula.Items.Where(p => p.CantidadDescargar > 0)) {
-            CapsulasItems capsulaItem = db.CapsulasItems.SingleOrDefault(p => p.IdCapsula == capsula.IdCapsula && p.ItemID == item.CurrentItem.ItemID);
-
-            if (capsulaItem != null) {
-              if (capsulaItem.Cantidad == item.CantidadDescargar) {
-                db.CapsulasItems.Remove(capsulaItem);
-              }
-              else {
-                capsulaItem.Cantidad -= item.CantidadDescargar;
-              }
-
-              Inventarios inv = db.Inventarios.SingleOrDefault(p => p.IdUsuario == user && p.ItemID == item.CurrentItem.ItemID);
-
-              if (inv != null) {
-                inv.Cantidad += item.CantidadDescargar;
-              }
-              else {
-                db.Inventarios.Add(new Inventarios { IdUsuario = user, ItemID = item.CurrentItem.ItemID, Cantidad = item.CantidadDescargar });
-              }
-            }
+          if (capsulaItem != null) {
+            capsulaItem.Quantity = item.Quantity;
           }
-
-          db.SaveChanges();
         }
 
-        return RedirectToAction("List", new { id = capsula.IdCapsula });
+        Database.SaveChanges();
       }
+
+      return RedirectToAction("List", new { id = capsule.CapsuleId });
+    }
+
+    [HttpGet]
+    public ActionResult Delete(int id) {
+      var capsuleDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == id && p.UserId == Username);
+
+      if (capsuleDB == null) {
+        return new HttpNotFoundResult();
+      }
+
+      CapsuleViewModel model = new CapsuleViewModel();
+      LoadCapsule(capsuleDB, model);
+
+      return View(model);
+    }
+
+    [HttpPost]
+    public ActionResult Delete(CapsuleViewModel capsule) {
+      var capsuleDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == capsule.CapsuleId && p.UserId == Username);
+
+      if (capsuleDB == null) {
+        return new HttpNotFoundResult();
+      }
+
+      Database.CapsulesItems.RemoveRange(capsuleDB.CapsulesItems);
+      Database.Capsules.Remove(capsuleDB);
+
+      Database.SaveChanges();
+
+      return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    public ActionResult Load(int id) {
+      var model = RecuperarItemsLoad(id);
+
+      if (model == null) {
+        return new HttpNotFoundResult();
+      }
+
+      return View(model);
     }
 
     [HttpPost]
@@ -468,208 +220,457 @@ namespace MiInventario.Controllers {
         return View(capsula);
       }
 
-      using (InventarioEntities db = new InventarioEntities()) {
-        string user = User.Identity.GetUserName();
-        var capsulaDB = db.Capsulas.SingleOrDefault(p => p.IdCapsula == capsula.IdCapsula && p.IdUsuario == user);
+      var capsulaDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == capsula.CapsuleId && p.UserId == Username);
 
-        if (capsulaDB == null) {
-          return new HttpNotFoundResult();
+      if (capsulaDB == null) {
+        return new HttpNotFoundResult();
+      }
+
+      if (capsula.Items != null) {
+
+        if (capsula.Items.Any(p => p.LoadQuantity > p.ItemQuantity)) {
+          return View(capsula);
         }
 
-        if (capsula.Items != null) {
+        foreach (var item in capsula.Items.Where(p => p.LoadQuantity > 0)) {
+          CapsulesItems capsulaItem = Database.CapsulesItems.SingleOrDefault(p => p.CapsuleId == capsula.CapsuleId && p.ItemID == item.CurrentItem.ItemID);
 
-          if (capsula.Items.Any(p => p.CantidadCargar > p.CantidadSuelta)) {
-            return View(capsula);
+          if (capsulaItem != null) {
+            capsulaItem.Quantity += item.LoadQuantity;
+          }
+          else {
+            Database.CapsulesItems.Add(new CapsulesItems { CapsuleId = capsula.CapsuleId, ItemID = item.CurrentItem.ItemID, Quantity = item.LoadQuantity });
           }
 
-          foreach (var item in capsula.Items.Where(p => p.CantidadCargar > 0)) {
-            CapsulasItems capsulaItem = db.CapsulasItems.SingleOrDefault(p => p.IdCapsula == capsula.IdCapsula && p.ItemID == item.CurrentItem.ItemID);
+          Inventarios inv = Database.Inventarios.SingleOrDefault(p => p.IdUsuario == Username && p.ItemID == item.CurrentItem.ItemID);
 
-            if (capsulaItem != null) {
-              capsulaItem.Cantidad += item.CantidadCargar;
+          if (inv != null) {
+            if (inv.Cantidad == item.LoadQuantity) {
+              Database.Inventarios.Remove(inv);
             }
             else {
-              db.CapsulasItems.Add(new CapsulasItems { IdCapsula = capsula.IdCapsula, ItemID = item.CurrentItem.ItemID, Cantidad = item.CantidadCargar });
-            }
-
-            Inventarios inv = db.Inventarios.SingleOrDefault(p => p.IdUsuario == user && p.ItemID == item.CurrentItem.ItemID);
-
-            if (inv != null) {
-              if (inv.Cantidad == item.CantidadCargar) {
-                db.Inventarios.Remove(inv);
-              }
-              else {
-                inv.Cantidad -= item.CantidadCargar;
-              }
+              inv.Cantidad -= item.LoadQuantity;
             }
           }
-
-          db.SaveChanges();
         }
 
-        return RedirectToAction("List", new { id = capsula.IdCapsula });
+        Database.SaveChanges();
       }
+
+      return RedirectToAction("List", new { id = capsula.CapsuleId });
+    }
+
+    [HttpGet]
+    public ActionResult Unload(int id) {
+      var model = RecuperarItemsUnload(id);
+
+      if (model == null) {
+        return new HttpNotFoundResult();
+      }
+
+      return View(model);
     }
 
     [HttpPost]
-    public ActionResult LogInterests(ManageViewModel capsula) {
-      using (InventarioEntities db = new InventarioEntities()) {
-        string user = User.Identity.GetUserName();
+    public ActionResult Unload(UnloadViewModel capsule) {
+      if (!ModelState.IsValid) {
+        var model = RecuperarItemsUnload(capsule.CapsuleId);
 
-        var capsulaDB = db.Capsulas.SingleOrDefault(p => p.IdCapsula == capsula.IdCapsula && p.IdUsuario == user);
-
-        if (capsulaDB == null) {
+        if (model == null) {
           return new HttpNotFoundResult();
         }
 
-        if (capsula.Items == null) {
-          return RedirectToAction("List", new { id = capsula.IdCapsula });
-        }
+        return View(model);
+      }
 
-        if (capsula.Items.Sum(p => p.Cantidad) > 100) {
-          ModelState.AddModelError("Masde100", "Total Quantity on capsule exceeds 100.");
-          return LogInterests(capsula.IdCapsula);
-        }
+      var capsulaDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == capsule.CapsuleId && p.UserId == Username);
 
-        Dictionary<string, int> v_nuevos = new Dictionary<string, int>();
+      if (capsulaDB == null) {
+        return new HttpNotFoundResult();
+      }
 
-        foreach (Models.ItemInventoryViewModel item in capsula.Items) {
-          CapsulasItems capsulaItem = db.CapsulasItems.SingleOrDefault(p => p.IdCapsula == capsula.IdCapsula && p.ItemID == item.CurrentItem.ItemID);
+      if (capsule.Items != null) {
+        foreach (var item in capsule.Items.Where(p => p.UnloadQuantity > 0)) {
+          CapsulesItems capsulaItem = Database.CapsulesItems.SingleOrDefault(p => p.CapsuleId == capsule.CapsuleId && p.ItemID == item.CurrentItem.ItemID);
 
           if (capsulaItem != null) {
-            if (capsulaItem.Cantidad > item.Cantidad) {
-              ModelState.AddModelError("Masde100", "Quantity must be equal or greater than quantity on capsule.");
-              return LogInterests(capsula.IdCapsula);
+            if (capsulaItem.Quantity == item.UnloadQuantity) {
+              Database.CapsulesItems.Remove(capsulaItem);
             }
-            else if (capsulaItem.Cantidad < item.Cantidad) {
-              v_nuevos.Add(item.CurrentItem.ItemID, item.Cantidad - capsulaItem.Cantidad);
-              capsulaItem.Cantidad = item.Cantidad;
+            else {
+              capsulaItem.Quantity -= item.UnloadQuantity;
             }
-          }
-          else {
-            break;
+
+            Inventarios inv = Database.Inventarios.SingleOrDefault(p => p.IdUsuario == Username && p.ItemID == item.CurrentItem.ItemID);
+
+            if (inv != null) {
+              inv.Cantidad += item.UnloadQuantity;
+            }
+            else {
+              Database.Inventarios.Add(new Inventarios { IdUsuario = Username, ItemID = item.CurrentItem.ItemID, Cantidad = item.UnloadQuantity });
+            }
           }
         }
 
-        if (v_nuevos.Count > 0) {
-          DateTime ahora = DateTime.Now;
-          DateTime diferencia = ahora.AddMinutes(-15);
-          Reproducciones v_ultimaCercana = db.Reproducciones.FirstOrDefault(p => p.IdUsuario == user && p.Fecha >= diferencia);
-          if (v_ultimaCercana != null) {
-            ahora = v_ultimaCercana.Fecha;
+        Database.SaveChanges();
+      }
+
+      return RedirectToAction("List", new { id = capsule.CapsuleId });
+    }
+
+    [HttpGet]
+    public ActionResult LogInterests(int id) {
+      var model = RecuperarItems(id, true);
+
+      if (model == null) {
+        return new HttpNotFoundResult();
+      }
+
+      if (!model.Items.Any()) {
+        return RedirectToAction("List", new { id = id });
+      }
+
+      return View(model);
+    }
+
+    [HttpPost]
+    public ActionResult LogInterests(ManageViewModel capsule) {
+      var capsuleDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == capsule.CapsuleId && p.UserId == Username);
+
+      if (capsuleDB == null) {
+        return new HttpNotFoundResult();
+      }
+
+      var spawnables = ItemsXml.Where(p => p.PaysInterests).Select(s => s.ItemID);
+      if (!spawnables.Contains(capsuleDB.ItemId)) {
+        return RedirectToAction("List", new { id = capsule.CapsuleId });
+      }
+
+      if (!capsuleDB.CapsulesItems.Any()) {
+        return RedirectToAction("List", new { id = capsule.CapsuleId });
+      }
+
+      if (capsule.Items == null) {
+        return RedirectToAction("List", new { id = capsule.CapsuleId });
+      }
+
+      if (capsule.Items.Sum(p => p.Quantity) > 100) {
+        ModelState.AddModelError("Masde100", "Total Quantity on capsule exceeds 100.");
+        return LogInterests(capsule.CapsuleId);
+      }
+
+      Dictionary<string, int> nuevos = new Dictionary<string, int>();
+
+      foreach (Models.ItemInventoryViewModel item in capsule.Items) {
+        CapsulesItems capsulaItem = Database.CapsulesItems.SingleOrDefault(p => p.CapsuleId == capsule.CapsuleId && p.ItemID == item.CurrentItem.ItemID);
+
+        if (capsulaItem != null) {
+          if (capsulaItem.Quantity > item.Quantity) {
+            ModelState.AddModelError("Masde100", "Quantity must be equal or greater than quantity on capsule.");
+            return LogInterests(capsule.CapsuleId);
           }
-
-          Reproducciones v_repro = new Reproducciones { IdCapsula = capsula.IdCapsula, IdUsuario = user, Fecha = ahora };
-          foreach (var kv in v_nuevos) {
-            v_repro.ReproduccionesItems.Add(new ReproduccionesItems { ItemID = kv.Key, Cantidad = kv.Value });
+          else if (capsulaItem.Quantity < item.Quantity) {
+            nuevos.Add(item.CurrentItem.ItemID, item.Quantity - capsulaItem.Quantity);
+            capsulaItem.Quantity = item.Quantity;
           }
-          db.Reproducciones.Add(v_repro);
+        }
+        else {
+          break;
+        }
+      }
 
-          db.SaveChanges();
-
-          return RedirectToAction("List", new { id = capsula.IdCapsula });
+      if (nuevos.Count > 0) {
+        DateTime ahora = DateTime.Now;
+        DateTime diferencia = ahora.AddHours(-1);
+        Reproducciones v_ultimaCercana = Database.Reproducciones.FirstOrDefault(p => p.IdUsuario == Username && p.Fecha >= diferencia);
+        if (v_ultimaCercana != null) {
+          ahora = v_ultimaCercana.Fecha;
         }
 
-        return RedirectToAction("LogInterests", new { id = capsula.IdCapsula });
+        Reproducciones v_repro = new Reproducciones { IdCapsula = capsuleDB.Code, IdUsuario = Username, Fecha = ahora };
+        foreach (var kv in nuevos) {
+          v_repro.ReproduccionesItems.Add(new ReproduccionesItems { ItemID = kv.Key, Cantidad = kv.Value });
+        }
+        Database.Reproducciones.Add(v_repro);
+
+        Database.SaveChanges();
+
+        return RedirectToAction("List", new { id = capsule.CapsuleId });
+      }
+
+      return RedirectToAction("LogInterests", new { id = capsule.CapsuleId });
+    }
+
+
+    [HttpGet]
+    public ActionResult AddItem(int id) {
+      var capsuleDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == id && p.UserId == Username);
+
+      if (capsuleDB == null) {
+        return new HttpNotFoundResult();
+      }
+
+      AddItemViewModel model = new AddItemViewModel();
+      LoadCapsule(capsuleDB, model);
+
+      var itemsCargados = capsuleDB.CapsulesItems.Select(p => p.ItemID).ToList();
+      var isKey = ItemsXml.Where(p => p.IsKey).Select(s => s.ItemID);
+
+      model.AddeableItems = ItemsXml.Where(p => !p.IsCapsule && !itemsCargados.Contains(p.ItemID) && (!model.Properties.IsKeyLocker || isKey.Contains(p.ItemID)))
+          .Select(q => new Models.ItemViewModel {
+            CurrentItem = q,
+          }).ToList();
+
+      return View(model);
+    }
+
+    [HttpPost]
+    public ActionResult AddItem(AddItemViewModel addedItem) {
+      var capsuleDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == addedItem.CapsuleId && p.UserId == Username);
+
+      if (capsuleDB == null) {
+        return new HttpNotFoundResult();
+      }
+
+      if (ModelState.IsValid) {
+        Database.CapsulesItems.Add(new CapsulesItems { CapsuleId = addedItem.CapsuleId, ItemID = addedItem.ItemID, Quantity = addedItem.Quantity });
+
+        Database.SaveChanges();
+
+        return RedirectToAction("List", new { id = addedItem.CapsuleId });
+      }
+      else {
+        LoadCapsule(capsuleDB, addedItem);
+
+        var itemsCargados = capsuleDB.CapsulesItems.Select(p => p.ItemID).ToList();
+        var isKey = ItemsXml.Where(p => p.IsKey).Select(s => s.ItemID);
+
+        addedItem.AddeableItems = ItemsXml.Where(p => !p.IsCapsule && !itemsCargados.Contains(p.ItemID) && (!addedItem.Properties.IsKeyLocker || isKey.Contains(p.ItemID)))
+              .Select(q => new Models.ItemViewModel {
+                CurrentItem = q,
+              }).ToList();
+
+        return View(addedItem);
       }
     }
 
     [HttpGet]
-    public ActionResult DeleteItem(string id, string itemID) {
-      if (id == null || string.IsNullOrWhiteSpace(itemID)) {
+    public ActionResult DeleteItem(int id, string itemID) {
+      if (string.IsNullOrWhiteSpace(itemID)) {
         return new HttpNotFoundResult();
       }
 
-      using (InventarioEntities db = new InventarioEntities()) {
-        string user = User.Identity.GetUserName();
+      var capsuleDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == id && p.UserId == Username);
 
-        var capsulaDB = db.Capsulas.SingleOrDefault(p => p.IdCapsula == id && p.IdUsuario == user);
-
-        if (capsulaDB == null) {
-          return new HttpNotFoundResult();
-        }
-
-        var item = capsulaDB.CapsulasItems.SingleOrDefault(p => p.ItemID == itemID);
-
-        if (item == null) {
-          return new HttpNotFoundResult();
-        }
-
-        Models.ItemViewModel summary = new Models.ItemViewModel {
-          CurrentItem = ItemsXml.Single(z => z.ItemID == item.ItemID),
-        };
-
-        return View(new DeleteItemViewModel { IdCapsula = id, Total = capsulaDB.CapsulasItems.Sum(s => s.Cantidad), Item = summary, Cantidad = item.Cantidad });
+      if (capsuleDB == null) {
+        return new HttpNotFoundResult();
       }
+
+      var item = capsuleDB.CapsulesItems.SingleOrDefault(p => p.ItemID == itemID);
+
+      if (item == null) {
+        return new HttpNotFoundResult();
+      }
+
+
+      DeleteItemViewModel model = new DeleteItemViewModel();
+      LoadCapsule(capsuleDB, model);
+
+      Models.ItemViewModel summary = new Models.ItemViewModel {
+        CurrentItem = ItemsXml.Single(z => z.ItemID == item.ItemID),
+      };
+      model.Item = summary;
+      model.Quantity = item.Quantity;
+
+      return View(model);
     }
 
     [HttpPost]
     public ActionResult DeleteItem(DeleteItemViewModel element) {
-      using (InventarioEntities db = new InventarioEntities()) {
-        string user = User.Identity.GetUserName();
 
-        var capsulaDB = db.Capsulas.SingleOrDefault(p => p.IdCapsula == element.IdCapsula && p.IdUsuario == user);
+      var capsulaDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == element.CapsuleId && p.UserId == Username);
 
-        if (capsulaDB == null) {
-          return new HttpNotFoundResult();
-        }
-
-        var item = capsulaDB.CapsulasItems.SingleOrDefault(p => p.ItemID == element.Item.CurrentItem.ItemID);
-
-        if (item == null) {
-          return new HttpNotFoundResult();
-        }
-
-        db.CapsulasItems.Remove(item);
-
-        db.SaveChanges();
-
-        return RedirectToAction("ManageItems", new { id = element.IdCapsula });
+      if (capsulaDB == null) {
+        return new HttpNotFoundResult();
       }
+
+      var item = capsulaDB.CapsulesItems.SingleOrDefault(p => p.ItemID == element.Item.CurrentItem.ItemID);
+
+      if (item == null) {
+        return new HttpNotFoundResult();
+      }
+
+      Database.CapsulesItems.Remove(item);
+
+      Database.SaveChanges();
+
+      return RedirectToAction("ManageItems", new { id = element.CapsuleId });
     }
 
     [HttpGet]
-    public ActionResult Delete(string id) {
-      using (InventarioEntities db = new InventarioEntities()) {
-        string user = User.Identity.GetUserName();
+    public ActionResult SendToUser(int id, string sendToUser) {
+      var capsuleDB = Database.Capsules.SingleOrDefault(p => p.UserId == Username && p.CapsuleId == id);
 
-        var capsula = db.Capsulas.SingleOrDefault(p => p.IdCapsula == id && p.IdUsuario == user);
-
-        if (capsula == null) {
-          return new HttpNotFoundResult();
-        }
-
-        DeleteViewModel model = new DeleteViewModel();
-        model.IdCapsula = id;
-        model.Total = capsula.CapsulasItems.Sum(s => s.Cantidad);
-
-        return View(model);
+      if (capsuleDB == null) {
+        return new HttpNotFoundResult();
       }
+
+      bool hasCode = Database.Capsules.Any(p => p.UserId == sendToUser && p.Code == capsuleDB.Code);
+
+      if (hasCode) {
+        return new HttpNotFoundResult();
+      }
+
+      SendToViewModel model = new SendToViewModel();
+      LoadCapsule(capsuleDB, model);
+      model.UserId = sendToUser;
+
+      return View(model);
     }
 
     [HttpPost]
-    public ActionResult Delete(DeleteViewModel element) {
-      using (InventarioEntities db = new InventarioEntities()) {
-        string user = User.Identity.GetUserName();
+    public ActionResult SendToUser(SendToViewModel capsule) {
+      var capsuleDB = Database.Capsules.SingleOrDefault(p => p.UserId == Username && p.CapsuleId == capsule.CapsuleId);
 
-        var capsula = db.Capsulas.SingleOrDefault(p => p.IdUsuario == user && p.IdCapsula == element.IdCapsula);
-
-        if (capsula == null) {
-          return new HttpNotFoundResult();
-        }
-
-        while (capsula.CapsulasItems.Count > 0) {
-          db.CapsulasItems.Remove(capsula.CapsulasItems.First());
-        }
-
-        db.Capsulas.Remove(capsula);
-
-        db.SaveChanges();
-
-        return RedirectToAction("Index");
+      if (capsuleDB == null) {
+        return new HttpNotFoundResult();
       }
+
+      capsuleDB.UserId = capsule.UserId;
+
+      Database.SaveChanges();
+
+      return RedirectToAction("Index");
     }
 
 
+    private void LoadCapsule(Capsules capsuleDB, CapsuleViewModel model) {
+      model.CapsuleId = capsuleDB.CapsuleId;
+      model.Code = capsuleDB.Code;
+      model.Name = ResolveCapsuleName(capsuleDB);
+      model.TotalQuantity = capsuleDB.CapsulesItems.Sum(q => q.Quantity);
+      model.Properties = GetProperties(capsuleDB.ItemId);
+      model.ItemInside = capsuleDB.CapsulesItems.Count() == 1 ? new Models.ItemViewModel { CurrentItem = ItemsXml.Single(s => s.ItemID == capsuleDB.CapsulesItems.First().ItemID) } : null;
+    }
+
+    private UnloadViewModel RecuperarItemsUnload(int id) {
+      var capsuleDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == id && p.UserId == Username);
+
+      if (capsuleDB == null) {
+        return null;
+      }
+
+      UnloadViewModel model = new UnloadViewModel();
+      LoadCapsule(capsuleDB, model);
+
+      model.Items = capsuleDB.CapsulesItems.Select(p => new ItemUnloadViewModel {
+        CurrentItem = ItemsXml.Single(z => z.ItemID == p.ItemID),
+        CapsuleQuantity = p.Quantity,
+        UnloadQuantity = 0
+      }).OrderBy(x => x.CurrentItem.Order).ToList();
+
+      return model;
+    }
+
+    private LoadViewModel RecuperarItemsLoad(int id) {
+      var capsuleDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == id && p.UserId == Username);
+
+      if (capsuleDB == null) {
+        return null;
+      }
+
+      LoadViewModel model = new LoadViewModel();
+      LoadCapsule(capsuleDB, model);
+
+      model.Items = capsuleDB.CapsulesItems.Select(p => new ItemLoadViewModel {
+        CurrentItem = ItemsXml.Single(z => z.ItemID == p.ItemID),
+        CapsuleQuantity = p.Quantity,
+        ItemQuantity = 0,
+        LoadQuantity = 0
+      }).OrderBy(x => x.CurrentItem.Order).ToList();
+
+      var isCapsule = ItemsXml.Where(p => p.IsCapsule).Select(s => s.ItemID);
+      var isKey = ItemsXml.Where(p => p.IsKey).Select(s => s.ItemID);
+
+      var inventoryDB = Database.Inventarios.Where(p => p.IdUsuario == Username && !isCapsule.Contains(p.ItemID) && (!model.Properties.IsKeyLocker || isKey.Contains(p.ItemID))).ToList();
+
+      var inventories = inventoryDB.Select(q => new ItemLoadViewModel {
+        CurrentItem = ItemsXml.Single(z => z.ItemID == q.ItemID),
+        CapsuleQuantity = 0,
+        ItemQuantity = q.Cantidad,
+        LoadQuantity = 0
+      }).OrderBy(p => p.CurrentItem.Order).ToList();
+
+      foreach (var item in model.Items) {
+        ItemLoadViewModel inv = inventories.SingleOrDefault(p => p.CurrentItem == item.CurrentItem);
+        if (inv != null) {
+          item.ItemQuantity = inv.ItemQuantity;
+          inventories.Remove(inv);
+        }
+      }
+
+      model.Items.AddRange(inventories);
+
+      return model;
+    }
+
+    private ManageViewModel RecuperarItems(int id, bool onlySpawnables) {
+      var capsuleDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == id && p.UserId == Username);
+
+      if (capsuleDB == null) {
+        return null;
+      }
+
+      if (onlySpawnables) {
+        var spawnables = ItemsXml.Where(p => p.PaysInterests).Select(s => s.ItemID);
+
+        if (!spawnables.Contains(capsuleDB.ItemId)) {
+          return null;
+        }
+      }
+
+      ManageViewModel model = new ManageViewModel();
+      LoadCapsule(capsuleDB, model);
+
+      model.Items = capsuleDB.CapsulesItems.Select(p => new Models.ItemInventoryViewModel {
+        CurrentItem = ItemsXml.Single(z => z.ItemID == p.ItemID),
+        Quantity = p.Quantity
+      }).OrderBy(x => x.CurrentItem.Order).ToList();
+
+      return model;
+    }
+
+    private CapsuleProperties GetProperties(string capsuleItemID) {
+      return ItemsXml.Where(p => p.ItemID == capsuleItemID).Select(q => new CapsuleProperties {
+        Order = q.Order,
+        IsKeyLocker = q.IsKeyLocker,
+        IsTransferable = q.Transfer,
+        PaysInterests = q.PaysInterests,
+        UniqueID = q.UniqueID,
+        UniqueName = string.IsNullOrEmpty(q.UniqueID) ? null : Resources.ItemsNames.ResourceManager.GetString(q.UniqueID)
+      }).Single();
+    }
+
+    private string ResolveCapsuleName(Capsules capsule) {
+      if (!string.IsNullOrEmpty(capsule.Name)) {
+        return capsule.Name;
+      }
+
+      if (!capsule.CapsulesItems.Any()) {
+        return Resources.General.ResourceManager.GetString("Capsule_Empty");
+      }
+
+      if (capsule.CapsulesItems.Count() > 1) {
+        return string.Format("({0} items)", capsule.CapsulesItems.Count());
+      }
+
+      return string.Empty;
+    }
+
+    private IEnumerable<Item> GetValidNewCapsuleTypes(string capsuleItemId) {
+      var existingTypes = Database.Capsules.Where(p => p.UserId == Username).Select(q => q.ItemId).Distinct();
+
+      return ItemsXml.Where(p => p.IsCapsule && (p.ItemID == capsuleItemId || string.IsNullOrEmpty(p.UniqueID) || !existingTypes.Contains(p.ItemID)));
+    }
   }
 }

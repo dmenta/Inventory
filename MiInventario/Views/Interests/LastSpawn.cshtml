@@ -30,7 +30,7 @@ else
                         }
                         @Html.Partial("_ItemDescription", primero)
                     </td>
-                    <td class="cantidadItem">@primero.Cantidad</td>
+                    <td class="cantidadItem">@primero.Quantity</td>
                 </tr>
                 @if (Model.Totales.Count() > 1)
                 {
@@ -44,7 +44,7 @@ else
                             <td class="elementos">
                                 @Html.Partial("_ItemDescription", elemento)
                             </td>
-                            <td class="cantidadItem">@elemento.Cantidad</td>
+                            <td class="cantidadItem">@elemento.Quantity</td>
                         </tr>
                     }
                 }
@@ -58,7 +58,7 @@ else
                         <td class="elementos">
                             @Html.Partial("_ItemDescription", primero)
                         </td>
-                        <td class="cantidadItem">@primero.Cantidad</td>
+                        <td class="cantidadItem">@primero.Quantity</td>
                     </tr>
                     if (capsula.Cantidad > 1)
                     {
@@ -72,7 +72,7 @@ else
                                 <td class="elementos">
                                     @Html.Partial("_ItemDescription", elemento)
                                 </td>
-                                <td class="cantidadItem">@elemento.Cantidad</td>
+                                <td class="cantidadItem">@elemento.Quantity</td>
                             </tr>
                         }
                     }
@@ -84,5 +84,5 @@ else
 }
 <div class="clearfix"></div>
 <p>
-    @Html.ActionLink("Back to Capsules", "Index")
+    @Html.ActionLink("Back to Capsules", "Index", "Capsules")
 </p>

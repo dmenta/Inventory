@@ -120,8 +120,26 @@
   <data name="ADA" xml:space="preserve">
     <value>ADA Refactor</value>
   </data>
+  <data name="CAPS_KLBL" xml:space="preserve">
+    <value>Key Locker Blue</value>
+  </data>
+  <data name="CAPS_KLGR" xml:space="preserve">
+    <value>Key Locker Green</value>
+  </data>
+  <data name="CAPS_KLGY" xml:space="preserve">
+    <value>Key Locker Gray</value>
+  </data>
+  <data name="CAPS_KLRE" xml:space="preserve">
+    <value>Key Locker Red</value>
+  </data>
+  <data name="CAPS_KLYE" xml:space="preserve">
+    <value>Key Locker Yellow</value>
+  </data>
   <data name="CAPS_MUFG" xml:space="preserve">
     <value>Capsule MUFG</value>
+  </data>
+  <data name="CUBE_L" xml:space="preserve">
+    <value>Lawson Power Cube</value>
   </data>
   <data name="FA_RA" xml:space="preserve">
     <value>Force Amp</value>

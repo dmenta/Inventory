@@ -1,0 +1,17 @@
+﻿@model MiInventario.Models.Capsules.CapsuleViewModel
+@if (string.IsNullOrEmpty(Model.Name)) {
+  if (Model.ItemInside != null) {
+    <h3>@Model.Code [@Html.Partial("_ItemDescription",Model.ItemInside)] (@Model.TotalQuantity)</h3>
+  }
+  else {
+    <h3>@Model.Code (@Model.TotalQuantity)</h3>
+  }
+}
+else {
+  <h3>@Model.Name [@Model.CapsuleId] (@Model.TotalQuantity)</h3>
+}
+@if (@Model.TotalQuantity > 100) {
+  <p class="avisoCapsulaErronea">
+    Capsule total quantity is greater than the maximum allowed (100)
+  </p>
+}

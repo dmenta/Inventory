@@ -3,18 +3,9 @@
   ViewBag.Title = "Log Interest";
 }
 
-<h2>Log Interest</h2>
-@if (string.IsNullOrEmpty(Model.Descripcion)) {
-  <h3>@Model.IdCapsula (@Model.Total)</h3>
-}
-else {
-  <h3>@Model.Descripcion [@Model.IdCapsula] (@Model.Total)</h3>
-}
-@if (@Model.Total > 100) {
-  <p class="avisoCapsulaErronea">
-    La cantidad total de la cápsula supera lo permitido
-  </p>
-}
+<h2>@ViewBag.Title</h2>
+@Html.Partial("_CapsuleHeader", Model)
+
 @foreach (var item in ViewContext.ViewData.ModelState)
 {
     if (item.Value.Errors.Any())
@@ -27,7 +18,7 @@ else {
 }
 
 @using (Html.BeginForm("LogInterests", "Capsules", FormMethod.Post, new { @class = "form-horizontal" })) {
-  @Html.HiddenFor(model => model.IdCapsula)
+  @Html.HiddenFor(model => model.CapsuleId)
 
   <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
     <table class="table table-condensed table-striped">
@@ -50,7 +41,7 @@ else {
             </td>
             <td class="cantidadItem">
               @Html.HiddenFor(model => Model.Items[i].CurrentItem.ItemID)
-              @Html.TextBoxFor(model => Model.Items[i].Cantidad, new { @class = "form-control text-right input-sm" })
+              @Html.TextBoxFor(model => Model.Items[i].Quantity, new { @class = "form-control text-right input-sm" })
             </td>
           </tr>
         }
@@ -63,5 +54,5 @@ else {
   </p>
 }
 <p>
-  @Html.ActionLink("Back to Capsules", "Index") | @Html.ActionLink("Back to View Capsule", "List", new { @id = Model.IdCapsula })
+  @Html.ActionLink("Back to Capsules", "Index") | @Html.ActionLink("Back to View Capsule", "List", new { @id = Model.CapsuleId })
 </p>

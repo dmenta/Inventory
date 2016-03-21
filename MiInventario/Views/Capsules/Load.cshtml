@@ -2,17 +2,11 @@
 @{
     ViewBag.Title = "Load Items";
 }
-<h2>Load Items</h2>
-@if (string.IsNullOrEmpty(Model.Descripcion))
-{
-    <h3>@Model.IdCapsula (@Model.Total)</h3>
-}
-else
-{
-    <h3>@Model.Descripcion [@Model.IdCapsula] (@Model.Total)</h3>
-}
-@if (!ViewData.ModelState.IsValid)
-{
+
+<h2>@ViewBag.Title</h2>
+@Html.Partial("_CapsuleHeader", Model)
+
+@if (!ViewData.ModelState.IsValid) {
     <div class="alert alert-dismissible alert-warning">
         <button type="button" class="close" data-dismiss="alert">×</button>
         @string.Join("; ", ViewData.ModelState.Values
@@ -22,8 +16,8 @@ else
 }
 @using (Html.BeginForm("Load", "Capsules", FormMethod.Post, new { @class = "form-horizontal" }))
 {
-    @Html.HiddenFor(model => model.IdCapsula)
-    @Html.HiddenFor(model => model.Total)
+    @Html.HiddenFor(model => model.CapsuleId)
+    @Html.HiddenFor(model => model.TotalQuantity)
 
     <div class="col-lg-4 col-md-5 col-sm-6 col-xs-12">
         <table class="table table-condensed table-striped">
@@ -47,8 +41,8 @@ else
                     var item = Model.Items[i];
                     @Html.HiddenFor(model => Model.Items[i].CurrentItem.ItemID)
                     @Html.HiddenFor(model => Model.Items[i].CurrentItem.TypeID)
-                    @Html.HiddenFor(model => Model.Items[i].CantidadSuelta)
-                    @Html.HiddenFor(model => Model.Items[i].CantidadEnCapsula)
+                    @Html.HiddenFor(model => Model.Items[i].ItemQuantity)
+                    @Html.HiddenFor(model => Model.Items[i].CapsuleQuantity)
                     @Html.HiddenFor(model => Model.Items[i].CurrentItem.Level)
                     @Html.HiddenFor(model => Model.Items[i].CurrentItem.Rarity)
                     <tr>
@@ -56,17 +50,17 @@ else
                             @Html.Partial("_ItemDescription", item)
                         </td>
                         <td class="cantidadItem">
-                            @Html.DisplayFor(model => Model.Items[i].CantidadSuelta)
+                            @Html.DisplayFor(model => Model.Items[i].ItemQuantity)
                         </td>
                         <td class="cantidadItem">
-                            @if (Model.Items[i].CantidadEnCapsula > 0)
+                            @if (Model.Items[i].CapsuleQuantity > 0)
                             {
-                                @String.Format("({0})", Model.Items[i].CantidadEnCapsula);
+                                @String.Format("({0})", Model.Items[i].CapsuleQuantity);
                             }
                         </td>
                         <td class="cantidadItem">
-                            @if (item.CantidadSuelta > 0) {
-                                @Html.TextBoxFor(model => Model.Items[i].CantidadCargar, new { @class = "form-control text-right input-sm" });
+                            @if (item.ItemQuantity > 0) {
+                                @Html.TextBoxFor(model => Model.Items[i].LoadQuantity, new { @class = "form-control text-right input-sm" });
                             }
                         </td>
                     </tr>
@@ -81,5 +75,5 @@ else
 }
 <div class="clearfix"></div>
 <p>
-    @Html.ActionLink("Back to Capsules", "Index") | @Html.ActionLink("Back to View Capsule", "List", new { @id = Model.IdCapsula })
+    @Html.ActionLink("Back to Capsules", "Index") | @Html.ActionLink("Back to View Capsule", "List", new { @id = Model.CapsuleId })
 </p>

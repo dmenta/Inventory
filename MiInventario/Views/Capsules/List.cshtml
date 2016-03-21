@@ -1,31 +1,23 @@
 ﻿@model MiInventario.Models.Capsules.ManageViewModel
 @{
-    ViewBag.Title = Model.IdCapsula;
+    ViewBag.Title = "View Items";
 }
 
-<h2>View Items</h2>
-@if (string.IsNullOrEmpty(Model.Descripcion))
-{
-    <h3>@Model.IdCapsula (@Model.Total)</h3>
-}
-else
-{
-    <h3>@Model.Descripcion [@Model.IdCapsula] (@Model.Total)</h3>
-}
+<h2>@ViewBag.Title</h2>
+@Html.Partial("_CapsuleHeader", Model)
 
 @Html.Partial("_ShowItemsCapsule", Model.Items)
 
 <div class="clearfix"></div>
 <p>
     @Html.ActionLink("Back to Capsules", "Index")
-    | @Html.ActionLink("Log Interests", "LogInterests", new { @id = Model.IdCapsula })
-    | @Html.ActionLink("Load", "Load", new { @id = Model.IdCapsula })
-    | @Html.ActionLink("Unload", "Unload", new { @id = Model.IdCapsula })
-    | @Html.ActionLink("Edit", "Edit", new { @id = Model.IdCapsula })
-    | @Html.ActionLink("Add Item", "AddItem", new { @id = Model.IdCapsula })
-    | @Html.ActionLink("Manage Items", "ManageItems", new { @id = Model.IdCapsula })
-    @if (Model.Spawnable)
+    | @Html.ActionLink("Load", "Load", new { @id = Model.CapsuleId })
+    | @Html.ActionLink("Unload", "Unload", new { @id = Model.CapsuleId })
+    | @Html.ActionLink("Edit", "Edit", new { @id = Model.CapsuleId })
+    | @Html.ActionLink("Add Item", "AddItem", new { @id = Model.CapsuleId })
+    | @Html.ActionLink("Manage Items", "ManageItems", new { @id = Model.CapsuleId })
+    @if (Model.Properties.PaysInterests)
     {
-        <text>|</text> @Html.ActionLink("Log Interests", "LogInterests", new { @id = Model.IdCapsula });
+        <text>|</text> @Html.ActionLink("Log Interests", "LogInterests", new { @id = Model.CapsuleId });
     }
 </p>

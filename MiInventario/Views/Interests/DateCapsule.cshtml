@@ -30,7 +30,7 @@
                     <td class="text-nowrap">
                         @foreach (var elemento in capsula.Items)
                         {
-                            <div><span>@elemento.Cantidad</span>@Html.Partial("_ItemDescription", elemento)</div>
+                            <div><span>@elemento.Quantity</span>@Html.Partial("_ItemDescription", elemento)</div>
                         }
                     </td>
                 }
@@ -56,7 +56,7 @@
                         <td class="text-nowrap">
                             @foreach (var total in capsula.Items)
                             {
-                                <div><span>@total.Cantidad</span>@Html.Partial("_ItemDescription", total)</div>
+                                <div><span>@total.Quantity</span>@Html.Partial("_ItemDescription", total)</div>
                             }
                         </td>
                     }

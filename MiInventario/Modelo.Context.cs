@@ -25,10 +25,10 @@ namespace MiInventario
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Capsulas> Capsulas { get; set; }
-        public virtual DbSet<CapsulasItems> CapsulasItems { get; set; }
         public virtual DbSet<Inventarios> Inventarios { get; set; }
         public virtual DbSet<Reproducciones> Reproducciones { get; set; }
         public virtual DbSet<ReproduccionesItems> ReproduccionesItems { get; set; }
+        public virtual DbSet<Capsules> Capsules { get; set; }
+        public virtual DbSet<CapsulesItems> CapsulesItems { get; set; }
     }
 }

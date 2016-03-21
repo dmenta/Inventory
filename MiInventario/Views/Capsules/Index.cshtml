@@ -1,135 +1,136 @@
 ﻿@using Microsoft.AspNet.Identity
-@model List<MiInventario.Models.Capsules.CapsulesViewModel>
 @{
-    ViewBag.Title = "Cápsulas";
+  ViewBag.Title = "Capsules";
 }
-
-<h2>Cápsulas (@Model.Count())</h2>
+<h2>@ViewBag.Title</h2>
 <div style="margin-bottom: 20px">
-    <div class="btn-group">
-        <a href="#" id="btnAcciones" data-url="@Url.Action("ManageItems", new { @id = "IdCapsula" })" data-needspawn="false" class="btn btn-primary replacedLink">Manage</a>
-        <a href="#" id="btnAccionesDropdown" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
-        <ul class="dropdown-menu">
-            <li><a href="#" data-url="@Url.Action("AddItem", new { @id = "IdCapsula" })" data-needspawn="false" class="replacedLink">Add Item</a></li>
-            <li><a href="#" data-url="@Url.Action("Load", new { @id = "IdCapsula" })" data-needspawn="false" class="replacedLink">Load</a></li>
-            <li><a href="#" data-url="@Url.Action("Unload", new { @id = "IdCapsula" })" data-needspawn="false" class="replacedLink">Unload</a></li>
-            <li class="divider"></li>
-            <li><a href="#" data-url="@Url.Action("Edit", new { @id = "IdCapsula" })" data-needspawn="false" class="replacedLink">Edit</a></li>
-            <li><a href="#" data-url="@Url.Action("Delete", new { @id = "IdCapsula" })" data-needspawn="false" class="replacedLink">Delete</a></li>
-            <li class="divider"></li>
-            <li><a href="#" data-url="@Url.Action("LogInterests", new { @id = "IdCapsula" })" data-needspawn="true" class="replacedLink">Log Interests</a></li>
-            <li><a href="#" data-url="@Url.Action("DateCapsule", new { grouping = MiInventario.Code.DateGrouping.Day, idCapsula = "IdCapsula" })" data-needspawn="true" class="replacedLink">Interests Capsule by Day</a></li>
-            <li><a href="#" data-url="@Url.Action("DateCapsule", new { grouping = MiInventario.Code.DateGrouping.Week, idCapsula = "IdCapsula" })" data-needspawn="true" class="replacedLink">Interests Capsule by Week</a></li>
-            <li><a href="#" data-url="@Url.Action("DateCapsule", new { grouping = MiInventario.Code.DateGrouping.Month, idCapsula = "IdCapsula" })" data-needspawn="true" class="replacedLink">Interests Capsule by Month</a></li>
-            <li><a href="#" data-url="@Url.Action("TotalCapsule", new { @id = "IdCapsula" })" data-needspawn="true" class="replacedLink">Interests Total</a></li>
-            @if (MiInventario.Utils.GetUsernamFromEmail(User.Identity.GetUserName()) == "diegomenta")
-            {
-                <li class="divider"></li>
-                <li><a href="#" data-url="@Url.Action("SendToUser", new { @id = "IdCapsula", sendToUser = "pceriani@gmail.com" })" data-needspawn="false" class="replacedLink">Send to pceriani</a></li>
-            }
-            @if (MiInventario.Utils.GetUsernamFromEmail(User.Identity.GetUserName()) == "pceriani")
-            {
-                <li class="divider"></li>
-                <li><a href="#" data-url="@Url.Action("SendToUser", new { @id = "IdCapsula", sendToUser = "diegomenta@gmail.com" })" data-needspawn="false" class="replacedLink">Send to diegomenta</a></li>
-            }
-        </ul>
-    </div>
+  <div class="btn-group">
+    <a href="#" id="btnAcciones" data-url="@Url.Action("ManageItems", new { @id = "IdCapsula" })" data-needspawn="false" class="btn btn-primary replacedLink">Manage</a>
+    <a href="#" id="btnAccionesDropdown" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+    <ul class="dropdown-menu">
+      <li><a href="#" data-url="@Url.Action("AddItem", new { @id = "IdCapsula" })" data-needspawn="false" class="replacedLink">Add Item</a></li>
+      <li><a href="#" data-url="@Url.Action("Load", new { @id = "IdCapsula" })" data-needspawn="false" class="replacedLink">Load</a></li>
+      <li><a href="#" data-url="@Url.Action("Unload", new { @id = "IdCapsula" })" data-needspawn="false" class="replacedLink">Unload</a></li>
+      <li class="divider"></li>
+      <li><a href="#" data-url="@Url.Action("Edit", new { @id = "IdCapsula" })" data-needspawn="false" class="replacedLink">Edit</a></li>
+      <li><a href="#" data-url="@Url.Action("Delete", new { @id = "IdCapsula" })" data-needspawn="false" class="replacedLink">Delete</a></li>
+      <li class="divider"></li>
+      <li><a href="#" data-url="@Url.Action("LogInterests", new { @id = "IdCapsula" })" data-needspawn="true" class="replacedLink">Log Interests</a></li>
+      <li><a href="#" data-url="@Url.Action("DateCapsule", new { grouping = MiInventario.Code.DateGrouping.Day, idCapsula = "IdCapsula" })" data-needspawn="true" class="replacedLink">Interests Capsule by Day</a></li>
+      <li><a href="#" data-url="@Url.Action("DateCapsule", new { grouping = MiInventario.Code.DateGrouping.Week, idCapsula = "IdCapsula" })" data-needspawn="true" class="replacedLink">Interests Capsule by Week</a></li>
+      <li><a href="#" data-url="@Url.Action("DateCapsule", new { grouping = MiInventario.Code.DateGrouping.Month, idCapsula = "IdCapsula" })" data-needspawn="true" class="replacedLink">Interests Capsule by Month</a></li>
+      <li><a href="#" data-url="@Url.Action("TotalCapsule", new { @id = "IdCapsula" })" data-needspawn="true" class="replacedLink">Interests Total</a></li>
+      @if (MiInventario.Utils.GetUsernamFromEmail(User.Identity.GetUserName()) == "diegomenta") {
+        <li class="divider"></li>
+        <li><a href="#" data-url="@Url.Action("SendToUser", new { @id = "IdCapsula", sendToUser = "pceriani@gmail.com" })" data-needspawn="false" class="replacedLink">Send to pceriani</a></li>
+      }
+      @if (MiInventario.Utils.GetUsernamFromEmail(User.Identity.GetUserName()) == "pceriani") {
+        <li class="divider"></li>
+        <li><a href="#" data-url="@Url.Action("SendToUser", new { @id = "IdCapsula", sendToUser = "diegomenta@gmail.com" })" data-needspawn="false" class="replacedLink">Send to diegomenta</a></li>
+      }
+    </ul>
+  </div>
 </div>
 <div class="col-lg-4 col-md-5 col-sm-6 col-xs-12 clearfix">
-    <table class="table table-condensed table-striped">
-        <colgroup>
-            <col class="col-lg-1 col-md-1 col-sm-1 col-xs-1" />
-            <col class="col-lg-3 col-md-3 col-sm-3 col-xs-2" />
-            <col class="col-lg-6 col-md-6 col-sm-6 col-xs-5" />
-            <col class="col-lg-2 col-md-2 col-sm-2 col-xs-1" />
-        </colgroup>
-        <thead>
-            <tr>
-                <th></th>
-                <th>ID</th>
-                <th>Item</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (MiInventario.Models.Capsules.CapsulesViewModel item in Model.OrderBy(p => p.Total == 0).ThenBy(q => q.IdCapsula))
-            {
-                <tr>
-                    <td class="text-center"><input name="@item.IdCapsula" data-spawn="@item.Spawnable" type="checkbox" class="selection" /></td>
-                    @if (item.Spawnable)
-                    {
-                        <td class="nombreCapsula">@Html.ActionLink(item.IdCapsula, "List", new { @id = item.IdCapsula })</td>
-                    }
-                    else
-                    {
-                        <td class="nombreCapsulaNoSpawn">@Html.ActionLink(item.IdCapsula, "List", new { @id = item.IdCapsula })</td>
-                    }
-                    <td class=" text-nowrap">
-                        @if (item.Descripcion != null)
-                        {
-                            <text>@item.Descripcion</text>
-                        }
-                        else
-                        {
-                            @Html.Partial("_ItemDescription", item.ItemEncapsulado)
-                        }
-                    </td>
-                    <td class="cantidadTotal">
-                        @if (item.Total > 100)
-                        {
-                            <strong class="text-danger">@item.Total</strong>
-                        }
-                        else if (item.Total > 0)
-                        {
-                            @item.Total
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+  <table class="table table-condensed table-striped" id="capsules">
+    <colgroup>
+      <col class="col-lg-1 col-md-1 col-sm-1 col-xs-1" />
+      <col class="col-lg-3 col-md-3 col-sm-3 col-xs-2" />
+      <col class="col-lg-6 col-md-6 col-sm-6 col-xs-5" />
+      <col class="col-lg-2 col-md-2 col-sm-2 col-xs-1" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th></th>
+        <th>ID</th>
+        <th>Item</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 </div>
 <div class="clearfix"></div>
 <p>
-    @Html.ActionLink("Add", "Add")
-    | @Html.ActionLink("Last Spawn", "LastSpawn")
-    | @Html.ActionLink("Interests Capsule by Day", "DateCapsule", "Interests", new { grouping = MiInventario.Code.DateGrouping.Day }, null)
-    | @Html.ActionLink("Interests Capsule by Week", "DateCapsule", "Interests", new { grouping = MiInventario.Code.DateGrouping.Week }, null)
-    | @Html.ActionLink("Interests Capsule by Month", "DateCapsule", "Interests", new { grouping = MiInventario.Code.DateGrouping.Month }, null)
-    | @Html.ActionLink("Interests Total", "TotalCapsule")
-    | @Html.ActionLink("Interests Total by Item", "TotalByItem")
+  @Html.ActionLink("Add", "Add")
+  | @Html.ActionLink("Last Spawn", "LastSpawn", "Interests")
+  | @Html.ActionLink("Interests Capsule by Day", "DateCapsule", "Interests", new { grouping = MiInventario.Code.DateGrouping.Day }, null)
+  | @Html.ActionLink("Interests Capsule by Week", "DateCapsule", "Interests", new { grouping = MiInventario.Code.DateGrouping.Week }, null)
+  | @Html.ActionLink("Interests Capsule by Month", "DateCapsule", "Interests", new { grouping = MiInventario.Code.DateGrouping.Month }, null)
+  | @Html.ActionLink("Interests Total", "TotalCapsule")
+  | @Html.ActionLink("Interests Total by Item", "TotalByItem")
 </p>
 @section scripts{
-    <script type="text/javascript">
-        $("input.selection").prop('checked', false);
-        $("#btnAcciones,#btnAccionesDropdown").attr('disabled', 'disabled');
-        $("a.replacedLink").click(function () {
-            var selected = $(".selection:checked");
-            if (selected.length == 0) {
-                alert("Please select the capsule on which you want to perform the action.");
-                return;
-            }
-            if ($(this).attr("data-needspawn") == "true" && selected.attr("data-spawn") == "False") {
-                alert("This action is not valid for this type of capsule.");
-                return;
-            }
-            var irA = $(this).attr("data-url").replace("IdCapsula", selected.attr("name"));
-            window.location = irA;
-        });
-        $("input.selection").click(function () {
-            $("input.selection").not(this).prop('checked', false);
+  <script src="~/Scripts/inventory-render.js"></script>
 
-            if ($(this).is(':checked')) {
-                $("#btnAcciones,#btnAccionesDropdown").removeAttr('disabled');
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $("#btnAcciones,#btnAccionesDropdown").prop('disabled', true);
+
+      $('a.replacedLink').click(function (e) {
+        var selected = $(".selection:checked");
+        if (selected.length == 0) {
+          e.preventDefault();
+          alert("Please select the capsule on which you want to perform the action.");
+          return;
+        }
+        if ($(this).attr("data-needspawn") == "true" && selected.attr("data-spawn") == "false") {
+          e.preventDefault();
+          alert("This action is not valid for this type of capsule.");
+          return;
+        }
+
+        $(this).attr('href', $(this).attr("data-url").replace("IdCapsula", selected.attr("name")));
+      });
+
+      $.ajax({
+        url: '/Capsules/CapsulesSummary',
+        method: 'GET',
+        dataType: "json",
+        cache: false,
+        success: function (data) {
+          $('h2:first').text('Capsules (' + data.length + ')');
+
+          var html = '';
+
+          $.each(data, function (key, capsule) {
+            html += '<tr>';
+            html += '<td class="text-center"><input name="' + capsule.CapsuleId + '" data-spawn="' + capsule.Properties.PaysInterests + '" type="checkbox" class="selection" /></td>';
+
+            if (capsule.Properties.IsKeyLocker) {
+              html += '<td class="capsuleCode ' + capsule.Properties.UniqueID + '"><a href="/Capsules/List/' + capsule.CapsuleId + '">Key Locker</a></td>';
             }
             else {
-                $("#btnAcciones,#btnAccionesDropdown").attr('disabled', 'disabled');
+              html += '<td class="capsuleCode ' + (capsule.Properties.PaysInterests ? 'spawnable' : 'noSpawn') + '"><a href="/Capsules/List/' + capsule.CapsuleId + '">' + capsule.Code + '</a></td>';
             }
-        });
-        $('tr').click(function (event) {
-            if (event.target.tagName != 'A' && event.target.type !== 'checkbox') {
-                $(':checkbox', this).trigger('click');
-            }
-        });
-    </script>
+
+            html += ' <td class=" text-nowrap">' + ((capsule.Name != null && capsule.Name.length > 0) ? capsule.Name : RenderItemDescription(capsule.ItemInside.CurrentItem)) + '</td>';
+            html += '<td class="cantidadTotal">' + (capsule.TotalQuantity > 100 ? '<strong class="text-danger">' + capsule.TotalQuantity + '</strong>' : capsule.TotalQuantity) + '</td>';
+            html += '</tr>';
+          });
+
+          $('#capsules tbody').append(html);
+        }
+      });
+
+      $('#capsules tbody').on('click', 'input.selection', function (e) {
+        e.stopPropagation();
+
+        $("input.selection").not(this).prop('checked', false);
+
+        if ($(this).is(':checked')) {
+          $("#btnAcciones,#btnAccionesDropdown").prop('disabled', false);
+        }
+        else {
+          $("#btnAcciones,#btnAccionesDropdown").prop('disabled', true);
+        }
+      });
+
+      $('#capsules tbody').on('click', 'tr', function (e) {
+        if (e.target.tagName != 'A') {
+          $(':checkbox', this).trigger('click');
+        }
+      });
+    });
+  </script>
 }

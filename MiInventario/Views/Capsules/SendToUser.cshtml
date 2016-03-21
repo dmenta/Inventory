@@ -1,31 +1,24 @@
 ﻿@model MiInventario.Models.Capsules.SendToViewModel
 @{
-    ViewBag.Title = Model.IdCapsula;
+  ViewBag.Title = "Send Capsule to User" + Model.UserId;
 }
 
-<h2>Send Capsule to User @Model.UserID</h2>
+<h2>@ViewBag.Title</h2>
+@Html.Partial("_CapsuleHeader", Model)
+
 <p>
-    Are you sure you wnat to send capsule @Model.IdCapsula [@if (Model.Descripcion != null)
-    {
-        <text>@Model.Descripcion</text>
-    }
-    else
-    {
-        @Html.Partial("_ItemDescription", Model.ItemEncapsulado)
-    }] to user @Model.UserID?
+  Are you sure you wnat to send capsule to user @Model.UserId?
 </p>
-@using (Html.BeginForm("SendToUser", "Capsules", FormMethod.Post, new { @class = "form-horizontal" }))
-{
-    <fieldset>
-        <div class="form-group">
-            <div class="col-lg-10 col-lg-offset-2">
-                @Html.HiddenFor(model => model.IdCapsula)
-                @Html.HiddenFor(model => model.UserID)
-                <input type="submit" value="Confirm" class="btn btn-primary" />
-            </div>
-        </div>
-    </fieldset>
+@using (Html.BeginForm("SendToUser", "Capsules", FormMethod.Post, new { @class = "form-horizontal" })) {
+  <fieldset>
+    <div class="form-group">
+      <div class="col-lg-12">
+        @Html.HiddenFor(model => model.CapsuleId)
+        @Html.HiddenFor(model => model.UserId)
+        <input type="submit" value="Confirm" class="btn btn-primary" />
+        @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+      </div>
+    </div>
+  </fieldset>
 }
-<p>
-    @Html.ActionLink("Back to Capsules", "Index") | @Html.ActionLink("Back to View Capsule", "List", new { @id = Model.IdCapsula })
-</p>
+

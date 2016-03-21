@@ -34,10 +34,14 @@ namespace MiInventario
                              Order = int.Parse(c.Attribute("Order").Value),
                              GroupID = c.Attribute("GroupID").Value,
                              TypeID = c.Attribute("TypeID").Value,
-                             Level = int.Parse(c.Attribute("Level").Value),
+                             Level = c.Attribute("Level")==null?0:int.Parse(c.Attribute("Level").Value),
                              Rarity = c.Attribute("Rarity").Value,
-                             IsCapsule = bool.Parse(c.Attribute("IsCapsule").Value),
-                             PaysInterests = bool.Parse(c.Attribute("PaysInterests").Value)
+                             IsKey = c.Attribute("IsKey") != null && bool.Parse(c.Attribute("IsKey").Value),
+                             IsCapsule = c.Attribute("IsCapsule") != null && bool.Parse(c.Attribute("IsCapsule").Value),
+                             PaysInterests = c.Attribute("PaysInterests") != null && bool.Parse(c.Attribute("PaysInterests").Value),
+                             IsKeyLocker = c.Attribute("IsKeyLocker") != null && bool.Parse(c.Attribute("IsKeyLocker").Value),
+                             UniqueID = c.Attribute("UniqueID") == null || c.Attribute("UniqueID").Value.Length==0 ? null : c.Attribute("UniqueID").Value,
+                             Transfer = c.Attribute("Transfer") == null || bool.Parse(c.Attribute("Transfer").Value),
                          }).ToList().AsReadOnly();
 
             HttpContext.Current.Application["ItemsXml"] = query;

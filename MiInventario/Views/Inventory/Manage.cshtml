@@ -33,10 +33,28 @@
 </div>
 <div class="clearfix"></div>
 @section scripts{
-  <script src="~/bundles/inventory-render"></script>
+  <script src="~/Scripts/inventory-render.js"></script>
   <script type="text/javascript">
     function ShowGroups(editing) {
       SetDisabled();
+
+      $('#resultado').on('blur', '.newQty', function () {
+        var inp = $(this);
+        var min = Number(inp.attr('min'));
+        var max = Number(inp.attr('max'));
+        var newValue = Number(inp.val());
+        if (newValue<min){
+          newValue = min;
+        }
+        else if (newValue>max){
+          newValue = max;
+        }
+        else {
+          return;
+        }
+
+        inp.val(newValue);
+      });
 
       $.ajax({
         url: editing ? '/Inventory/ItemsEdit' : '/Inventory/Items',
@@ -180,4 +198,3 @@
 
   </script>
 }
-

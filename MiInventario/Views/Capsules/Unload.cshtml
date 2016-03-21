@@ -2,15 +2,8 @@
 @{
     ViewBag.Title = "Unload Items";
 }
-<h2>Unload Items</h2>
-@if (string.IsNullOrEmpty(Model.Descripcion))
-{
-    <h3>@Model.IdCapsula (@Model.Total)</h3>
-}
-else
-{
-    <h3>@Model.Descripcion [@Model.IdCapsula] (@Model.Total)</h3>
-}
+<h2>@ViewBag.Title</h2>
+@Html.Partial("_CapsuleHeader", Model)
 
 @if (!ViewData.ModelState.IsValid)
 {
@@ -23,7 +16,7 @@ else
 }
 @using (Html.BeginForm("Unload", "Capsules", FormMethod.Post, new { @class = "form-horizontal" }))
 {
-    @Html.HiddenFor(model => model.IdCapsula)
+    @Html.HiddenFor(model => model.CapsuleId)
     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
         <table class="table table-condensed table-striped">
             <colgroup>
@@ -44,18 +37,18 @@ else
             <tbody>
                 @for (int i = 0; i < Model.Items.Count; i++)
                 {
-                    var item = Model.Items[i];
+                  MiInventario.Models.Capsules.ItemUnloadViewModel item = Model.Items[i];
                     <tr>
                         <td class="nombre">
                             @Html.Partial("_ItemDescription", item)
                         </td>
                         <td class="cantidadItem">
-                            @Html.DisplayFor(model => Model.Items[i].Cantidad)
+                            @Html.DisplayFor(model => Model.Items[i].CapsuleQuantity)
                         </td>
                         <td class="cantidadItem">
                             @Html.HiddenFor(model => Model.Items[i].CurrentItem.ItemID)
-                            @Html.HiddenFor(model => Model.Items[i].Cantidad)
-                            @Html.TextBoxFor(model => Model.Items[i].CantidadDescargar, new { @class = "form-control text-right input-sm" })
+                            @Html.HiddenFor(model => Model.Items[i].CapsuleQuantity)
+                            @Html.TextBoxFor(model => Model.Items[i].UnloadQuantity, new { @class = "form-control text-right input-sm" })
                         </td>
                     </tr>
                 }
@@ -69,7 +62,7 @@ else
 }
 <div class="clearfix"></div>
 <p>
-    @Html.ActionLink("Back to Capsules", "Index") | @Html.ActionLink("Back to View Capsule", "List", new { @id = Model.IdCapsula })
+    @Html.ActionLink("Back to Capsules", "Index") | @Html.ActionLink("Back to View Capsule", "List", new { @id = Model.CapsuleId })
 </p>
 
 @section scripts{

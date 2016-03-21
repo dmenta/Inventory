@@ -10,23 +10,20 @@ namespace MiInventario.Models.Inventory {
     public Dictionary<string, string> Groups { get; set; }
   }
 
-  public class ItemBasico {
+  public class ItemQuantity {
     public string ItemID { get; set; }
-    public int Cantidad { get; set; }
-  }
-
-  public class ItemsQty {
-    public string ItemID { get; set; }
-    public int Qty { get; set; }
+    public int Quantity { get; set; }
   }
 
   public class GroupViewModel {
 
     public string GroupID { get; set; }
 
+    public string GroupName { get; set; }
+
     public int Total { get; set; }
 
-    public int TotalCapsulas { get; set; }
+    public int CapsulesTotal { get; set; }
   }
 
   public class DifferenceViewModel {
@@ -36,7 +33,6 @@ namespace MiInventario.Models.Inventory {
 
     public List<GroupDifferenceViewModel> Groups { get; set; }
   }
-
 
   public class ItemDifferenceViewModel : ItemViewModel {
     public int CantidadUsuarioA { get; set; }
@@ -51,6 +47,7 @@ namespace MiInventario.Models.Inventory {
         }
       }
     }
+
     public int DiferenciaB {
       get {
         if (CantidadUsuarioB >= CantidadUsuarioA) {
@@ -68,6 +65,7 @@ namespace MiInventario.Models.Inventory {
 
     public IEnumerable<TypeDifferenceViewModel> Types { get; set; }
   }
+
   public class TypeDifferenceViewModel {
     public string TypeID { get; set; }
 

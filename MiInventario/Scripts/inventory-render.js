@@ -98,7 +98,7 @@ function RenderItemsEdit(items) {
     rows += RenderItemDescription(item.CurrentItem);
     rows += '</td>';
     rows += '<td class="cantidadItem">';
-    rows += '<input type="text" class="form-control text-right input-sm newQty" min="0" max="2000" data-itemid="';
+    rows += '<input type="number" class="form-control text-right input-sm newQty" min="0" max="' + (item.CurrentItem.UniqueID == null || item.CurrentItem.UniqueID.length == 0 ? '2000' : '1') + '" data-itemid="';
     rows += item.CurrentItem.ItemID;
     rows += '" data-originalqty="';
     rows += item.Cantidad;

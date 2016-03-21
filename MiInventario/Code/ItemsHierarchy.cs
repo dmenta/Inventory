@@ -53,5 +53,24 @@ namespace MiInventario.Code
       }
       return descripcionItem;
     }
+    public bool IsKeyLocker { get; set; }
+    public string UniqueID { get; set; }
+    public bool Transfer { get; set; }
+
+    public override bool Equals(Object obj) {
+      if (obj == null || GetType() != obj.GetType()) {
+        return false;
+      }
+      
+      Item itemB = (Item)obj;
+      
+      // Use Equals to compare instance variables.
+      return ItemID.Equals(itemB.ItemID);
+    }
+    public override int GetHashCode() {
+      return ItemID.GetHashCode();
+    }
+
+    public bool IsKey { get; set; }
   }
 }

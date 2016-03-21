@@ -11,8 +11,7 @@ namespace MiInventario.Models {
 
   }
   public class ItemInventoryViewModel : ItemViewModel {
-    public int Cantidad { get; set; }
-    public int CantidadCapsulas { get; set; }
+    public int CapsulesQuantity { get; set; }
+    public int Quantity { get; set; }
   }
-
 }

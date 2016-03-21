@@ -1,26 +1,25 @@
 ﻿@model MiInventario.Models.Capsules.DeleteItemViewModel
 @{
-  ViewBag.Title = Model.IdCapsula;
+  ViewBag.Title = "Delete Item";
 }
 
-<h2>Delete Item from @Model.IdCapsula (@Model.Total)</h2>
-@if (@Model.Total > 100) {
-  <p class="avisoCapsulaErronea">
-    La cantidad total de la cápsula supera lo permitido
-  </p>
-}
+<h2>@ViewBag.Title</h2>
+@Html.Partial("_CapsuleHeader", Model)
 
 @using (Html.BeginForm("DeleteItem", "Capsules", FormMethod.Post)) {
-  @Html.HiddenFor(model => model.IdCapsula)
+  @Html.HiddenFor(model => model.CapsuleId)
   @Html.HiddenFor(model => model.Item.CurrentItem.ItemID)
   <p>
-      @Html.Partial("_ItemDescription", Model.Item)
-    <span>@Model.Cantidad</span>
+    @Html.Partial("_ItemDescription", Model.Item)
+    <span>@Model.Quantity</span>
   </p>
-  <p>
-    <input type="submit" value="Confirm" class="btn btn-primary" />
-  </p>
+
+  <fieldset>
+    <div class="form-group">
+      <div class="col-lg-12">
+        <input type="submit" value="Confirm" class="btn btn-primary" />
+        @Html.ActionLink("Cancel", "ManageItems", new { @id = Model.CapsuleId }, new { @class = "btn btn-default" })
+      </div>
+    </div>
+  </fieldset>
 }
-<p>
-  @Html.ActionLink("Back to Capsules", "Index") | @Html.ActionLink("Back to View Capsule", "List", new { @id = Model.IdCapsula })
-</p>

@@ -5,23 +5,24 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="InventarioModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="Capsulas">
+        <EntityType Name="Capsules">
           <Key>
-            <PropertyRef Name="IdCapsula" />
+            <PropertyRef Name="CapsuleId" />
           </Key>
-          <Property Name="IdCapsula" Type="varchar" MaxLength="8" Nullable="false" />
-          <Property Name="Descripcion" Type="varchar" MaxLength="40" />
-          <Property Name="IdUsuario" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="ItemID" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="CapsuleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="varchar" MaxLength="8" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="40" />
+          <Property Name="UserId" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="ItemId" Type="varchar" MaxLength="10" Nullable="false" />
         </EntityType>
-        <EntityType Name="CapsulasItems">
+        <EntityType Name="CapsulesItems">
           <Key>
-            <PropertyRef Name="IdCapsula" />
+            <PropertyRef Name="CapsuleId" />
             <PropertyRef Name="ItemID" />
           </Key>
-          <Property Name="IdCapsula" Type="varchar" MaxLength="8" Nullable="false" />
+          <Property Name="CapsuleId" Type="int" Nullable="false" />
           <Property Name="ItemID" Type="varchar" MaxLength="10" Nullable="false" />
-          <Property Name="Cantidad" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Inventarios">
           <Key>
@@ -51,14 +52,14 @@
           <Property Name="Cantidad" Type="int" Nullable="false" />
         </EntityType>
         <Association Name="FK_CapsulasItems_Capsulas">
-          <End Role="Capsulas" Type="Self.Capsulas" Multiplicity="1" />
-          <End Role="CapsulasItems" Type="Self.CapsulasItems" Multiplicity="*" />
+          <End Role="Capsules" Type="Self.Capsules" Multiplicity="1" />
+          <End Role="CapsulesItems" Type="Self.CapsulesItems" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Capsulas">
-              <PropertyRef Name="IdCapsula" />
+            <Principal Role="Capsules">
+              <PropertyRef Name="CapsuleId" />
             </Principal>
-            <Dependent Role="CapsulasItems">
-              <PropertyRef Name="IdCapsula" />
+            <Dependent Role="CapsulesItems">
+              <PropertyRef Name="CapsuleId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -75,14 +76,14 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="InventarioModelStoreContainer">
-          <EntitySet Name="Capsulas" EntityType="Self.Capsulas" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="CapsulasItems" EntityType="Self.CapsulasItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Capsules" EntityType="Self.Capsules" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CapsulesItems" EntityType="Self.CapsulesItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Inventarios" EntityType="Self.Inventarios" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Reproducciones" EntityType="Self.Reproducciones" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ReproduccionesItems" EntityType="Self.ReproduccionesItems" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_CapsulasItems_Capsulas" Association="Self.FK_CapsulasItems_Capsulas">
-            <End Role="Capsulas" EntitySet="Capsulas" />
-            <End Role="CapsulasItems" EntitySet="CapsulasItems" />
+            <End Role="Capsules" EntitySet="Capsules" />
+            <End Role="CapsulesItems" EntitySet="CapsulesItems" />
           </AssociationSet>
           <AssociationSet Name="FK_ReproduccionesItems_Reproducciones" Association="Self.FK_ReproduccionesItems_Reproducciones">
             <End Role="Reproducciones" EntitySet="Reproducciones" />
@@ -94,40 +95,20 @@
     <edmx:ConceptualModels>
       <Schema Namespace="InventarioModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="InventarioEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Capsulas" EntityType="InventarioModel.Capsulas" />
-          <EntitySet Name="CapsulasItems" EntityType="InventarioModel.CapsulasItems" />
           <EntitySet Name="Inventarios" EntityType="InventarioModel.Inventarios" />
           <EntitySet Name="Reproducciones" EntityType="InventarioModel.Reproducciones" />
           <EntitySet Name="ReproduccionesItems" EntityType="InventarioModel.ReproduccionesItems" />
-          <AssociationSet Name="FK_CapsulasItems_Capsulas" Association="InventarioModel.FK_CapsulasItems_Capsulas">
-            <End Role="Capsulas" EntitySet="Capsulas" />
-            <End Role="CapsulasItems" EntitySet="CapsulasItems" />
-          </AssociationSet>
           <AssociationSet Name="FK_ReproduccionesItems_Reproducciones" Association="InventarioModel.FK_ReproduccionesItems_Reproducciones">
             <End Role="Reproducciones" EntitySet="Reproducciones" />
             <End Role="ReproduccionesItems" EntitySet="ReproduccionesItems" />
           </AssociationSet>
+          <EntitySet Name="Capsules" EntityType="InventarioModel.Capsules" />
+          <EntitySet Name="CapsulesItems" EntityType="InventarioModel.CapsulesItems" />
+          <AssociationSet Name="FK_CapsulasItems_Capsulas" Association="InventarioModel.FK_CapsulasItems_Capsulas">
+            <End Role="Capsules" EntitySet="Capsules" />
+            <End Role="CapsulesItems" EntitySet="CapsulesItems" />
+          </AssociationSet>
         </EntityContainer>
-        <EntityType Name="Capsulas">
-          <Key>
-            <PropertyRef Name="IdCapsula" />
-          </Key>
-          <Property Name="IdCapsula" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="Descripcion" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
-          <Property Name="IdUsuario" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="ItemID" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="CapsulasItems" Relationship="InventarioModel.FK_CapsulasItems_Capsulas" FromRole="Capsulas" ToRole="CapsulasItems" />
-        </EntityType>
-        <EntityType Name="CapsulasItems">
-          <Key>
-            <PropertyRef Name="IdCapsula" />
-            <PropertyRef Name="ItemID" />
-          </Key>
-          <Property Name="IdCapsula" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="ItemID" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="Cantidad" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Capsulas" Relationship="InventarioModel.FK_CapsulasItems_Capsulas" FromRole="CapsulasItems" ToRole="Capsulas" />
-        </EntityType>
         <EntityType Name="Inventarios">
           <Key>
             <PropertyRef Name="IdInventario" />
@@ -157,18 +138,6 @@
           <Property Name="Cantidad" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Reproducciones" Relationship="InventarioModel.FK_ReproduccionesItems_Reproducciones" FromRole="ReproduccionesItems" ToRole="Reproducciones" />
         </EntityType>
-        <Association Name="FK_CapsulasItems_Capsulas">
-          <End Type="InventarioModel.Capsulas" Role="Capsulas" Multiplicity="1" />
-          <End Type="InventarioModel.CapsulasItems" Role="CapsulasItems" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Capsulas">
-              <PropertyRef Name="IdCapsula" />
-            </Principal>
-            <Dependent Role="CapsulasItems">
-              <PropertyRef Name="IdCapsula" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ReproduccionesItems_Reproducciones">
           <End Type="InventarioModel.Reproducciones" Role="Reproducciones" Multiplicity="1" />
           <End Type="InventarioModel.ReproduccionesItems" Role="ReproduccionesItems" Multiplicity="*" />
@@ -181,31 +150,45 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Capsules">
+          <Key>
+            <PropertyRef Name="CapsuleId" />
+          </Key>
+          <Property Name="CapsuleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ItemId" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="CapsulesItems" Relationship="InventarioModel.FK_CapsulasItems_Capsulas" FromRole="Capsules" ToRole="CapsulesItems" />
+        </EntityType>
+        <EntityType Name="CapsulesItems">
+          <Key>
+            <PropertyRef Name="CapsuleId" />
+            <PropertyRef Name="ItemID" />
+          </Key>
+          <Property Name="CapsuleId" Type="Int32" Nullable="false" />
+          <Property Name="ItemID" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Capsules" Relationship="InventarioModel.FK_CapsulasItems_Capsulas" FromRole="CapsulesItems" ToRole="Capsules" />
+        </EntityType>
+        <Association Name="FK_CapsulasItems_Capsulas">
+          <End Type="InventarioModel.Capsules" Role="Capsules" Multiplicity="1" />
+          <End Type="InventarioModel.CapsulesItems" Role="CapsulesItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Capsules">
+              <PropertyRef Name="CapsuleId" />
+            </Principal>
+            <Dependent Role="CapsulesItems">
+              <PropertyRef Name="CapsuleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="InventarioModelStoreContainer" CdmEntityContainer="InventarioEntities">
-          <EntitySetMapping Name="Capsulas">
-            <EntityTypeMapping TypeName="InventarioModel.Capsulas">
-              <MappingFragment StoreEntitySet="Capsulas">
-                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
-                <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
-                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
-                <ScalarProperty Name="IdCapsula" ColumnName="IdCapsula" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CapsulasItems">
-            <EntityTypeMapping TypeName="InventarioModel.CapsulasItems">
-              <MappingFragment StoreEntitySet="CapsulasItems">
-                <ScalarProperty Name="Cantidad" ColumnName="Cantidad" />
-                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
-                <ScalarProperty Name="IdCapsula" ColumnName="IdCapsula" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Inventarios">
             <EntityTypeMapping TypeName="InventarioModel.Inventarios">
               <MappingFragment StoreEntitySet="Inventarios">
@@ -232,6 +215,26 @@
                 <ScalarProperty Name="Cantidad" ColumnName="Cantidad" />
                 <ScalarProperty Name="ItemID" ColumnName="ItemID" />
                 <ScalarProperty Name="IdReproduccion" ColumnName="IdReproduccion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Capsules">
+            <EntityTypeMapping TypeName="InventarioModel.Capsules">
+              <MappingFragment StoreEntitySet="Capsules">
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="CapsuleId" ColumnName="CapsuleId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CapsulesItems">
+            <EntityTypeMapping TypeName="InventarioModel.CapsulesItems">
+              <MappingFragment StoreEntitySet="CapsulesItems">
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="CapsuleId" ColumnName="CapsuleId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

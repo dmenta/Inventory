@@ -1,43 +1,68 @@
-﻿@model MiInventario.Models.Capsules.CreateViewModel
+﻿@model MiInventario.Models.Capsules.AddEditViewModel
 @{
-    ViewBag.Title = "Add";
+  ViewBag.Title = "Add";
 }
+<h2>@ViewBag.Title</h2>
 
-<h2>Add</h2>
-@foreach (var item in ViewContext.ViewData.ModelState)
-{
-    if (item.Value.Errors.Any())
-    {
-        <div class="alert alert-dismissible alert-warning">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            @(string.Join("; ", item.Value.Errors.Select(x => x.ErrorMessage)))
-        </div>
-    }
+@foreach (var item in ViewContext.ViewData.ModelState) {
+  if (item.Value.Errors.Any()) {
+    <div class="alert alert-dismissible alert-warning">
+      <button type="button" class="close" data-dismiss="alert">×</button>
+      @(string.Join("; ", item.Value.Errors.Select(x => x.ErrorMessage)))
+    </div>
+  }
 }
-
-@using (Html.BeginForm("Add", "Capsules", FormMethod.Post, new { @class = "form-horizontal" }))
-{
-    <fieldset>
-        <div class="form-group">
-            @Html.LabelFor(model => model.IdCapsula, new { @class = "col-lg-2 control-label" })
-            <div class="col-lg-10">
-                @Html.TextBoxFor(model => model.IdCapsula, new { @class = "form-control text-uppercase input-sm" })
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.Descripcion, new { @class = "col-lg-2 control-label" })
-            <div class="col-lg-10">
-                @Html.TextBoxFor(model => model.Descripcion, new { @class = "form-control input-sm" })
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.ItemID, new { @class = "col-lg-2 control-label" })
-            <div class="col-lg-10">
-                @Html.DropDownListFor(model => model.ItemID, new SelectList(Model.Capsulas, "Key", "Value"), new { @class = "form-control input-sm" })
-            </div>
-        </div>
-        <div class="col-lg-10 col-lg-offset-2">
-            <input type="submit" value="Save" class="btn btn-primary" />
-        </div>
-    </fieldset>
+@using (Html.BeginForm("Add", "Capsules", FormMethod.Post, new { @class = "form-horizontal" })) {
+  <fieldset>
+    <div class="form-group">
+      @Html.LabelFor(model => model.Code, new { @class = "col-lg-2 control-label" })
+      <div class="col-lg-10">
+        @if (string.IsNullOrEmpty(Model.CapsuleTypes.Single(p => p.ItemID == Model.ItemId).UniqueID)) {
+          @Html.TextBoxFor(model => model.Code, new { @class = "form-control text-uppercase input-sm" });
+        }
+        else {
+          @Html.TextBoxFor(model => model.Code, new { @class = "form-control text-uppercase input-sm", @readonly = "readonly" });
+        }
+      </div>
+    </div>
+    <div class="form-group">
+      @Html.LabelFor(model => model.Name, new { @class = "col-lg-2 control-label" })
+      <div class="col-lg-10">
+        @Html.TextBoxFor(model => model.Name, new { @class = "form-control input-sm" })
+      </div>
+    </div>
+    <div class="form-group">
+      @Html.LabelFor(model => model.ItemId, new { @class = "col-lg-2 control-label" })
+      <div class="col-lg-10">
+        <select id="ItemId" class="form-control input-sm" name="ItemId">
+          @foreach (var item in Model.CapsuleTypes) {
+            if (item.ItemID == Model.ItemId) {
+              <option value="@item.ItemID" data-uniqueid="@item.UniqueID" selected>@item.Nombre</option>
+            }
+            else {
+              <option value="@item.ItemID" data-uniqueid="@item.UniqueID">@item.Nombre</option>
+            }
+          }
+        </select>
+      </div>
+    </div>
+    <div class="col-lg-10 col-lg-offset-2">
+      <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+  </fieldset>
+}
+@section scripts{
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $('#ItemId').change(function () {
+        var uniqueId = $('#ItemId option:selected').data('uniqueid');
+        if (uniqueId.length > 0) {
+          $('#Code').val(uniqueId).prop('readonly', true);
+        }
+        else {
+          $('#Code').prop('readonly', false);
+        }
+      });
+    });
+  </script>
 }

@@ -88,21 +88,38 @@ td.nombre {
     white-space: nowrap;
 }
 
-td.nombreCapsula {
+td.capsuleCode {
     text-align: center;
-    background-color: #532c42;
     color: white;
 }
 
-td.nombreCapsulaNoSpawn {
-    text-align: center;
-    background-color: #ad8eff;
-    color: white;
-}
-
-    td.nombreCapsula a, td.nombreCapsulaNoSpawn a {
+    td.capsuleCode a {
         color: white;
     }
+
+td.noSpawn {
+    background-color: #ad8eff;
+}
+td.spawnable {
+    background-color: #532c42;
+}
+td.KL_GREEN {
+    background-color: #1f5217;
+}
+td.KL_BLUE {
+    background-color: #2a295c;
+}
+td.KL_GRAY {
+    background-color: #4e4c4d;
+}
+td.KL_RED {
+    background-color: #651414;
+}
+td.KL_YELLW {
+    background-color: #5f5233;
+}
+
+
 
 td {
     vertical-align: middle !important;

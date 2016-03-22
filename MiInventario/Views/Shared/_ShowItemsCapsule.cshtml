@@ -16,10 +16,10 @@
             @foreach (MiInventario.Models.ItemInventoryViewModel item in Model)
             {
                 <tr>
-                    <td class="nombre">
+                    <td class="name">
                         @Html.Partial("_ItemDescription", item)
                     </td>
-                    <td class="cantidadItem">
+                    <td class="itemQuantity">
                         @item.Quantity
                     </td>
                 </tr>

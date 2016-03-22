@@ -12,11 +12,17 @@ namespace MiInventario
     using System;
     using System.Collections.Generic;
     
-    public partial class Inventarios
+    public partial class SpawnsCapsules
     {
-        public int IdInventario { get; set; }
-        public string IdUsuario { get; set; }
-        public string ItemID { get; set; }
-        public int Cantidad { get; set; }
+        public SpawnsCapsules()
+        {
+            this.SpawnsCapsulesItems = new HashSet<SpawnsCapsulesItems>();
+        }
+    
+        public int SpawnId { get; set; }
+        public string CapsuleCode { get; set; }
+    
+        public virtual Spawns Spawns { get; set; }
+        public virtual ICollection<SpawnsCapsulesItems> SpawnsCapsulesItems { get; set; }
     }
 }

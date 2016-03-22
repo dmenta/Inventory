@@ -4,17 +4,17 @@
 }
 
 <h2>Interests Total</h2>
-@foreach (var capsula in Model.OrderByDescending(p => p.Items.Count()))
+@foreach (var capsule in Model.OrderByDescending(p => p.Items.Count()))
 {
     <div class="col-lg-2">
         <table class="table table-condensed table-striped">
             <thead>
-                <tr><th>@capsula.IdCapsula</th></tr>
+                <tr><th>@capsule.Code</th></tr>
             </thead>
-            @foreach (var elemento in capsula.Items)
+            @foreach (var element in capsule.Items)
             {
                 <tr>
-                    <td><span>@elemento.Quantity</span>@Html.Partial("_ItemDescription", elemento)
+                    <td><span>@element.Quantity</span> @Html.Partial("_ItemDescription", element)
                     </td>
                 </tr>
             }

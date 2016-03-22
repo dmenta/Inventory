@@ -1,88 +1,77 @@
 ﻿@model MiInventario.Models.Interests.LastSpawnViewModel
 @{
-    ViewBag.Title = "Last Spawn";
-    MiInventario.Models.ItemInventoryViewModel primero;
+  ViewBag.Title = "Last Spawn";
+  MiInventario.Models.ItemInventoryViewModel first;
 }
 <h2>Last Spawn</h2>
-
-@if (!Model.Fecha.HasValue)
-{
-    <p class="avisoCapsulaErronea">
-        There are no spawn logged.
-    </p>
+@if (!Model.SpawnDate.HasValue) {
+  <p>
+    There is no spawn logged.
+  </p>
 }
-else
-{
-    <h3>@Model.Fecha.Value.ToString("yyyy-MM-dd HH:mm") - Items: @Model.Total</h3>
-    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12 table-responsive">
-        <table class="table table-condensed table-striped">
-            <colgroup>
-                <col class="col-lg-3 col-md-3 col-sm-3 col-xs-3" />
-                <col class="col-lg-7 col-md-7 col-sm-7 col-xs-7" />
-                <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
-            </colgroup>
-            <tfoot>
-                <tr>
-                    <td class="nombreTotales" rowspan="@Model.Totales.Count()">Total</td>
-                    <td class="elementos">
-                        @{
-    primero = Model.Totales.First();
-                        }
-                        @Html.Partial("_ItemDescription", primero)
-                    </td>
-                    <td class="cantidadItem">@primero.Quantity</td>
-                </tr>
-                @if (Model.Totales.Count() > 1)
-                {
-                    foreach (var elemento in Model.Totales)
-                    {
-                        if (primero.CurrentItem.ItemID == elemento.CurrentItem.ItemID)
-                        {
-                            continue;
-                        }
-                        <tr>
-                            <td class="elementos">
-                                @Html.Partial("_ItemDescription", elemento)
-                            </td>
-                            <td class="cantidadItem">@elemento.Quantity</td>
-                        </tr>
-                    }
-                }
-            </tfoot>
-            <tbody>
-                @foreach (var capsula in Model.Capsulas)
-                {
-                    primero = capsula.Contenidos.First();
-                    <tr>
-                        <td class="nombreCapsula" rowspan="@capsula.Cantidad">@capsula.IdCapsula</td>
-                        <td class="elementos">
-                            @Html.Partial("_ItemDescription", primero)
-                        </td>
-                        <td class="cantidadItem">@primero.Quantity</td>
-                    </tr>
-                    if (capsula.Cantidad > 1)
-                    {
-                        foreach (var elemento in capsula.Contenidos)
-                        {
-                            if (capsula.Contenidos.First().CurrentItem.ItemID == elemento.CurrentItem.ItemID)
-                            {
-                                continue;
-                            }
-                            <tr>
-                                <td class="elementos">
-                                    @Html.Partial("_ItemDescription", elemento)
-                                </td>
-                                <td class="cantidadItem">@elemento.Quantity</td>
-                            </tr>
-                        }
-                    }
-                }
-            </tbody>
-
-        </table>
-    </div>
+else {
+  <h3>@Model.SpawnDate.Value.ToString("yyyy-MM-dd HH:mm") - Items: @Model.TotalQuantity</h3>
+  <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12 table-responsive">
+    <table class="table table-condensed table-striped">
+      <colgroup>
+        <col class="col-lg-3 col-md-3 col-sm-3 col-xs-3" />
+        <col class="col-lg-7 col-md-7 col-sm-7 col-xs-7" />
+        <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
+      </colgroup>
+      <tfoot>
+        <tr>
+          <td class="totalsName" rowspan="@Model.Totals.Count()">Total</td>
+          <td class="elements">
+            @{
+  first = Model.Totals.First();
+            }
+            @Html.Partial("_ItemDescription", first)
+          </td>
+          <td class="itemQuantity">@first.Quantity</td>
+        </tr>
+        @if (Model.Totals.Count() > 1) {
+          foreach (var elemento in Model.Totals) {
+            if (first.CurrentItem.ItemId == elemento.CurrentItem.ItemId) {
+              continue;
+            }
+            <tr>
+              <td class="elements">
+                @Html.Partial("_ItemDescription", elemento)
+              </td>
+              <td class="itemQuantity">@elemento.Quantity</td>
+            </tr>
+          }
+        }
+      </tfoot>
+      <tbody>
+        @foreach (var capsule in Model.Capsules) {
+          first = capsule.Items.First();
+          <tr>
+            <td class="capsuleName" rowspan="@capsule.ItemsQuantity">@capsule.Code</td>
+            <td class="elements">
+              @Html.Partial("_ItemDescription", first)
+            </td>
+            <td class="itemQuantity">@first.Quantity</td>
+          </tr>
+          if (capsule.ItemsQuantity > 1) {
+            foreach (var element in capsule.Items) {
+              if (capsule.Items.First().CurrentItem.ItemId == element.CurrentItem.ItemId) {
+                continue;
+              }
+              <tr>
+                <td class="elements">
+                  @Html.Partial("_ItemDescription", element)
+                </td>
+                <td class="itemQuantity">@element.Quantity</td>
+              </tr>
+            }
+          }
+        }
+      </tbody>
+    </table>
+  </div>
 }
 <div class="clearfix"></div>
 <p>
-    @Html.ActionLink("Back to Capsules", "Index", "Capsules")
+  @Html.ActionLink("Back to Capsules", "Index", "Capsules")
 </p>

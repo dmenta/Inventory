@@ -12,12 +12,16 @@ namespace MiInventario
     using System;
     using System.Collections.Generic;
     
-    public partial class ReproduccionesItems
+    public partial class Inventories
     {
-        public int IdReproduccion { get; set; }
-        public string ItemID { get; set; }
-        public int Cantidad { get; set; }
+        public Inventories()
+        {
+            this.InventoriesItems = new HashSet<InventoriesItems>();
+        }
     
-        public virtual Reproducciones Reproducciones { get; set; }
+        public int InventoryId { get; set; }
+        public string UserId { get; set; }
+    
+        public virtual ICollection<InventoriesItems> InventoriesItems { get; set; }
     }
 }

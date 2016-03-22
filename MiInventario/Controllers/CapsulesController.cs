@@ -36,7 +36,7 @@ namespace MiInventario.Controllers {
         TotalQuantity = p.CapsulesItems.Sum(q => q.Quantity),
         Name = ResolveCapsuleName(p),
         Properties = GetProperties(p.ItemId),
-        ItemInside = p.CapsulesItems.Count() == 1 ? new Models.ItemViewModel { CurrentItem = ItemsXml.Single(s => s.ItemID == p.CapsulesItems.First().ItemID) } : null,
+        ItemInside = p.CapsulesItems.Count() == 1 ? new Models.ItemViewModel { CurrentItem = ItemsXml.Single(s => s.ItemId == p.CapsulesItems.First().ItemId) } : null,
       }).OrderBy(m => m.Properties.Order).ThenBy(n => n.Code);
 
       return Json(capsules, JsonRequestBehavior.AllowGet);
@@ -69,7 +69,7 @@ namespace MiInventario.Controllers {
         ModelState.AddModelError("Duplicate", "There is another capsule with the same Code");
       }
 
-      var unique = !string.IsNullOrEmpty(ItemsXml.Single(p => p.IsCapsule && p.ItemID == capsule.ItemId).UniqueID);
+      var unique = !string.IsNullOrEmpty(ItemsXml.Single(p => p.IsCapsule && p.ItemId == capsule.ItemId).UniqueId);
 
       if (!unique && capsule.Code.Length != 8) {
         ModelState.AddModelError("Code", "Code must be 8 characters long.");
@@ -107,7 +107,7 @@ namespace MiInventario.Controllers {
 
     [HttpPost]
     public ActionResult Edit(AddEditViewModel capsule) {
-      var unique = !string.IsNullOrEmpty(ItemsXml.Single(p => p.IsCapsule && p.ItemID == capsule.ItemId).UniqueID);
+      var unique = !string.IsNullOrEmpty(ItemsXml.Single(p => p.IsCapsule && p.ItemId == capsule.ItemId).UniqueId);
 
       if (!unique && capsule.Code.Length != 8) {
         ModelState.AddModelError("Code", "Code must be 8 characters long.");
@@ -159,11 +159,11 @@ namespace MiInventario.Controllers {
 
       if (capsule.Items != null) {
         foreach (Models.ItemInventoryViewModel item in capsule.Items) {
-          string itemID = item.CurrentItem.ItemID;
-          var capsulaItem = Database.CapsulesItems.SingleOrDefault(p => p.CapsuleId == capsule.CapsuleId && p.ItemID == itemID);
+          string itemID = item.CurrentItem.ItemId;
+          var capsuleItem = Database.CapsulesItems.SingleOrDefault(p => p.CapsuleId == capsule.CapsuleId && p.ItemId == itemID);
 
-          if (capsulaItem != null) {
-            capsulaItem.Quantity = item.Quantity;
+          if (capsuleItem != null) {
+            capsuleItem.Quantity = item.Quantity;
           }
         }
 
@@ -215,41 +215,41 @@ namespace MiInventario.Controllers {
     }
 
     [HttpPost]
-    public ActionResult Load(LoadViewModel capsula) {
+    public ActionResult Load(LoadViewModel capsule) {
       if (!ModelState.IsValid) {
-        return View(capsula);
+        return View(capsule);
       }
 
-      var capsulaDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == capsula.CapsuleId && p.UserId == Username);
+      var capsuleDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == capsule.CapsuleId && p.UserId == Username);
 
-      if (capsulaDB == null) {
+      if (capsuleDB == null) {
         return new HttpNotFoundResult();
       }
 
-      if (capsula.Items != null) {
+      if (capsule.Items != null) {
 
-        if (capsula.Items.Any(p => p.LoadQuantity > p.ItemQuantity)) {
-          return View(capsula);
+        if (capsule.Items.Any(p => p.LoadQuantity > p.ItemQuantity)) {
+          return View(capsule);
         }
 
-        foreach (var item in capsula.Items.Where(p => p.LoadQuantity > 0)) {
-          CapsulesItems capsulaItem = Database.CapsulesItems.SingleOrDefault(p => p.CapsuleId == capsula.CapsuleId && p.ItemID == item.CurrentItem.ItemID);
+        foreach (var item in capsule.Items.Where(p => p.LoadQuantity > 0)) {
+          CapsulesItems capsuleItem = Database.CapsulesItems.SingleOrDefault(p => p.CapsuleId == capsule.CapsuleId && p.ItemId == item.CurrentItem.ItemId);
 
-          if (capsulaItem != null) {
-            capsulaItem.Quantity += item.LoadQuantity;
+          if (capsuleItem != null) {
+            capsuleItem.Quantity += item.LoadQuantity;
           }
           else {
-            Database.CapsulesItems.Add(new CapsulesItems { CapsuleId = capsula.CapsuleId, ItemID = item.CurrentItem.ItemID, Quantity = item.LoadQuantity });
+            Database.CapsulesItems.Add(new CapsulesItems { CapsuleId = capsule.CapsuleId, ItemId = item.CurrentItem.ItemId, Quantity = item.LoadQuantity });
           }
 
-          Inventarios inv = Database.Inventarios.SingleOrDefault(p => p.IdUsuario == Username && p.ItemID == item.CurrentItem.ItemID);
+          InventoriesItems invItem = Database.InventoriesItems.SingleOrDefault(p => p.Inventories.UserId == Username && p.ItemId == item.CurrentItem.ItemId);
 
-          if (inv != null) {
-            if (inv.Cantidad == item.LoadQuantity) {
-              Database.Inventarios.Remove(inv);
+          if (invItem != null) {
+            if (invItem.Quantity == item.LoadQuantity) {
+              Database.InventoriesItems.Remove(invItem);
             }
             else {
-              inv.Cantidad -= item.LoadQuantity;
+              invItem.Quantity -= item.LoadQuantity;
             }
           }
         }
@@ -257,7 +257,7 @@ namespace MiInventario.Controllers {
         Database.SaveChanges();
       }
 
-      return RedirectToAction("List", new { id = capsula.CapsuleId });
+      return RedirectToAction("List", new { id = capsule.CapsuleId });
     }
 
     [HttpGet]
@@ -283,31 +283,36 @@ namespace MiInventario.Controllers {
         return View(model);
       }
 
-      var capsulaDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == capsule.CapsuleId && p.UserId == Username);
+      var capsuleDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == capsule.CapsuleId && p.UserId == Username);
 
-      if (capsulaDB == null) {
+      if (capsuleDB == null) {
         return new HttpNotFoundResult();
       }
 
       if (capsule.Items != null) {
         foreach (var item in capsule.Items.Where(p => p.UnloadQuantity > 0)) {
-          CapsulesItems capsulaItem = Database.CapsulesItems.SingleOrDefault(p => p.CapsuleId == capsule.CapsuleId && p.ItemID == item.CurrentItem.ItemID);
+          CapsulesItems capsuleItem = Database.CapsulesItems.SingleOrDefault(p => p.CapsuleId == capsule.CapsuleId && p.ItemId == item.CurrentItem.ItemId);
 
-          if (capsulaItem != null) {
-            if (capsulaItem.Quantity == item.UnloadQuantity) {
-              Database.CapsulesItems.Remove(capsulaItem);
+          if (capsuleItem != null) {
+            if (capsuleItem.Quantity == item.UnloadQuantity) {
+              Database.CapsulesItems.Remove(capsuleItem);
             }
             else {
-              capsulaItem.Quantity -= item.UnloadQuantity;
+              capsuleItem.Quantity -= item.UnloadQuantity;
             }
 
-            Inventarios inv = Database.Inventarios.SingleOrDefault(p => p.IdUsuario == Username && p.ItemID == item.CurrentItem.ItemID);
+            InventoriesItems invItem = Database.InventoriesItems.SingleOrDefault(p => p.Inventories.UserId == Username && p.ItemId == item.CurrentItem.ItemId);
 
-            if (inv != null) {
-              inv.Cantidad += item.UnloadQuantity;
+            if (invItem != null) {
+              invItem.Quantity += item.UnloadQuantity;
             }
             else {
-              Database.Inventarios.Add(new Inventarios { IdUsuario = Username, ItemID = item.CurrentItem.ItemID, Cantidad = item.UnloadQuantity });
+              Inventories inv = Database.Inventories.SingleOrDefault(p => p.UserId == Username);
+              if (inv == null) {
+                inv = new Inventories { UserId = Username };
+                Database.Inventories.Add(inv);
+              }
+              Database.InventoriesItems.Add(new InventoriesItems { Inventories = inv, ItemId = item.CurrentItem.ItemId, Quantity = item.UnloadQuantity });
             }
           }
         }
@@ -341,7 +346,7 @@ namespace MiInventario.Controllers {
         return new HttpNotFoundResult();
       }
 
-      var spawnables = ItemsXml.Where(p => p.PaysInterests).Select(s => s.ItemID);
+      var spawnables = ItemsXml.Where(p => p.PaysInterests).Select(s => s.ItemId);
       if (!spawnables.Contains(capsuleDB.ItemId)) {
         return RedirectToAction("List", new { id = capsule.CapsuleId });
       }
@@ -362,16 +367,16 @@ namespace MiInventario.Controllers {
       Dictionary<string, int> nuevos = new Dictionary<string, int>();
 
       foreach (Models.ItemInventoryViewModel item in capsule.Items) {
-        CapsulesItems capsulaItem = Database.CapsulesItems.SingleOrDefault(p => p.CapsuleId == capsule.CapsuleId && p.ItemID == item.CurrentItem.ItemID);
+        CapsulesItems capsuleItem = Database.CapsulesItems.SingleOrDefault(p => p.CapsuleId == capsule.CapsuleId && p.ItemId == item.CurrentItem.ItemId);
 
-        if (capsulaItem != null) {
-          if (capsulaItem.Quantity > item.Quantity) {
+        if (capsuleItem != null) {
+          if (capsuleItem.Quantity > item.Quantity) {
             ModelState.AddModelError("Masde100", "Quantity must be equal or greater than quantity on capsule.");
             return LogInterests(capsule.CapsuleId);
           }
-          else if (capsulaItem.Quantity < item.Quantity) {
-            nuevos.Add(item.CurrentItem.ItemID, item.Quantity - capsulaItem.Quantity);
-            capsulaItem.Quantity = item.Quantity;
+          else if (capsuleItem.Quantity < item.Quantity) {
+            nuevos.Add(item.CurrentItem.ItemId, item.Quantity - capsuleItem.Quantity);
+            capsuleItem.Quantity = item.Quantity;
           }
         }
         else {
@@ -380,18 +385,29 @@ namespace MiInventario.Controllers {
       }
 
       if (nuevos.Count > 0) {
-        DateTime ahora = DateTime.Now;
-        DateTime diferencia = ahora.AddHours(-1);
-        Reproducciones v_ultimaCercana = Database.Reproducciones.FirstOrDefault(p => p.IdUsuario == Username && p.Fecha >= diferencia);
-        if (v_ultimaCercana != null) {
-          ahora = v_ultimaCercana.Fecha;
+        DateTime currentLapse = DateTime.Now.AddHours(-1);
+        Spawns current = Database.Spawns.SingleOrDefault(p => p.UserId == Username && p.Date >= currentLapse);
+        if (current == null) {
+          current = Database.Spawns.Add(new Spawns { UserId = Username, Date = DateTime.Now });
+          Database.Spawns.Add(current);
         }
 
-        Reproducciones v_repro = new Reproducciones { IdCapsula = capsuleDB.Code, IdUsuario = Username, Fecha = ahora };
-        foreach (var kv in nuevos) {
-          v_repro.ReproduccionesItems.Add(new ReproduccionesItems { ItemID = kv.Key, Cantidad = kv.Value });
+        SpawnsCapsules capsuleSpawn = current.SpawnsCapsules.SingleOrDefault(p => p.CapsuleCode == capsuleDB.Code);
+
+        if (capsuleSpawn == null) {
+          capsuleSpawn = Database.SpawnsCapsules.Add(new SpawnsCapsules { Spawns = current, CapsuleCode = capsuleDB.Code });
+          Database.SpawnsCapsules.Add(capsuleSpawn);
         }
-        Database.Reproducciones.Add(v_repro);
+
+        foreach (var kv in nuevos) {
+          SpawnsCapsulesItems capsuleSpawnItem = capsuleSpawn.SpawnsCapsulesItems.SingleOrDefault(p => p.ItemId == kv.Key);
+          if (capsuleSpawnItem != null) {
+            capsuleSpawnItem.Quantity += kv.Value;
+          }
+          else {
+            capsuleSpawn.SpawnsCapsulesItems.Add(new SpawnsCapsulesItems { SpawnsCapsules = capsuleSpawn, ItemId = kv.Key, Quantity = kv.Value });
+          }
+        }
 
         Database.SaveChanges();
 
@@ -413,10 +429,10 @@ namespace MiInventario.Controllers {
       AddItemViewModel model = new AddItemViewModel();
       LoadCapsule(capsuleDB, model);
 
-      var itemsCargados = capsuleDB.CapsulesItems.Select(p => p.ItemID).ToList();
-      var isKey = ItemsXml.Where(p => p.IsKey).Select(s => s.ItemID);
+      var itemsCargados = capsuleDB.CapsulesItems.Select(p => p.ItemId).ToList();
+      var isKey = ItemsXml.Where(p => p.IsKey).Select(s => s.ItemId);
 
-      model.AddeableItems = ItemsXml.Where(p => !p.IsCapsule && !itemsCargados.Contains(p.ItemID) && (!model.Properties.IsKeyLocker || isKey.Contains(p.ItemID)))
+      model.AddeableItems = ItemsXml.Where(p => !p.IsCapsule && !itemsCargados.Contains(p.ItemId) && (!model.Properties.IsKeyLocker || isKey.Contains(p.ItemId)))
           .Select(q => new Models.ItemViewModel {
             CurrentItem = q,
           }).ToList();
@@ -433,7 +449,7 @@ namespace MiInventario.Controllers {
       }
 
       if (ModelState.IsValid) {
-        Database.CapsulesItems.Add(new CapsulesItems { CapsuleId = addedItem.CapsuleId, ItemID = addedItem.ItemID, Quantity = addedItem.Quantity });
+        Database.CapsulesItems.Add(new CapsulesItems { CapsuleId = addedItem.CapsuleId, ItemId = addedItem.ItemId, Quantity = addedItem.Quantity });
 
         Database.SaveChanges();
 
@@ -442,10 +458,10 @@ namespace MiInventario.Controllers {
       else {
         LoadCapsule(capsuleDB, addedItem);
 
-        var itemsCargados = capsuleDB.CapsulesItems.Select(p => p.ItemID).ToList();
-        var isKey = ItemsXml.Where(p => p.IsKey).Select(s => s.ItemID);
+        var itemsCargados = capsuleDB.CapsulesItems.Select(p => p.ItemId).ToList();
+        var isKey = ItemsXml.Where(p => p.IsKey).Select(s => s.ItemId);
 
-        addedItem.AddeableItems = ItemsXml.Where(p => !p.IsCapsule && !itemsCargados.Contains(p.ItemID) && (!addedItem.Properties.IsKeyLocker || isKey.Contains(p.ItemID)))
+        addedItem.AddeableItems = ItemsXml.Where(p => !p.IsCapsule && !itemsCargados.Contains(p.ItemId) && (!addedItem.Properties.IsKeyLocker || isKey.Contains(p.ItemId)))
               .Select(q => new Models.ItemViewModel {
                 CurrentItem = q,
               }).ToList();
@@ -466,7 +482,7 @@ namespace MiInventario.Controllers {
         return new HttpNotFoundResult();
       }
 
-      var item = capsuleDB.CapsulesItems.SingleOrDefault(p => p.ItemID == itemID);
+      var item = capsuleDB.CapsulesItems.SingleOrDefault(p => p.ItemId == itemID);
 
       if (item == null) {
         return new HttpNotFoundResult();
@@ -477,7 +493,7 @@ namespace MiInventario.Controllers {
       LoadCapsule(capsuleDB, model);
 
       Models.ItemViewModel summary = new Models.ItemViewModel {
-        CurrentItem = ItemsXml.Single(z => z.ItemID == item.ItemID),
+        CurrentItem = ItemsXml.Single(z => z.ItemId == item.ItemId),
       };
       model.Item = summary;
       model.Quantity = item.Quantity;
@@ -488,13 +504,13 @@ namespace MiInventario.Controllers {
     [HttpPost]
     public ActionResult DeleteItem(DeleteItemViewModel element) {
 
-      var capsulaDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == element.CapsuleId && p.UserId == Username);
+      var capsuleDB = Database.Capsules.SingleOrDefault(p => p.CapsuleId == element.CapsuleId && p.UserId == Username);
 
-      if (capsulaDB == null) {
+      if (capsuleDB == null) {
         return new HttpNotFoundResult();
       }
 
-      var item = capsulaDB.CapsulesItems.SingleOrDefault(p => p.ItemID == element.Item.CurrentItem.ItemID);
+      var item = capsuleDB.CapsulesItems.SingleOrDefault(p => p.ItemId == element.Item.CurrentItem.ItemId);
 
       if (item == null) {
         return new HttpNotFoundResult();
@@ -550,7 +566,7 @@ namespace MiInventario.Controllers {
       model.Name = ResolveCapsuleName(capsuleDB);
       model.TotalQuantity = capsuleDB.CapsulesItems.Sum(q => q.Quantity);
       model.Properties = GetProperties(capsuleDB.ItemId);
-      model.ItemInside = capsuleDB.CapsulesItems.Count() == 1 ? new Models.ItemViewModel { CurrentItem = ItemsXml.Single(s => s.ItemID == capsuleDB.CapsulesItems.First().ItemID) } : null;
+      model.ItemInside = capsuleDB.CapsulesItems.Count() == 1 ? new Models.ItemViewModel { CurrentItem = ItemsXml.Single(s => s.ItemId == capsuleDB.CapsulesItems.First().ItemId) } : null;
     }
 
     private UnloadViewModel RecuperarItemsUnload(int id) {
@@ -564,7 +580,7 @@ namespace MiInventario.Controllers {
       LoadCapsule(capsuleDB, model);
 
       model.Items = capsuleDB.CapsulesItems.Select(p => new ItemUnloadViewModel {
-        CurrentItem = ItemsXml.Single(z => z.ItemID == p.ItemID),
+        CurrentItem = ItemsXml.Single(z => z.ItemId == p.ItemId),
         CapsuleQuantity = p.Quantity,
         UnloadQuantity = 0
       }).OrderBy(x => x.CurrentItem.Order).ToList();
@@ -583,21 +599,21 @@ namespace MiInventario.Controllers {
       LoadCapsule(capsuleDB, model);
 
       model.Items = capsuleDB.CapsulesItems.Select(p => new ItemLoadViewModel {
-        CurrentItem = ItemsXml.Single(z => z.ItemID == p.ItemID),
+        CurrentItem = ItemsXml.Single(z => z.ItemId == p.ItemId),
         CapsuleQuantity = p.Quantity,
         ItemQuantity = 0,
         LoadQuantity = 0
       }).OrderBy(x => x.CurrentItem.Order).ToList();
 
-      var isCapsule = ItemsXml.Where(p => p.IsCapsule).Select(s => s.ItemID);
-      var isKey = ItemsXml.Where(p => p.IsKey).Select(s => s.ItemID);
+      var isCapsule = ItemsXml.Where(p => p.IsCapsule).Select(s => s.ItemId);
+      var isKey = ItemsXml.Where(p => p.IsKey).Select(s => s.ItemId);
 
-      var inventoryDB = Database.Inventarios.Where(p => p.IdUsuario == Username && !isCapsule.Contains(p.ItemID) && (!model.Properties.IsKeyLocker || isKey.Contains(p.ItemID))).ToList();
+      var inventoryDB = Database.InventoriesItems.Where(p => p.Inventories.UserId == Username && !isCapsule.Contains(p.ItemId) && (!model.Properties.IsKeyLocker || isKey.Contains(p.ItemId))).ToList();
 
       var inventories = inventoryDB.Select(q => new ItemLoadViewModel {
-        CurrentItem = ItemsXml.Single(z => z.ItemID == q.ItemID),
+        CurrentItem = ItemsXml.Single(z => z.ItemId == q.ItemId),
         CapsuleQuantity = 0,
-        ItemQuantity = q.Cantidad,
+        ItemQuantity = q.Quantity,
         LoadQuantity = 0
       }).OrderBy(p => p.CurrentItem.Order).ToList();
 
@@ -622,7 +638,7 @@ namespace MiInventario.Controllers {
       }
 
       if (onlySpawnables) {
-        var spawnables = ItemsXml.Where(p => p.PaysInterests).Select(s => s.ItemID);
+        var spawnables = ItemsXml.Where(p => p.PaysInterests).Select(s => s.ItemId);
 
         if (!spawnables.Contains(capsuleDB.ItemId)) {
           return null;
@@ -633,21 +649,21 @@ namespace MiInventario.Controllers {
       LoadCapsule(capsuleDB, model);
 
       model.Items = capsuleDB.CapsulesItems.Select(p => new Models.ItemInventoryViewModel {
-        CurrentItem = ItemsXml.Single(z => z.ItemID == p.ItemID),
+        CurrentItem = ItemsXml.Single(z => z.ItemId == p.ItemId),
         Quantity = p.Quantity
       }).OrderBy(x => x.CurrentItem.Order).ToList();
 
       return model;
     }
 
-    private CapsuleProperties GetProperties(string capsuleItemID) {
-      return ItemsXml.Where(p => p.ItemID == capsuleItemID).Select(q => new CapsuleProperties {
+    private CapsuleProperties GetProperties(string capsuleItemId) {
+      return ItemsXml.Where(p => p.ItemId == capsuleItemId).Select(q => new CapsuleProperties {
         Order = q.Order,
         IsKeyLocker = q.IsKeyLocker,
         IsTransferable = q.Transfer,
         PaysInterests = q.PaysInterests,
-        UniqueID = q.UniqueID,
-        UniqueName = string.IsNullOrEmpty(q.UniqueID) ? null : Resources.ItemsNames.ResourceManager.GetString(q.UniqueID)
+        UniqueID = q.UniqueId,
+        UniqueName = string.IsNullOrEmpty(q.UniqueId) ? null : Resources.ItemsNames.ResourceManager.GetString(q.UniqueId)
       }).Single();
     }
 
@@ -670,7 +686,7 @@ namespace MiInventario.Controllers {
     private IEnumerable<Item> GetValidNewCapsuleTypes(string capsuleItemId) {
       var existingTypes = Database.Capsules.Where(p => p.UserId == Username).Select(q => q.ItemId).Distinct();
 
-      return ItemsXml.Where(p => p.IsCapsule && (p.ItemID == capsuleItemId || string.IsNullOrEmpty(p.UniqueID) || !existingTypes.Contains(p.ItemID)));
+      return ItemsXml.Where(p => p.IsCapsule && (p.ItemId == capsuleItemId || string.IsNullOrEmpty(p.UniqueId) || !existingTypes.Contains(p.ItemId)));
     }
   }
 }

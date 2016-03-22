@@ -3,15 +3,15 @@
 function RenderItemDescription(item) {
   var html = '';
   if (item.Level > 0) {
-    html += '<span class="nivel' + item.Level.toString() + '">L' + item.Level.toString() + '</span> ';
+    html += '<span class="level' + item.Level.toString() + '">L' + item.Level.toString() + '</span> ';
   }
-  html += '<span class="rareza' + item.Rarity.toString() + '">' + item.Nombre + '</span>';
+  html += '<span class="rarity' + item.Rarity.toString() + '">' + item.Name + '</span>';
 
   return html;
 }
 
 function RenderType(type) {
-  if (type.Cantidad === 0 && type.CantidadCapsulas === 0) {
+  if (type.QuantityCantidad === 0 && type.CapsulesQuantity === 0) {
     return;
   }
 
@@ -73,17 +73,17 @@ function RenderItems(items) {
   var rows = '';
 
   $.each(items, function (key, item) {
-    if (item.Cantidad === 0 && item.CantidadCapsulas === 0) {
+    if (item.Quantity === 0 && item.CapsulesQuantity === 0) {
       return;
     }
 
     rows += '<tr>';
-    rows += '<td class="nombre">';
+    rows += '<td class="name">';
     rows += RenderItemDescription(item.CurrentItem);
     rows += '</td>';
-    rows += '<td class="cantidadItem">' + (item.Cantidad > 0 ? item.Cantidad.toString() : '') + '</td>';
-    rows += '<td class="cantidadItem">' + (item.Cantidad > 0 ? '(' + item.CantidadCapsulas.toString() + ')' : '') + '</td>';
-    rows += '<td class="cantidadTotal">' + (item.CantidadCapsulas + item.Cantidad).toString() + '</td>';
+    rows += '<td class="itemQuantity">' + (item.Quantity > 0 ? item.Quantity.toString() : '') + '</td>';
+    rows += '<td class="itemQuantity">' + (item.Quantity > 0 ? '(' + item.CapsulesQuantity.toString() + ')' : '') + '</td>';
+    rows += '<td class="totalQuantity">' + (item.CapsulesQuantity + item.Quantity).toString() + '</td>';
     rows += '</tr>';
 });
 
@@ -94,25 +94,25 @@ function RenderItemsEdit(items) {
   var rows = '';
   $.each(items, function (key, item) {
     rows += '<tr>';
-    rows += '<td class="nombre">';
+    rows += '<td class="name">';
     rows += RenderItemDescription(item.CurrentItem);
     rows += '</td>';
-    rows += '<td class="cantidadItem">';
-    rows += '<input type="number" class="form-control text-right input-sm newQty" min="0" max="' + (item.CurrentItem.UniqueID == null || item.CurrentItem.UniqueID.length == 0 ? '2000' : '1') + '" data-itemid="';
-    rows += item.CurrentItem.ItemID;
+    rows += '<td class="itemQuantity">';
+    rows += '<input type="number" class="form-control text-right input-sm newQty" min="0" max="' + (item.CurrentItem.UniqueId === null || item.CurrentItem.UniqueId.length === 0 ? '2000' : '1') + '" data-itemid="';
+    rows += item.CurrentItem.ItemId;
     rows += '" data-originalqty="';
-    rows += item.Cantidad;
+    rows += item.Quantity;
     rows += '" value="';
-    rows += item.Cantidad;
+    rows += item.Quantity;
     rows += '"/>';
     rows += '</td>';
-    rows += '<td class="cantidadItem">';
+    rows += '<td class="itemQuantity">';
     rows += '(';
-    rows += item.CantidadCapsulas.toString();
+    rows += item.CapsulesQuantity.toString();
     rows += ')';
     rows += '</td>';
-    rows += '<td class="cantidadTotal">';
-    rows += (item.CantidadCapsulas +item.Cantidad).toString();
+    rows += '<td class="totalQuantity">';
+    rows += (item.CapsulesQuantity + item.Quantity).toString();
     rows += '</td>';
     rows += '</tr>';
 });

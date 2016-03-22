@@ -39,26 +39,26 @@
                 @for (int i = 0; i < Model.Items.Count; i++)
                 {
                     var item = Model.Items[i];
-                    @Html.HiddenFor(model => Model.Items[i].CurrentItem.ItemID)
-                    @Html.HiddenFor(model => Model.Items[i].CurrentItem.TypeID)
+                    @Html.HiddenFor(model => Model.Items[i].CurrentItem.ItemId)
+                    @Html.HiddenFor(model => Model.Items[i].CurrentItem.TypeId)
                     @Html.HiddenFor(model => Model.Items[i].ItemQuantity)
                     @Html.HiddenFor(model => Model.Items[i].CapsuleQuantity)
                     @Html.HiddenFor(model => Model.Items[i].CurrentItem.Level)
                     @Html.HiddenFor(model => Model.Items[i].CurrentItem.Rarity)
                     <tr>
-                        <td class="nombre">
+                        <td class="name">
                             @Html.Partial("_ItemDescription", item)
                         </td>
-                        <td class="cantidadItem">
+                        <td class="itemQuantity">
                             @Html.DisplayFor(model => Model.Items[i].ItemQuantity)
                         </td>
-                        <td class="cantidadItem">
+                        <td class="itemQuantity">
                             @if (Model.Items[i].CapsuleQuantity > 0)
                             {
                                 @String.Format("({0})", Model.Items[i].CapsuleQuantity);
                             }
                         </td>
-                        <td class="cantidadItem">
+                        <td class="itemQuantity">
                             @if (item.ItemQuantity > 0) {
                                 @Html.TextBoxFor(model => Model.Items[i].LoadQuantity, new { @class = "form-control text-right input-sm" });
                             }

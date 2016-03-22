@@ -60,7 +60,7 @@
         url: editing ? '/Inventory/ItemsEdit' : '/Inventory/Items',
         method: 'POST',
         dataType: "json",
-        data: { groupID: $('#Groups').val() },
+        data: { groupId: $('#Groups').val() },
         success: function (data) {
           var nuevosItems = ''
 
@@ -146,7 +146,7 @@
           var newQty = inp.val();
 
           if (parseInt(oldQty) != newQty) {
-            item = { "ItemID": id, "Qty": newQty };
+            item = { "ItemId": id, "Quantity": newQty };
             items.push(item);
           }
         });
@@ -175,7 +175,7 @@
         ChangeState(false);
       });
 
-      $('#Groups').val('@Model.GroupID');
+      $('#Groups').val('@Model.GroupId');
       ShowGroups(@Json.Encode(Model.Editing));
 
       historyManager.init({

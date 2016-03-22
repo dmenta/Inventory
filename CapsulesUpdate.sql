@@ -55,13 +55,13 @@ GO
 CREATE TABLE dbo.Tmp_CapsulasItems
 	(
 	CapsuleId int NOT NULL,
-	ItemID varchar(10) NOT NULL,
+	ItemId varchar(10) NOT NULL,
 	Quantity int NOT NULL,
 	IdCapsula varchar(8) NOT NULL
 	)  ON [PRIMARY]
 GO
 
-INSERT INTO dbo.Tmp_CapsulasItems (CapsuleId, ItemID, Quantity, IdCapsula)
+INSERT INTO dbo.Tmp_CapsulasItems (CapsuleId, ItemId, Quantity, IdCapsula)
 SELECT Capsules.CapsuleId, CapsulasItems.ItemID, Cantidad, IdCapsula
 FROM 
 dbo.CapsulasItems WITH (HOLDLOCK TABLOCKX)
@@ -81,7 +81,7 @@ ALTER TABLE dbo.CapsulesItems ADD CONSTRAINT
 	PK_CapsulesItems PRIMARY KEY CLUSTERED 
 	(
 	CapsuleId,
-	ItemID
+	ItemId
 	) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 
 GO

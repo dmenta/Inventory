@@ -18,28 +18,28 @@ namespace MiInventario {
       return email.Split('@')[0];
     }
 
-    public static int DaysInYear(this DateTime fecha) {
-      var thisYear = new DateTime(fecha.Year, 1, 1);
-      var nextYear = new DateTime(fecha.Year + 1, 1, 1);
+    public static int DaysInYear(this DateTime date) {
+      var thisYear = new DateTime(date.Year, 1, 1);
+      var nextYear = new DateTime(date.Year + 1, 1, 1);
 
       return (nextYear - thisYear).Days;
     }
 
-    public static int DaysInMonth(this DateTime fecha) {
-      return DateTime.DaysInMonth(fecha.Year, fecha.Month);
+    public static int DaysInMonth(this DateTime date) {
+      return DateTime.DaysInMonth(date.Year, date.Month);
     }
 
-    public static DateTime GetResolvedDate(this DateTime fecha, DateGrouping grouping) {
+    public static DateTime GetResolvedDate(this DateTime date, DateGrouping grouping) {
       switch (grouping) {
         case DateGrouping.Week:
-          return fecha.AddDays(-(int)fecha.DayOfWeek).Date;
+          return date.AddDays(-(int)date.DayOfWeek).Date;
         case DateGrouping.Month:
-          return new DateTime(fecha.Year, fecha.Month, 1);
+          return new DateTime(date.Year, date.Month, 1);
         case DateGrouping.Year:
-          return new DateTime(fecha.Year, 1, 1);
+          return new DateTime(date.Year, 1, 1);
         case DateGrouping.Day:
         default:
-          return new DateTime(fecha.Year, fecha.Month, fecha.Day);
+          return new DateTime(date.Year, date.Month, date.Day);
       }
     }
 

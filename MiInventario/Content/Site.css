@@ -16,7 +16,7 @@ textarea {
     max-width: 280px;
 }
 
-.nivel {
+.level {
     display: inline-block;
     width: 25px;
     text-align: center;
@@ -24,67 +24,67 @@ textarea {
     font-weight: bold;
 }
 
-.rareza1, .rarezaR1 {
+.rarity1, .rarityR1 {
     color: #b5b2b5;
 }
 
-.rareza2, .rarezaR2 {
+.rarity2, .rarityR2 {
     color: #84f7b5;
 }
 
-.rareza3, .rarezaR3 {
+.rarity3, .rarityR3 {
     color: #ad8eff;
 }
 
-.rareza4, .rarezaR4 {
+.rarity4, .rarityR4 {
     color: #ff8ef7;
 }
 
-.nivel1 {
+.level1 {
     color: #ffcf5a;
 }
 
-.nivel2 {
+.level2 {
     color: #ffa72f;
 }
 
-.nivel3 {
+.level3 {
     color: #ff7413;
 }
 
-.nivel4 {
+.level4 {
     color: #e10000;
 }
 
-.nivel5 {
+.level5 {
     color: #fd2891;
 }
 
-.nivel6 {
+.level6 {
     color: #ed27ce;
 }
 
-.nivel7 {
+.level7 {
     color: #c323e3;
 }
 
-.nivel8 {
+.level8 {
     color: #9927f8;
 }
 
-td.cantidadItem {
+td.itemQuantity {
     text-align: right;
 }
 
-td.cantidadTotal {
+td.totalQuantity {
     text-align: right;
 }
 
-td.cantidadCapsula {
+td.capsuleQuantity {
     text-align: right;
 }
 
-td.nombre {
+td.name {
     white-space: nowrap;
 }
 
@@ -129,7 +129,7 @@ th {
     color: #9b9b9b;
 }
 
-tfoot .nombreTotales {
+tfoot .totalsName {
     background-color: #9a408a;
     color: #e4d1d1;
     text-align: center;
@@ -170,7 +170,7 @@ th.rotate {
     padding: 25px 25px 20px;
 }
 #headerDetail{
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 #detailRarity{
     font-size: 0.9em;

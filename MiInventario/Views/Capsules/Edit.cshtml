@@ -19,7 +19,7 @@
     <div class="form-group">
       @Html.LabelFor(model => model.Code, new { @class = "col-lg-2 control-label" })
       <div class="col-lg-10">
-        @if (string.IsNullOrEmpty(Model.CapsuleTypes.Single(p => p.ItemID == Model.ItemId).UniqueID)) {
+        @if (string.IsNullOrEmpty(Model.CapsuleTypes.Single(p => p.ItemId == Model.ItemId).UniqueId)) {
           @Html.TextBoxFor(model => model.Code, new { @class = "form-control text-uppercase input-sm" });
         }
         else {
@@ -38,11 +38,11 @@
       <div class="col-lg-10">
         <select id="ItemId" class="form-control input-sm" name="ItemId">
           @foreach (var item in Model.CapsuleTypes) {
-            if (item.ItemID == Model.ItemId) {
-              <option value="@item.ItemID" data-uniqueid="@item.UniqueID" selected>@item.Nombre</option>
+            if (item.ItemId == Model.ItemId) {
+              <option value="@item.ItemId" data-uniqueid="@item.UniqueId" selected>@item.Name</option>
             }
             else {
-              <option value="@item.ItemID" data-uniqueid="@item.UniqueID">@item.Nombre</option>
+              <option value="@item.ItemId" data-uniqueid="@item.UniqueId">@item.Name</option>
             }
           }
         </select>

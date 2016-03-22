@@ -14,38 +14,38 @@ namespace MiInventario.Models.Interests {
     public bool Accumulative { get; set; }
   }
   public class LastSpawnViewModel {
-    public DateTime? Fecha { get; set; }
-    public int Total { get; set; }
-    public IEnumerable<Capsules.ContenidoViewModel> Capsulas { get; set; }
+    public DateTime? SpawnDate { get; set; }
+    public int TotalQuantity { get; set; }
+    public IEnumerable<Capsules.ContentsViewModel> Capsules { get; set; }
 
-    public IEnumerable<ItemInventoryViewModel> Totales { get; set; }
+    public IEnumerable<ItemInventoryViewModel> Totals { get; set; }
   }
 
   public class ByDateViewModel {
     public string Title {
       get {
         if (TotalCapsules == 1) {
-          return Capsulas.Single() + ": " + Resources.General.ResourceManager.GetString(string.Format("InterestsByDate_Title_{0}", Grouping.ToString()));
+          return Capsules.Single() + ": " + Resources.General.ResourceManager.GetString(string.Format("InterestsByDate_Title_{0}", Grouping.ToString()));
         }
         else {
           return Resources.General.ResourceManager.GetString(string.Format("InterestsByDate_Title_{0}", Grouping.ToString()));
         }
       }
     }
-    public IEnumerable<string> Capsulas { get; set; }
-    public int TotalCapsules { get { return Capsulas.Count(); } }
+    public IEnumerable<string> Capsules { get; set; }
+    public int TotalCapsules { get { return Capsules.Count(); } }
     public int TotalItems { get { return DateInfo.Sum(p => p.TotalItems); } }
     public DateGrouping Grouping { get; set; }
     public IEnumerable<DateInfoModel> DateInfo { get; set; }
-    public IEnumerable<FechaTotalViewModel> Filas { get; set; }
-    public IEnumerable<FechaTotalViewModel> Totales { get; set; }
+    public IEnumerable<FechaTotalViewModel> Rows { get; set; }
+    public IEnumerable<FechaTotalViewModel> Totals { get; set; }
   }
 
 
   public class DateInfoModel {
 
     [ScriptIgnoreAttribute]
-    public DateTime Fecha { get; set; }
+    public DateTime Date { get; set; }
 
     public int TotalCapsules { get; set; }
 
@@ -69,7 +69,7 @@ namespace MiInventario.Models.Interests {
     public IEnumerable<DateInfoTotalModel> DateInfo { get; set; }
     public int TotalItems { get; set; }
     public IEnumerable<ItemInventoryViewModel> Totals { get; set; }
-    public Dictionary<string, int> Maximos { get; set; }
+    public Dictionary<string, int> Highests { get; set; }
 
     public string[] Items { get; set; }
 
@@ -81,16 +81,16 @@ namespace MiInventario.Models.Interests {
     public string FormattedDate { get; set; }
   }
   public class FechaTotalViewModel {
-    public string IdCapsula { get; set; }
-    public DateTime Fecha { get; set; }
-    public int Total { get; set; }
+    public string Code { get; set; }
+    public DateTime Date { get; set; }
+    public int TotalQuantity { get; set; }
     public IEnumerable<ItemInventoryViewModel> Items { get; set; }
   }
 
   public class ChartsViewModel {
     public Dictionary<string, string> ViewableItems { get; set; }
     public DateGrouping Grouping { get; set; }
-    public string ItemID { get; set; }
+    public string ItemId { get; set; }
     public bool Accumulative { get; set; }
 
     public ChartTitleViewModel ChartTitle { get; set; }

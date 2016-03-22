@@ -110,11 +110,11 @@
       html += '<tfoot>';
       html += ' <tr>';
       html += '<td class="fecha">Total</td>';
-      html += '<td class="cantidadTotal"></td>';
-      html += '<td class="cantidadTotal">' + data.TotalItems + '</td>';
-      html += '<td class="cantidadTotal"></td>';
+      html += '<td class="totalQuantity"></td>';
+      html += '<td class="totalQuantity">' + data.TotalItems + '</td>';
+      html += '<td class="totalQuantity"></td>';
       $.each(data.Totals, function (key, total) {
-        html += '<td class="cantidadItem">' + total.Cantidad + '</td>';
+        html += '<td class="itemQuantity">' + total.Quantity + '</td>';
       });
       html += '</tr>';
       html += '</tfoot>';
@@ -122,20 +122,20 @@
       $.each(data.DateInfo, function (key, info) {
         html += '<tr>';
         html += '<td class="fecha text-nowrap">' + info.FormattedDate + '</td>';
-        html += '<td class="cantidadTotal">' + info.TotalCapsules + '</td>';
-        html += '<td class="cantidadTotal">' + info.TotalItems + '</td>';
-        html += '<td class="cantidadTotal">' + info.Average.toFixed(2) + '</td>';
-        $.each(data.Items, function (key, itemID) {
-          var cantidad = info.Items[itemID];
-          if (cantidad == null || cantidad===0) {
+        html += '<td class="totalQuantity">' + info.TotalCapsules + '</td>';
+        html += '<td class="totalQuantity">' + info.TotalItems + '</td>';
+        html += '<td class="totalQuantity">' + info.Average.toFixed(2) + '</td>';
+        $.each(data.Items, function (key, itemId) {
+          var quantity = info.Items[itemId];
+          if (quantity == null || quantity === 0) {
             html += '<td></td>';
             return;
           }
-          if (cantidad == data.Maximos[itemID]) {
-            html += '<td class="cantidadItem text-warning"><strong>' + cantidad + '</strong></td>';
+          if (quantity == data.Highests[itemId]) {
+            html += '<td class="itemQuantity text-warning"><strong>' + quantity + '</strong></td>';
           }
           else {
-            html += '<td class="cantidadItem">' + cantidad + '</td>';
+            html += '<td class="itemQuantity">' + quantity + '</td>';
           }
         });
         html += '</tr>';

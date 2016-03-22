@@ -12,12 +12,12 @@ namespace MiInventario
     using System;
     using System.Collections.Generic;
     
-    public partial class CapsulesItems
+    public partial class InventoriesItems
     {
-        public int CapsuleId { get; set; }
+        public int InventoryId { get; set; }
         public string ItemId { get; set; }
         public int Quantity { get; set; }
     
-        public virtual Capsules Capsules { get; set; }
+        public virtual Inventories Inventories { get; set; }
     }
 }

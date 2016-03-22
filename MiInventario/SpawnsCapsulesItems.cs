@@ -12,18 +12,13 @@ namespace MiInventario
     using System;
     using System.Collections.Generic;
     
-    public partial class Reproducciones
+    public partial class SpawnsCapsulesItems
     {
-        public Reproducciones()
-        {
-            this.ReproduccionesItems = new HashSet<ReproduccionesItems>();
-        }
+        public int SpawnId { get; set; }
+        public string CapsuleCode { get; set; }
+        public string ItemId { get; set; }
+        public int Quantity { get; set; }
     
-        public int IdReproduccion { get; set; }
-        public string IdCapsula { get; set; }
-        public string IdUsuario { get; set; }
-        public System.DateTime Fecha { get; set; }
-    
-        public virtual ICollection<ReproduccionesItems> ReproduccionesItems { get; set; }
+        public virtual SpawnsCapsules SpawnsCapsules { get; set; }
     }
 }

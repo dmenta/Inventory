@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<MiInventario.Models.Inventory.ItemDifferenceViewModel>
-@if (Model.Any(p => p.DiferenciaA > 0 || p.DiferenciaB > 0))
+@if (Model.Any(p => p.OriginDifference > 0 || p.DestinationDifference > 0))
 {
     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
         <table class="table table-condensed table-striped">
@@ -20,28 +20,28 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (MiInventario.Models.Inventory.ItemDifferenceViewModel item in Model.Where(p => p.DiferenciaA > 0 || p.DiferenciaB > 0))
+                @foreach (MiInventario.Models.Inventory.ItemDifferenceViewModel item in Model.Where(p => p.OriginDifference > 0 || p.DestinationDifference > 0))
                 {
                     <tr>
-                        <td class="nombre">
+                        <td class="name">
                             @Html.Partial("_ItemDescription", item)
                         </td>
-                        <td class="cantidadItem">
-                            @item.CantidadUsuarioA
+                        <td class="itemQuantity">
+                            @item.OriginQuantity
                         </td>
-                        <td class="cantidadItem">
-                            @item.CantidadUsuarioB
+                        <td class="itemQuantity">
+                            @item.DestinationQuantity
                         </td>
-                        <td class="cantidadItem">
-                            @if (item.DiferenciaA > 0)
+                        <td class="itemQuantity">
+                            @if (item.OriginDifference > 0)
                             {
-                                <text>@item.DiferenciaA</text>
+                                <text>@item.OriginDifference</text>
                             }
                         </td>
-                        <td class="cantidadItem">
-                            @if (item.DiferenciaB > 0)
+                        <td class="itemQuantity">
+                            @if (item.DestinationDifference > 0)
                             {
-                                <text>@item.DiferenciaB</text>
+                                <text>@item.DestinationDifference</text>
                             }
                         </td>
                     </tr>

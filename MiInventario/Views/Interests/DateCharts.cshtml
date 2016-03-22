@@ -13,7 +13,7 @@
   <div class="form-group">
     <span class="col-lg-2 control-label">Item</span>
     <div class="col-lg-10">
-      @Html.DropDownListFor(model => model.ItemID, new SelectList(Model.ViewableItems, "Key", "Value", Model.ItemID), Resources.Groups.G_ALL, new { @id = "item", @class = "form-control input-sm" })
+      @Html.DropDownListFor(model => model.ItemId, new SelectList(Model.ViewableItems, "Key", "Value", Model.ItemId), Resources.Groups.G_ALL, new { @id = "item", @class = "form-control input-sm" })
       <div class="checkbox">
         <label>
           <input type="checkbox" @(Model.Accumulative ? "checked=\"checked\"" : "") id="accumulative" />
@@ -26,7 +26,7 @@
 <hr />
 <h4 id="chartTitle">@Html.Partial("_ChartTitle", Model.ChartTitle)</h4>
 <div>
-  <img src="@Url.Action("InterestsChart", "Interests", new { grouping = Model.Grouping, itemID = Model.ItemID, accumulative = Model.Accumulative })" alt="Chart" />
+  <img src="@Url.Action("InterestsChart", "Interests", new { grouping = Model.Grouping, itemID = Model.ItemId, accumulative = Model.Accumulative })" alt="Chart" />
 </div>
 @section scripts{
   <script type="text/javascript">
@@ -35,7 +35,7 @@
       var grp = $('#grouping').val();
       var item = $('#item').val();
       var acc = $('#accumulative').is(':checked');
-      var newImg = '/Interests/InterestsChart?grouping=' + grp + '&itemID=' + item + '&accumulative=' + acc;
+      var newImg = '/Interests/InterestsChart?grouping=' + grp + '&itemId=' + item + '&accumulative=' + acc;
       $("img").attr('src', newImg);
 
       $.ajax({
@@ -43,7 +43,7 @@
         method: 'GET',
         cache: false,
         dataType: "html",
-        data: { grouping: grp, itemID: item, accumulative: acc },
+        data: { grouping: grp, itemId: item, accumulative: acc },
         success: function (data) {
           $("#chartTitle").html(data);
         }
@@ -66,7 +66,7 @@
 
       historyManager.init({
         data: function () {
-          return { grouping: $('#grouping').val(), itemID: $('#item').val(), itemName: $('#item option:selected').text(), accumulative: $('#accumulative').is(':checked') };
+          return { grouping: $('#grouping').val(), itemId: $('#item').val(), itemName: $('#item option:selected').text(), accumulative: $('#accumulative').is(':checked') };
         },
         title: function (data) {
           return (data.accumulative ? 'Accumulative interests of ' : 'Interests of ') + data.itemName + ' by ' + data.grouping;
@@ -76,7 +76,7 @@
         },
         change: function (data) {
           $('#grouping').val(data.grouping);
-          $('#item').val(data.itemID);
+          $('#item').val(data.itemId);
           $('#accumulative').prop('checked', data.accumulative)
 
           updateImage();

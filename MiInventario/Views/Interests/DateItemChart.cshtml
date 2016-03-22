@@ -47,12 +47,12 @@
         .AddSeries(
         chartType: "Line",
             name: "Items",
-            xValue: Model.DateInfo.Select(p => p.Fecha.ToString(dateFormat)).ToArray(),
+            xValue: Model.DateInfo.Select(p => p.Date.ToString(dateFormat)).ToArray(),
             yValues: Model.DateInfo.Select(p => p.TotalItems).ToArray())
         .AddSeries(
         chartType: "Column",
             name: "Capsules",
-            xValue: Model.DateInfo.Select(p => p.Fecha.ToString(dateFormat)).ToArray(),
+            xValue: Model.DateInfo.Select(p => p.Date.ToString(dateFormat)).ToArray(),
             yValues: Model.DateInfo.Select(p => p.TotalCapsules).ToArray())
         .Write("png");
 }

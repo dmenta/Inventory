@@ -71,7 +71,7 @@ namespace MiInventario.Models.Capsules {
 
   public class AddItemViewModel : CapsuleViewModel {
     [Required]
-    public string ItemID { get; set; }
+    public string ItemId { get; set; }
 
     [Required]
     [Range(1, 100, ErrorMessage = "Quantity must be a value between 1 and 100.")]
@@ -79,11 +79,11 @@ namespace MiInventario.Models.Capsules {
     public List<ItemViewModel> AddeableItems { get; set; }
   }
 
-  public class ContenidoViewModel {
-    public string IdCapsula { get; set; }
-    public int Total { get; set; }
-    public IEnumerable<ItemInventoryViewModel> Contenidos { get; set; }
-    public int Cantidad { get; set; }
+  public class ContentsViewModel {
+    public string Code { get; set; }
+    public int TotalQuantity { get; set; }
+    public IEnumerable<ItemInventoryViewModel> Items { get; set; }
+    public int ItemsQuantity { get; set; }
   }
 
   public class ItemUnloadViewModel : ItemViewModel, IValidatableObject {

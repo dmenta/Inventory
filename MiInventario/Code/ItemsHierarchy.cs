@@ -7,25 +7,25 @@ namespace MiInventario.Code
 {
   public class ItemGroup
   {
-    public string GroupID { get; set; }
+    public string GroupId { get; set; }
     public IEnumerable<ItemType> Types { get; set; }
   }
 
   public class ItemType
   {
-    public string TypeID { get; set; }
+    public string TypeId { get; set; }
     public IEnumerable<Item> Items { get; set; }
   }
   public class Item
   {
-    public string ItemID { get; set; }
+    public string ItemId { get; set; }
     public int Order { get; set; }
-    public string GroupID { get; set; }
+    public string GroupId { get; set; }
     public string GroupName()
     {
-      return Resources.Groups.ResourceManager.GetString(GroupID);
+      return Resources.Groups.ResourceManager.GetString(GroupId);
     }
-    public string TypeID { get; set; }
+    public string TypeId { get; set; }
     public int Level { get; set; }
     public string Rarity { get; set; }
     public string RarityName()
@@ -34,27 +34,27 @@ namespace MiInventario.Code
     }
     public bool IsCapsule { get; set; }
     public bool PaysInterests { get; set; }
-    public string Nombre
+    public string Name
     {
-      get { return Resources.ItemsNames.ResourceManager.GetString(ItemID) ?? Resources.Types.ResourceManager.GetString(TypeID); }
+      get { return Resources.ItemsNames.ResourceManager.GetString(ItemId) ?? Resources.Types.ResourceManager.GetString(TypeId); }
     }
     public string Description()
     {
-      string descripcionItem = string.Empty;
+      string descriptionItem = string.Empty;
 
       if (Level > 0)
       {
-        descripcionItem += string.Format("L{0} ", Level);
+        descriptionItem += string.Format("L{0} ", Level);
       }
-      descripcionItem += Nombre;
+      descriptionItem += Name;
       if (Level == 0)
       {
-        descripcionItem += " " + RarityName();
+        descriptionItem += " " + RarityName();
       }
-      return descripcionItem;
+      return descriptionItem;
     }
     public bool IsKeyLocker { get; set; }
-    public string UniqueID { get; set; }
+    public string UniqueId { get; set; }
     public bool Transfer { get; set; }
 
     public override bool Equals(Object obj) {
@@ -65,10 +65,10 @@ namespace MiInventario.Code
       Item itemB = (Item)obj;
       
       // Use Equals to compare instance variables.
-      return ItemID.Equals(itemB.ItemID);
+      return ItemId.Equals(itemB.ItemId);
     }
     public override int GetHashCode() {
-      return ItemID.GetHashCode();
+      return ItemId.GetHashCode();
     }
 
     public bool IsKey { get; set; }

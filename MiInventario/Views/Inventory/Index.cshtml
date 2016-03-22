@@ -39,14 +39,14 @@
           $.each(data, function (key, group) {
 
             var html = '<tr>';
-            html += '<td><a href="/Inventory/Manage/' + group.GroupID + '?editing=false">' + group.GroupName + '</a></td>';
-            html += '<td class="cantidadItem">' + group.Total + '</td>';
-            html += '<td class="cantidadCapsula">' + group.CapsulesTotal + '</td>';
-            html += '<td class="text-center"><a href="/Inventory/Manage/' + group.GroupID + '?editing=true">Edit</a></td>';
+            html += '<td><a href="/Inventory/Manage/' + group.GroupId + '?editing=false">' + group.GroupName + '</a></td>';
+            html += '<td class="itemQuantity">' + group.TotalQuantity + '</td>';
+            html += '<td class="capsuleQuantity">' + group.CapsulesTotal + '</td>';
+            html += '<td class="text-center"><a href="/Inventory/Manage/' + group.GroupId + '?editing=true">Edit</a></td>';
             html += '</tr>';
             if (group.GroupID == 'G_ALL') {
               capsulesGrandTotal = group.CapsulesTotal;
-              grandTotal = group.Total;
+              grandTotal = group.TotalQuantity;
 
               $('#groupTotals tfoot').append(html);
             }

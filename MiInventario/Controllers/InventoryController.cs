@@ -13,7 +13,7 @@ namespace MiInventario.Controllers {
   [Authorize]
   public class InventoryController : BaseController {
 
-    private const string GroupIDAll = "G_ALL";
+    private const string GroupIdAll = "G_ALL";
 
     [HttpGet]
     public ActionResult Index() {
@@ -24,26 +24,26 @@ namespace MiInventario.Controllers {
     public JsonResult GroupsTotals() {
       DateTime inicio = DateTime.Now;
 
-      var enCapsulas = Database.CapsulesItems
+      var enCapsules = Database.CapsulesItems
           .Where(s => s.Capsules.UserId == Username)
-          .GroupBy(t => t.ItemID)
-          .Select(u => new { ItemID = u.Key, CantidadCapsula = u.Sum(v => v.Quantity) }).ToList();
+          .GroupBy(t => t.ItemId)
+          .Select(u => new { ItemId = u.Key, CapsuleQuantity = u.Sum(v => v.Quantity) }).ToList();
 
-      var inventario = Database.Inventarios
-          .Where(s => s.IdUsuario == Username)
-          .Select(u => new { ItemID = u.ItemID, Cantidad = u.Cantidad }).ToList();
+      var inventario = Database.InventoriesItems
+          .Where(s => s.Inventories.UserId == Username)
+          .Select(u => new { ItemId = u.ItemId, Quantity = u.Quantity }).ToList();
 
       var model = GroupsXml.Select(p => new GroupViewModel {
-        GroupID = p.GroupID,
-        GroupName = Resources.Groups.ResourceManager.GetString(p.GroupID),
-        Total = inventario.Where(s => p.Types.SelectMany(t => t.Items).Any(u => u.ItemID == s.ItemID)).DefaultIfEmpty().Sum(v => v == null ? 0 : v.Cantidad),
-        CapsulesTotal = enCapsulas.Where(s => p.Types.SelectMany(t => t.Items).Any(u => u.ItemID == s.ItemID)).DefaultIfEmpty().Sum(v => v == null ? 0 : v.CantidadCapsula)
+        GroupId = p.GroupId,
+        GroupName = Resources.Groups.ResourceManager.GetString(p.GroupId),
+        TotalQuantity = inventario.Where(s => p.Types.SelectMany(t => t.Items).Any(u => u.ItemId == s.ItemId)).DefaultIfEmpty().Sum(v => v == null ? 0 : v.Quantity),
+        CapsulesTotal = enCapsules.Where(s => p.Types.SelectMany(t => t.Items).Any(u => u.ItemId == s.ItemId)).DefaultIfEmpty().Sum(v => v == null ? 0 : v.CapsuleQuantity)
       }).ToList();
 
       model.Add(new GroupViewModel {
-        GroupID = GroupIDAll,
-        GroupName = Resources.Groups.ResourceManager.GetString(GroupIDAll),
-        Total = model.Sum(p => p.Total),
+        GroupId = GroupIdAll,
+        GroupName = Resources.Groups.ResourceManager.GetString(GroupIdAll),
+        TotalQuantity = model.Sum(p => p.TotalQuantity),
         CapsulesTotal = model.Sum(p => p.CapsulesTotal)
       });
 
@@ -58,42 +58,42 @@ namespace MiInventario.Controllers {
       }
 
       DifferenceViewModel model = new DifferenceViewModel();
-      string usuarioA = Username;
-      string usuarioB = (Username == "diegomenta@gmail.com" ? "pceriani@gmail.com" : "diegomenta@gmail.com");
+      string userIdA = Username;
+      string userIdB = (Username == "diegomenta@gmail.com" ? "pceriani@gmail.com" : "diegomenta@gmail.com");
 
-      model.UsuarioA = usuarioA;
-      model.UsuarioB = usuarioB;
+      model.OriginUserId = userIdA;
+      model.DestinationUserId = userIdB;
 
-      var inventarioA = Database.Inventarios
-                        .Where(s => s.IdUsuario == usuarioA)
-                        .Select(u => new ItemQuantity { ItemID = u.ItemID, Quantity = u.Cantidad }).ToList();
-      var inventarioB = Database.Inventarios
-                        .Where(s => s.IdUsuario == usuarioB)
-                        .Select(u => new ItemQuantity { ItemID = u.ItemID, Quantity = u.Cantidad }).ToList();
+      var inventarioA = Database.InventoriesItems
+                        .Where(s => s.Inventories.UserId == userIdA)
+                        .Select(u => new ItemQuantity { ItemId = u.ItemId, Quantity = u.Quantity }).ToList();
+      var inventarioB = Database.InventoriesItems
+                        .Where(s => s.Inventories.UserId == userIdB)
+                        .Select(u => new ItemQuantity { ItemId = u.ItemId, Quantity = u.Quantity }).ToList();
 
-      var capsulasA = Database.CapsulesItems
-                        .Where(s => s.Capsules.UserId == usuarioA)
-                        .GroupBy(t => t.ItemID)
-                        .Select(u => new ItemQuantity { ItemID = u.Key, Quantity = u.Sum(v => v.Quantity) });
-      var capsulasB = Database.CapsulesItems
-                        .Where(s => s.Capsules.UserId == usuarioB)
-                        .GroupBy(t => t.ItemID)
-                        .Select(u => new ItemQuantity { ItemID = u.Key, Quantity = u.Sum(v => v.Quantity) });
+      var capsulesA = Database.CapsulesItems
+                        .Where(s => s.Capsules.UserId == userIdA)
+                        .GroupBy(t => t.ItemId)
+                        .Select(u => new ItemQuantity { ItemId = u.Key, Quantity = u.Sum(v => v.Quantity) });
+      var capsulesB = Database.CapsulesItems
+                        .Where(s => s.Capsules.UserId == userIdB)
+                        .GroupBy(t => t.ItemId)
+                        .Select(u => new ItemQuantity { ItemId = u.Key, Quantity = u.Sum(v => v.Quantity) });
 
-      foreach (var itemC in capsulasA) {
-        var itemI = inventarioA.SingleOrDefault(f => f.ItemID == itemC.ItemID);
+      foreach (var itemC in capsulesA) {
+        var itemI = inventarioA.SingleOrDefault(f => f.ItemId == itemC.ItemId);
         if (itemI == null) {
-          inventarioA.Add(new ItemQuantity { ItemID = itemC.ItemID, Quantity = itemC.Quantity });
+          inventarioA.Add(new ItemQuantity { ItemId = itemC.ItemId, Quantity = itemC.Quantity });
         }
         else {
           itemI.Quantity += itemC.Quantity;
         }
       }
 
-      foreach (var itemC in capsulasB) {
-        var itemI = inventarioB.SingleOrDefault(f => f.ItemID == itemC.ItemID);
+      foreach (var itemC in capsulesB) {
+        var itemI = inventarioB.SingleOrDefault(f => f.ItemId == itemC.ItemId);
         if (itemI == null) {
-          inventarioB.Add(new ItemQuantity { ItemID = itemC.ItemID, Quantity = itemC.Quantity });
+          inventarioB.Add(new ItemQuantity { ItemId = itemC.ItemId, Quantity = itemC.Quantity });
         }
         else {
           itemI.Quantity += itemC.Quantity;
@@ -101,13 +101,13 @@ namespace MiInventario.Controllers {
       }
       model.Groups = GroupsXml
           .Select(p => new GroupDifferenceViewModel {
-            GroupID = p.GroupID,
+            GroupId = p.GroupId,
             Types = p.Types.Select(q => new TypeDifferenceViewModel {
-              TypeID = q.TypeID,
+              TypeId = q.TypeId,
               Items = q.Items.Select(r => new ItemDifferenceViewModel {
                 CurrentItem = r,
-                CantidadUsuarioA = inventarioA.SingleOrDefault(s => s.ItemID == r.ItemID) == null ? 0 : inventarioA.Single(s => s.ItemID == r.ItemID).Quantity,
-                CantidadUsuarioB = inventarioB.SingleOrDefault(s => s.ItemID == r.ItemID) == null ? 0 : inventarioB.Single(s => s.ItemID == r.ItemID).Quantity
+                OriginQuantity = inventarioA.SingleOrDefault(s => s.ItemId == r.ItemId) == null ? 0 : inventarioA.Single(s => s.ItemId == r.ItemId).Quantity,
+                DestinationQuantity = inventarioB.SingleOrDefault(s => s.ItemId == r.ItemId) == null ? 0 : inventarioB.Single(s => s.ItemId == r.ItemId).Quantity
               })
             })
           }).ToList();
@@ -118,21 +118,21 @@ namespace MiInventario.Controllers {
 
     [HttpGet]
     public ActionResult Manage(string id, bool? editing) {
-      Dictionary<string, string> groups = GroupsXml.Select(p => new { GroupID = p.GroupID, Name = Resources.Groups.ResourceManager.GetString(p.GroupID) }).ToDictionary(p => p.GroupID, q => q.Name);
-      groups.Add(GroupIDAll, Resources.Groups.ResourceManager.GetString(GroupIDAll));
+      Dictionary<string, string> groups = GroupsXml.Select(p => new { GroupId = p.GroupId, Name = Resources.Groups.ResourceManager.GetString(p.GroupId) }).ToDictionary(p => p.GroupId, q => q.Name);
+      groups.Add(GroupIdAll, Resources.Groups.ResourceManager.GetString(GroupIdAll));
 
       var model = new ManageViewModel { Groups = groups };
       if (!string.IsNullOrEmpty(id)) {
         if (groups.ContainsKey(id)) {
-          model.GroupID = id;
+          model.GroupId = id;
           model.Editing = editing.GetValueOrDefault();
         }
         else {
-          return new HttpStatusCodeResult(System.Net.HttpStatusCode.NotFound, "GroupID does not exists");
+          return new HttpStatusCodeResult(System.Net.HttpStatusCode.NotFound, "GroupId does not exists");
         }
       }
       else {
-        model.GroupID = GroupsXml.First().GroupID;
+        model.GroupId = GroupsXml.First().GroupId;
         model.Editing = false;
       }
 
@@ -140,47 +140,48 @@ namespace MiInventario.Controllers {
     }
 
     [HttpPost]
-    public ActionResult Items(string groupID) {
-      return GetItems(groupID, false);
+    public ActionResult Items(string groupId) {
+      return GetItems(groupId, false);
     }
 
     [HttpPost]
-    public ActionResult ItemsEdit(string groupID) {
-      return GetItems(groupID, true);
+    public ActionResult ItemsEdit(string groupId) {
+      return GetItems(groupId, true);
     }
 
-    private ActionResult GetItems(string groupID, bool ignoreZeroQuantity) {
-      bool allGroups = groupID == GroupIDAll;
+    private ActionResult GetItems(string groupId, bool ignoreZeroQuantity) {
+      bool allGroups = groupId == GroupIdAll;
 
-      if (!allGroups && !GroupsXml.Any(p => p.GroupID == groupID)) {
-        return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest, "GroupID does not exists");
+      if (!allGroups && !GroupsXml.Any(p => p.GroupId == groupId)) {
+        return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest, "GroupId does not exists");
       }
 
       DateTime inicio = DateTime.Now;
 
-      var enCapsulas = Database.CapsulesItems
+      var enCapsules = Database.CapsulesItems
                   .Where(s => s.Capsules.UserId == Username)
-                  .GroupBy(t => t.ItemID)
-                  .Select(u => new { ItemID = u.Key, CantidadCapsulas = u.Sum(v => v.Quantity) }).ToList();
+                  .GroupBy(t => t.ItemId)
+                  .Select(u => new { ItemId = u.Key, CapsulesQuantity = u.Sum(v => v.Quantity) }).ToList();
 
-      var inventario = Database.Inventarios
-          .Where(s => s.IdUsuario == Username)
-          .Select(u => new { ItemID = u.ItemID, Cantidad = u.Cantidad }).ToList();
+      var inventario = Database.InventoriesItems
+                       .Where(s => s.Inventories.UserId == Username)
+                       .Select(u => new { ItemId = u.ItemId, Quantity = u.Quantity }).ToList();
+
       double elapsed = (DateTime.Now - inicio).TotalMilliseconds;
 
       var itemsGroups = ItemsXml
-        .Where(z => (allGroups || z.GroupID == groupID) && (ignoreZeroQuantity || (inventario.Any(y => y.ItemID == z.ItemID) || enCapsulas.Any(y => y.ItemID == z.ItemID))))
+        .Where(z => (allGroups || z.GroupId == groupId) && (ignoreZeroQuantity || (inventario.Any(y => y.ItemId == z.ItemId) || enCapsules.Any(y => y.ItemId == z.ItemId))))
         .Select(y => new {
-          y.GroupID,
-          y.TypeID,
-          y.ItemID,
+          y.GroupId,
+          y.TypeId,
+          y.ItemId,
           y.Order,
           y.Level,
           y.Rarity,
-          y.UniqueID,
+          y.UniqueId,
           y.IsKeyLocker,
-          Cantidad = inventario.SingleOrDefault(s => s.ItemID == y.ItemID) == null ? 0 : inventario.Single(s => s.ItemID == y.ItemID).Cantidad,
-          CantidadCapsulas = enCapsulas.SingleOrDefault(s => s.ItemID == y.ItemID) == null ? 0 : enCapsulas.Single(s => s.ItemID == y.ItemID).CantidadCapsulas
+          Quantity = inventario.SingleOrDefault(s => s.ItemId == y.ItemId) == null ? 0 : inventario.Single(s => s.ItemId == y.ItemId).Quantity,
+          CapsulesQuantity = enCapsules.SingleOrDefault(s => s.ItemId == y.ItemId) == null ? 0 : enCapsules.Single(s => s.ItemId == y.ItemId).CapsulesQuantity
         })
         .ToList();
 
@@ -189,26 +190,26 @@ namespace MiInventario.Controllers {
       }
 
       var groups = itemsGroups
-        .GroupBy(d => d.GroupID)
+        .GroupBy(d => d.GroupId)
         .Select(p => new {
-          GroupID = p.Key,
-          Types = p.GroupBy(e => e.TypeID)
+          GroupId = p.Key,
+          Types = p.GroupBy(e => e.TypeId)
           .Select(q => new {
-            TypeID = q.Key,
-            Cantidad = q.Sum(f => f.Cantidad),
-            CantidadCapsulas = q.Sum(f => f.CantidadCapsulas),
+            TypeId = q.Key,
+            Quantity = q.Sum(f => f.Quantity),
+            CapsulesQuantity = q.Sum(f => f.CapsulesQuantity),
             Items = q.Select(r => new {
               CurrentItem = new Item {
-                ItemID = r.ItemID,
-                TypeID = r.TypeID,
+                ItemId = r.ItemId,
+                TypeId = r.TypeId,
                 Order = r.Order,
                 Level = r.Level,
                 Rarity = r.Rarity,
-                UniqueID = r.UniqueID,
+                UniqueId = r.UniqueId,
                 IsKeyLocker = r.IsKeyLocker,
               },
-              Cantidad = r.Cantidad,
-              CantidadCapsulas = r.CantidadCapsulas
+              Quantity = r.Quantity,
+              CapsulesQuantity = r.CapsulesQuantity
             })
           })
         });
@@ -228,24 +229,30 @@ namespace MiInventario.Controllers {
       }
 
       foreach (ItemQuantity item in items) {
-        if (ItemsXml.Any(p => p.ItemID == item.ItemID && !string.IsNullOrEmpty(p.UniqueID))) {
+        if (ItemsXml.Any(p => p.ItemId == item.ItemId && !string.IsNullOrEmpty(p.UniqueId))) {
           item.Quantity = 1;
         }
 
-        string itemID = item.ItemID;
-        Inventarios inv = Database.Inventarios.SingleOrDefault(p => p.IdUsuario == Username && p.ItemID == itemID);
+        string itemId = item.ItemId;
+        InventoriesItems invItem = Database.InventoriesItems.SingleOrDefault(p => p.Inventories.UserId == Username && p.ItemId == itemId);
 
-        if (inv != null) {
+        if (invItem != null) {
           if (item.Quantity == 0) {
-            Database.Inventarios.Remove(inv);
+            Database.InventoriesItems.Remove(invItem);
           }
           else {
-            inv.Cantidad = item.Quantity;
+            invItem.Quantity = item.Quantity;
           }
         }
         else {
           if (item.Quantity > 0) {
-            Database.Inventarios.Add(new Inventarios { IdUsuario = Username, ItemID = itemID, Cantidad = item.Quantity });
+            Inventories inv = Database.Inventories.SingleOrDefault(p => p.UserId == Username);
+            if (inv == null) {
+              inv = new Inventories { UserId = Username };
+              Database.Inventories.Add(inv);
+            }
+
+            Database.InventoriesItems.Add(new InventoriesItems { Inventories = inv, ItemId = itemId, Quantity = item.Quantity });
           }
         }
       }

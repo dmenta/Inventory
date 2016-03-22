@@ -13,7 +13,7 @@
                 <th>Caps</th>
                 <th>Qty</th>
                 <th>Avg</th>
-                @foreach (var idC in Model.Capsulas)
+                @foreach (var idC in Model.Capsules)
                 {
                     <th>@idC</th>
                 }
@@ -22,13 +22,13 @@
         <tfoot>
             <tr>
                 <td class="fecha">Total</td>
-                <td class="cantidadTotal">@Model.TotalCapsules</td>
-                <td class="cantidadTotal">@Model.TotalItems</td>
-                <td class="cantidadTotal"></td>
-                @foreach (var capsula in Model.Totales)
+                <td class="totalQuantity">@Model.TotalCapsules</td>
+                <td class="totalQuantity">@Model.TotalItems</td>
+                <td class="totalQuantity"></td>
+                @foreach (var capsule in Model.Totals)
                 {
                     <td class="text-nowrap">
-                        @foreach (var elemento in capsula.Items)
+                        @foreach (var elemento in capsule.Items)
                         {
                             <div><span>@elemento.Quantity</span>@Html.Partial("_ItemDescription", elemento)</div>
                         }
@@ -40,21 +40,21 @@
             @foreach (var info in Model.DateInfo)
             {
                 <tr>
-                    <td class="fecha text-nowrap">@info.Fecha.ToString(dateFormat)</td>
-                    <td class="cantidadTotal">@info.TotalCapsules</td>
-                    <td class="cantidadTotal">@info.TotalItems</td>
-                    <td class="cantidadTotal">@info.Average.ToString("N2")</td>
-                    @foreach (var idC in Model.Capsulas)
+                    <td class="fecha text-nowrap">@info.Date.ToString(dateFormat)</td>
+                    <td class="totalQuantity">@info.TotalCapsules</td>
+                    <td class="totalQuantity">@info.TotalItems</td>
+                    <td class="totalQuantity">@info.Average.ToString("N2")</td>
+                    @foreach (var idC in Model.Capsules)
                     {
-                        var capsula = Model.Filas.SingleOrDefault(p => p.Fecha == info.Fecha && p.IdCapsula == idC);
-                        if (capsula == null)
+                        var capsule = Model.Rows.SingleOrDefault(p => p.Date == info.Date && p.Code == idC);
+                        if (capsule == null)
                         {
                             <td></td>
                             continue;
                         }
 
                         <td class="text-nowrap">
-                            @foreach (var total in capsula.Items)
+                            @foreach (var total in capsule.Items)
                             {
                                 <div><span>@total.Quantity</span>@Html.Partial("_ItemDescription", total)</div>
                             }

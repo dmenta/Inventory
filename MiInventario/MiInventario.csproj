@@ -197,14 +197,16 @@
     <Compile Include="Controllers\InterestsController.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\CapsuleModel.cs" />
+    <Compile Include="Inventories.cs">
+      <DependentUpon>Modelo.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventoriesItems.cs">
+      <DependentUpon>Modelo.tt</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InventoryController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
-    </Compile>
-    <Compile Include="Inventarios.cs">
-      <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
     <Compile Include="Modelo.Context.cs">
       <AutoGen>True</AutoGen>
@@ -228,10 +230,13 @@
     <Compile Include="Models\InventoryViewModel.cs" />
     <Compile Include="Models\ItemViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reproducciones.cs">
+    <Compile Include="Spawns.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
-    <Compile Include="ReproduccionesItems.cs">
+    <Compile Include="SpawnsCapsules.cs">
+      <DependentUpon>Modelo.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SpawnsCapsulesItems.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />

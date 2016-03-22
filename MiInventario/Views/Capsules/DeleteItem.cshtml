@@ -8,7 +8,7 @@
 
 @using (Html.BeginForm("DeleteItem", "Capsules", FormMethod.Post)) {
   @Html.HiddenFor(model => model.CapsuleId)
-  @Html.HiddenFor(model => model.Item.CurrentItem.ItemID)
+  @Html.HiddenFor(model => model.Item.CurrentItem.ItemId)
   <p>
     @Html.Partial("_ItemDescription", Model.Item)
     <span>@Model.Quantity</span>

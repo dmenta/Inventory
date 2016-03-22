@@ -19,9 +19,9 @@
   <fieldset>
     @Html.HiddenFor(model => model.CapsuleId)
     <div class="form-group">
-      @Html.LabelFor(model => model.ItemID, new { @class = "col-lg-2 control-label" })
+      @Html.LabelFor(model => model.ItemId, new { @class = "col-lg-2 control-label" })
       <div class="col-lg-10">
-        @Html.DropDownListFor(model => model.ItemID, new SelectList(Model.AddeableItems.Select(p => new { p.CurrentItem.ItemID, Descripcion = p.CurrentItem.Description() }), "ItemID", "Descripcion"), new { @class = "form-control input-sm" })
+        @Html.DropDownListFor(model => model.ItemId, new SelectList(Model.AddeableItems.Select(p => new { p.CurrentItem.ItemId, Descripcion = p.CurrentItem.Description() }), "ItemId", "Descripcion"), new { @class = "form-control input-sm" })
       </div>
     </div>
     <div class="form-group">

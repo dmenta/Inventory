@@ -30,29 +30,29 @@ namespace MiInventario
             var query = (from c in items.Descendants("item")
                          select new Item
                          {
-                             ItemID = c.Attribute("ItemID").Value,
+                             ItemId = c.Attribute("ItemId").Value,
                              Order = int.Parse(c.Attribute("Order").Value),
-                             GroupID = c.Attribute("GroupID").Value,
-                             TypeID = c.Attribute("TypeID").Value,
+                             GroupId = c.Attribute("GroupId").Value,
+                             TypeId = c.Attribute("TypeId").Value,
                              Level = c.Attribute("Level")==null?0:int.Parse(c.Attribute("Level").Value),
                              Rarity = c.Attribute("Rarity").Value,
                              IsKey = c.Attribute("IsKey") != null && bool.Parse(c.Attribute("IsKey").Value),
                              IsCapsule = c.Attribute("IsCapsule") != null && bool.Parse(c.Attribute("IsCapsule").Value),
                              PaysInterests = c.Attribute("PaysInterests") != null && bool.Parse(c.Attribute("PaysInterests").Value),
                              IsKeyLocker = c.Attribute("IsKeyLocker") != null && bool.Parse(c.Attribute("IsKeyLocker").Value),
-                             UniqueID = c.Attribute("UniqueID") == null || c.Attribute("UniqueID").Value.Length==0 ? null : c.Attribute("UniqueID").Value,
+                             UniqueId = c.Attribute("UniqueId") == null || c.Attribute("UniqueId").Value.Length==0 ? null : c.Attribute("UniqueId").Value,
                              Transfer = c.Attribute("Transfer") == null || bool.Parse(c.Attribute("Transfer").Value),
                          }).ToList().AsReadOnly();
 
             HttpContext.Current.Application["ItemsXml"] = query;
 
-            HttpContext.Current.Application["ItemGroupsXml"] = query.GroupBy(p => p.GroupID)
+            HttpContext.Current.Application["ItemGroupsXml"] = query.GroupBy(p => p.GroupId)
                 .Select(q => new ItemGroup
                 {
-                    GroupID = q.Key,
-                    Types = q.GroupBy(r => r.TypeID).Select(s => new ItemType
+                    GroupId = q.Key,
+                    Types = q.GroupBy(r => r.TypeId).Select(s => new ItemType
                     {
-                        TypeID = s.Key,
+                        TypeId = s.Key,
                         Items = s
                     })
                 }).ToList().AsReadOnly();

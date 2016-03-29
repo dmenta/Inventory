@@ -1,0 +1,54 @@
+﻿@model MyInventory.Models.Capsules.ManageViewModel
+@{
+    ViewBag.Title = "Manage Items";
+}
+<h2>@ViewBag.Title</h2>
+@Html.Partial("_CapsuleHeader", Model)
+
+@using (Html.BeginForm("ManageItems", "Capsules", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(model => model.CapsuleId)
+
+    <div class="col-lg-4 col-md-5 col-sm-6 col-xs-12">
+        <table class="table table-condensed table-striped">
+            <colgroup>
+                <col class="col-lg-7 col-md-7 col-sm-7 col-xs-7" />
+                <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
+                <col class="col-lg-3 col-md-3 col-sm-3 col-xs-3" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Items.Count; i++)
+                {
+                    var item = Model.Items[i];
+                    <tr>
+                        <td class="name">
+                            @Html.Partial("_ItemDescription", item.CurrentItem)
+                        </td>
+                        <td class="itemQuantity">
+                            @Html.HiddenFor(model => Model.Items[i].CurrentItem.ItemId)
+                            @Html.TextBoxFor(model => Model.Items[i].Quantity, new { @class = "form-control text-right input-sm" })
+                        </td>
+                        <td class="text-center">
+                            @Html.ActionLink("Delete", "DeleteItem", new { @id = Model.CapsuleId, itemId = item.CurrentItem.ItemId })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="clearfix"></div>
+    <p>
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </p>
+}
+<div class="clearfix"></div>
+<p>
+    @Html.ActionLink("Back to Capsules", "Index") | @Html.ActionLink("Back to View Capsule", "List", new { @id = Model.CapsuleId })
+</p>

@@ -1,0 +1,24 @@
+﻿@model MyInventory.Models.Capsules.SendToViewModel
+@{
+  ViewBag.Title = "Send Capsule to User" + Model.UserId;
+}
+
+<h2>@ViewBag.Title</h2>
+@Html.Partial("_CapsuleHeader", Model)
+
+<p>
+  Are you sure you wnat to send capsule to user @Model.UserId?
+</p>
+@using (Html.BeginForm("SendToUser", "Capsules", FormMethod.Post, new { @class = "form-horizontal" })) {
+  <fieldset>
+    <div class="form-group">
+      <div class="col-lg-12">
+        @Html.HiddenFor(model => model.CapsuleId)
+        @Html.HiddenFor(model => model.UserId)
+        <input type="submit" value="Confirm" class="btn btn-primary" />
+        @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+      </div>
+    </div>
+  </fieldset>
+}
+

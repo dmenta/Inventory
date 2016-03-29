@@ -1,0 +1,148 @@
+﻿@model MyInventory.Models.Interests.DateTotalViewModel
+@{
+  ViewBag.Title = "Interests of last " + Model.Periods + " " + Model.Grouping;
+}
+<h2>Interests Total <img id="imgLoading" src='@Url.Content("~/images/loading.gif")' style="vertical-align:baseline;height: 20px;display:none" /></h2>
+<div class="form-horizontal">
+  <div class="form-group">
+    <div class="col-lg-offset-1 col-lg-11" style="margin-bottom:5px; color: #909090">(0 means all data)</div>
+    <span class="col-lg-1 control-label">Last</span>
+    <div class="col-lg-1">
+      <input type="number" min="0" max="2000" step="1" class="form-control input-sm text-right" id="periods" value="@Model.Periods" />
+    </div>
+    <div class="col-lg-10">
+      @Html.DropDownList("Grouping", Enum.GetValues(typeof(MyInventory.Code.DateGrouping)).Cast<MyInventory.Code.DateGrouping>().Select(x => new SelectListItem { Text = x.ToString(), Value = x.ToString(), Selected = (x == Model.Grouping) }), new { @id = "grouping", @class = "form-control input-sm", style = "float: left" })
+    </div>
+  </div>
+</div>
+<hr />
+<div class="table-responsive" id="tableContainer">
+</div>
+<p>
+  @Html.ActionLink("Back to Capsules", "Index")
+</p>
+@section scripts{
+  <script type="text/javascript">
+
+    function updateTable() {
+      var grp = $("#grouping").val();
+      var per = $('#periods').val();
+
+      $.ajax({
+        url: '/Interests/ByItemDate',
+        method: 'GET',
+        cache: false,
+        dataType: 'json',
+        data: { grouping: grp, periods: per },
+        success: function (data) {
+          $("#tableContainer").html(RenderInterests(data));
+        }
+      });
+    }
+
+    $(document).ready(function () {
+      $(document).ajaxStart(function () {
+        $("#imgLoading").show();
+      });
+
+      $(document).ajaxStop(function () {
+        $("#imgLoading").hide();
+      });
+
+      $("#grouping").change(function () {
+        updateTable();
+        historyManager.setState();
+      });
+
+      $('#periods').focus(function () {
+        var inp = $(this);
+        inp.data('current', inp.val());
+      });
+
+      $('#periods').change(function () {
+        var inp = $(this);
+        var newVal = Number(inp.val());
+        if (newVal >= 0 && Math.floor(newVal) == newVal && newVal <= 2000) {
+          updateTable();
+          historyManager.setState();
+        }
+        else {
+          inp.val(inp.data('current'));
+        }
+      });
+
+      updateTable();
+
+      historyManager.init({
+        data: function () {
+          return { grouping: $("#grouping").val(), periods: $('#periods').val() };
+        },
+        title: function (data) {
+          return 'Interests of last ' + data.periods.toString() + ' ' + data.grouping;
+        },
+        url: function (data) {
+          return '/Interests/DateTotal?grouping=' + data.grouping + '&periods=' + data.periods.toString();
+        },
+        change: function (data) {
+          $("#grouping").val(data.grouping);
+          $("#periods").val(data.periods);
+
+          updateTable();
+        }
+      });
+    });
+
+    function RenderInterests(data) {
+      var html = '';
+      html += '<table class="table table-condensed table-striped table-hover" style="font-size:0.9em">';
+      html += '<thead>';
+      html += ' <tr>';
+      html += '<th class="corner rotate"><div><span></span></div></th>';
+      html += '<th class="rotate"><div><span>Caps</span></div></th>';
+      html += '<th class="rotate"><div><span>Qty</span></div></th>';
+      html += '<th class="rotate"><div><span>Avg</span></div></th>';
+      $.each(data.Totals, function (key, item) {
+        html += '<th class="text-nowrap rotate"><div><span>' + RenderItemDescription(item.CurrentItem) + '</span></div></th>';
+      });
+      html += '</tr>';
+      html += ' </thead>';
+      html += '<tfoot>';
+      html += ' <tr>';
+      html += '<td class="fecha">Total</td>';
+      html += '<td class="totalQuantity"></td>';
+      html += '<td class="totalQuantity">' + data.TotalItems + '</td>';
+      html += '<td class="totalQuantity"></td>';
+      $.each(data.Totals, function (key, total) {
+        html += '<td class="itemQuantity">' + total.Quantity + '</td>';
+      });
+      html += '</tr>';
+      html += '</tfoot>';
+      html += '<tbody>';
+      $.each(data.DateInfo, function (key, info) {
+        html += '<tr>';
+        html += '<td class="fecha text-nowrap">' + info.FormattedDate + '</td>';
+        html += '<td class="totalQuantity">' + info.TotalCapsules + '</td>';
+        html += '<td class="totalQuantity">' + info.TotalItems + '</td>';
+        html += '<td class="totalQuantity">' + info.Average.toFixed(2) + '</td>';
+        $.each(data.Items, function (key, itemId) {
+          var quantity = info.Items[itemId];
+          if (quantity == null || quantity === 0) {
+            html += '<td></td>';
+            return;
+          }
+          if (quantity == data.Highests[itemId]) {
+            html += '<td class="itemQuantity text-warning"><strong>' + quantity + '</strong></td>';
+          }
+          else {
+            html += '<td class="itemQuantity">' + quantity + '</td>';
+          }
+        });
+        html += '</tr>';
+      });
+      html += '</tbody>';
+      html += '</table>';
+
+      return html;
+    }
+  </script>
+}

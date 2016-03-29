@@ -1,0 +1,70 @@
+﻿@model MyInventory.Models.Capsules.AddEditViewModel
+@{
+  ViewBag.Title = "Edit Capsule:" + Model.Code;
+}
+
+<h2>@ViewBag.Title</h2>
+
+@foreach (var item in ViewContext.ViewData.ModelState) {
+  if (item.Value.Errors.Any()) {
+    <div class="alert alert-dismissible alert-warning">
+      <button type="button" class="close" data-dismiss="alert">×</button>
+      @(string.Join("; ", item.Value.Errors.Select(x => x.ErrorMessage)))
+    </div>
+  }
+}
+@using (Html.BeginForm("Edit", "Capsules", FormMethod.Post, new { @class = "form-horizontal" })) {
+  @Html.HiddenFor(model => model.CapsuleId)
+  <fieldset>
+    <div class="form-group">
+      @Html.LabelFor(model => model.Code, new { @class = "col-lg-2 control-label" })
+      <div class="col-lg-10">
+        @if (string.IsNullOrEmpty(Model.CapsuleTypes.Single(p => p.ItemId == Model.ItemId).UniqueId)) {
+          @Html.TextBoxFor(model => model.Code, new { @class = "form-control text-uppercase input-sm" });
+        }
+        else {
+          @Html.TextBoxFor(model => model.Code, new { @class = "form-control text-uppercase input-sm", @readonly = "readonly" });
+        }
+      </div>
+    </div>
+    <div class="form-group">
+      @Html.LabelFor(model => model.Name, new { @class = "col-lg-2 control-label" })
+      <div class="col-lg-10">
+        @Html.TextBoxFor(model => model.Name, new { @class = "form-control input-sm" })
+      </div>
+    </div>
+    <div class="form-group">
+      @Html.LabelFor(model => model.ItemId, new { @class = "col-lg-2 control-label" })
+      <div class="col-lg-10">
+        <select id="ItemId" class="form-control input-sm" name="ItemId">
+          @foreach (var item in Model.CapsuleTypes) {
+            if (item.ItemId == Model.ItemId) {
+              <option value="@item.ItemId" data-uniqueid="@item.UniqueId" selected>@item.Name</option>
+            }
+            else {
+              <option value="@item.ItemId" data-uniqueid="@item.UniqueId">@item.Name</option>
+            }
+          }
+        </select>
+      </div>
+    </div>
+    <div class="col-lg-10 col-lg-offset-2">
+      <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+  </fieldset>
+}
+@section scripts{
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $('#ItemId').change(function () {
+        var uniqueId = $('#ItemId option:selected').data('uniqueid');
+        if (uniqueId.length > 0) {
+          $('#Code').val(uniqueId).prop('readonly', true);
+        }
+        else {
+          $('#Code').prop('readonly', false);
+        }
+      });
+    });
+  </script>
+}

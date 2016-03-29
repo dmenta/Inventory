@@ -1,0 +1,5 @@
+﻿@model MyInventory.Code.ItemBase
+@if (Model.Level > 0) {
+  <span class="@string.Format("level{0}", Model.Level)">@string.Format("L{0}", Model.Level)</span>
+}
+<span class="@string.Format("rarity{0}", Model.Rarity)">@Model.Name</span>

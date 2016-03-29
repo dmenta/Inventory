@@ -1,0 +1,88 @@
+﻿@model MyInventory.Models.Interests.ChartsViewModel
+@{
+  ViewBag.Title = "Interests Charts";
+}
+<h2>Interests Charts <img id="imgLoading" src='@Url.Content("~/images/loading.gif")' style="vertical-align:baseline;height: 20px;display:none" /></h2>
+<div class="form-horizontal">
+  <div class="form-group">
+    <span class="col-lg-2 control-label">Grouping</span>
+    <div class="col-lg-10">
+      @Html.DropDownListFor(model => model.Grouping, Enum.GetValues(typeof(MyInventory.Code.DateGrouping)).Cast<MyInventory.Code.DateGrouping>().Select(x => new SelectListItem { Text = x.ToString(), Value = x.ToString() }), new { @id = "grouping", @class = "form-control input-sm" })
+    </div>
+  </div>
+  <div class="form-group">
+    <span class="col-lg-2 control-label">Item</span>
+    <div class="col-lg-10">
+      @Html.DropDownListFor(model => model.ItemId, new SelectList(Model.ViewableItems, "Key", "Value", Model.ItemId), Resources.Groups.G_ALL, new { @id = "item", @class = "form-control input-sm" })
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" @(Model.Accumulative ? "checked=\"checked\"" : "") id="accumulative" />
+          Accumulative
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+<hr />
+<h4 id="chartTitle">@Html.Partial("_ChartTitle", Model.ChartTitle)</h4>
+<div>
+  <img src="@Url.Action("InterestsChart", "Interests", new { grouping = Model.Grouping, itemID = Model.ItemId, accumulative = Model.Accumulative })" alt="Chart" />
+</div>
+@section scripts{
+  <script type="text/javascript">
+
+    function updateImage() {
+      var grp = $('#grouping').val();
+      var item = $('#item').val();
+      var acc = $('#accumulative').is(':checked');
+      var newImg = '/Interests/InterestsChart?grouping=' + grp + '&itemId=' + item + '&accumulative=' + acc;
+      $("img").attr('src', newImg);
+
+      $.ajax({
+        url: '/Interests/_ChartTitle',
+        method: 'GET',
+        cache: false,
+        dataType: "html",
+        data: { grouping: grp, itemId: item, accumulative: acc },
+        success: function (data) {
+          $("#chartTitle").html(data);
+        }
+      });
+    }
+
+    $(document).ready(function () {
+      $(document).ajaxStart(function () {
+        $("#imgLoading").show();
+      });
+
+      $(document).ajaxStop(function () {
+        $("#imgLoading").hide();
+      });
+
+      $('#grouping,#item,#accumulative').change(function () {
+        updateImage();
+        historyManager.setState();
+      });
+
+      historyManager.init({
+        data: function () {
+          return { grouping: $('#grouping').val(), itemId: $('#item').val(), itemName: $('#item option:selected').text(), accumulative: $('#accumulative').is(':checked') };
+        },
+        title: function (data) {
+          return (data.accumulative ? 'Accumulative interests of ' : 'Interests of ') + data.itemName + ' by ' + data.grouping;
+        },
+        url: function (data) {
+          return '/Interests/DateCharts?grouping=' + data.grouping + '&itemID=' + data.itemID + '&accumulative=' + data.accumulative.toString();
+        },
+        change: function (data) {
+          $('#grouping').val(data.grouping);
+          $('#item').val(data.itemId);
+          $('#accumulative').prop('checked', data.accumulative)
+
+          updateImage();
+        }
+      });
+    });
+
+  </script>
+}

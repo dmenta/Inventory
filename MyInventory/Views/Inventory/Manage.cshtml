@@ -1,0 +1,41 @@
+﻿@using System.Linq
+@using MyInventory.Models
+@model MyInventory.Models.Inventory.ManageViewModel
+@{
+  ViewBag.Title = "Inventory Manage";
+}
+<div class="col-lg-12">
+  <h2>@ViewBag.Title <img id="imgLoading" src='@Url.Content("~/images/loading.gif")' style="vertical-align:baseline;height: 20px;display:none" /></h2>
+</div>
+<div class="form-horizontal col-lg-12">
+  <div class="form-group">
+    <div class="col-lg-12">
+      @Html.DropDownList("Grouping", Model.Groups.Select(p => new SelectListItem() { Value = p.Key, Text = p.Value, Selected = false }), new { @id = "Groups", @class = "form-control input-sm" })
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-lg-11">
+      <button type="button" class="btn btn-primary edit">Edit</button>
+      <button type="button" class="btn btn-default cancel edition" style="display:none" disabled>Cancel</button>
+      <button type="button" class="btn btn-primary save edition" style="display:none" disabled>Save</button>
+    </div>
+  </div>
+</div>
+<div id="resultado"></div>
+<div class="form-horizontal col-lg-12">
+  <div class="form-group">
+    <div class="col-lg-12">
+      <button type="button" class="btn btn-primary edit">Edit</button>
+      <button type="button" class="btn btn-default cancel edition" style="display:none" disabled>Cancel</button>
+      <button type="button" class="btn btn-primary save edition" style="display:none" disabled>Save</button>
+    </div>
+  </div>
+</div>
+<div class="clearfix"></div>
+@section scripts{
+  @Scripts.Render("~/bundlesview/inventory-manage")
+  <script type="text/javascript">
+    inventoryManageActions.editing= @Json.Encode(Model.Editing);
+    inventoryManageActions.groupId = '@Model.GroupId';
+  </script>
+}

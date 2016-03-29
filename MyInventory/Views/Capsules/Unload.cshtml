@@ -1,0 +1,89 @@
+﻿@model MyInventory.Models.Capsules.UnloadViewModel
+@{
+    ViewBag.Title = "Unload Items";
+}
+<h2>@ViewBag.Title</h2>
+@Html.Partial("_CapsuleHeader", Model)
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-dismissible alert-warning">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @string.Join("; ", ViewData.ModelState.Values
+                                        .SelectMany(x => x.Errors)
+                                        .Select(x => x.ErrorMessage))
+    </div>
+}
+@using (Html.BeginForm("Unload", "Capsules", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(model => model.CapsuleId)
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <table class="table table-condensed table-striped">
+            <colgroup>
+                <col class="col-lg-6 col-md-6 col-sm-6 col-xs-6" />
+                <col class="col-lg-3 col-md-3 col-sm-3 col-xs-3" />
+                <col class="col-lg-3 col-md-3 col-sm-3 col-xs-3" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th>
+                        <label for="unloadAll">Unload</label>
+                        <input id="unloadAll" type="checkbox">
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Items.Count; i++)
+                {
+                  MyInventory.Models.Capsules.ItemUnloadViewModel item = Model.Items[i];
+                    <tr>
+                        <td class="name">
+                            @Html.Partial("_ItemDescription", item.CurrentItem)
+                        </td>
+                        <td class="itemQuantity">
+                            @Html.DisplayFor(model => Model.Items[i].CapsuleQuantity)
+                        </td>
+                        <td class="itemQuantity">
+                            @Html.HiddenFor(model => Model.Items[i].CurrentItem.ItemId)
+                            @Html.HiddenFor(model => Model.Items[i].CapsuleQuantity)
+                            @Html.TextBoxFor(model => Model.Items[i].UnloadQuantity, new { @class = "form-control text-right input-sm" })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="clearfix"></div>
+    <p>
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </p>
+}
+<div class="clearfix"></div>
+<p>
+    @Html.ActionLink("Back to Capsules", "Index") | @Html.ActionLink("Back to View Capsule", "List", new { @id = Model.CapsuleId })
+</p>
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#unloadAll")
+              .click(function () {
+                  var $this = $(this);
+                  if ($this.is(':checked')) {
+                      $(".form-control").each(function (index) {
+                          var valor = $(this).prev().val();
+                          $(this).val(valor);
+                          $(this).attr("readonly", true);
+                      });
+                  }
+                  else{
+                      $(".form-control").each(function (index) {
+                          $(this).attr("readonly", false);
+                      });
+                  }
+              });
+        });
+    </script>
+}

@@ -1,0 +1,65 @@
+﻿@using Microsoft.AspNet.Identity
+@{
+  ViewBag.Title = "Capsules";
+}
+<h2>@ViewBag.Title</h2>
+<div style="margin-bottom: 20px">
+  <div class="btn-group">
+    <a href="#" id="btnAcciones" data-url="@Url.Action("ManageItems", new { @id = "IdCapsula" })" data-needspawn="false" class="btn btn-primary replacedLink">Manage</a>
+    <a href="#" id="btnAccionesDropdown" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+    <ul class="dropdown-menu">
+      <li><a href="#" data-url="@Url.Action("AddItem", new { @id = "IdCapsula" })" data-needspawn="false" class="replacedLink">Add Item</a></li>
+      <li><a href="#" data-url="@Url.Action("Load", new { @id = "IdCapsula" })" data-needspawn="false" class="replacedLink">Load</a></li>
+      <li><a href="#" data-url="@Url.Action("Unload", new { @id = "IdCapsula" })" data-needspawn="false" class="replacedLink">Unload</a></li>
+      <li class="divider"></li>
+      <li><a href="#" data-url="@Url.Action("Edit", new { @id = "IdCapsula" })" data-needspawn="false" class="replacedLink">Edit</a></li>
+      <li><a href="#" data-url="@Url.Action("Delete", new { @id = "IdCapsula" })" data-needspawn="false" class="replacedLink">Delete</a></li>
+      <li class="divider"></li>
+      <li><a href="#" data-url="@Url.Action("LogInterests", new { @id = "IdCapsula" })" data-needspawn="true" class="replacedLink">Log Interests</a></li>
+      <li><a href="#" data-url="@Url.Action("DateCapsule", new { grouping = MyInventory.Code.DateGrouping.Day, idCapsula = "IdCapsula" })" data-needspawn="true" class="replacedLink">Interests Capsule by Day</a></li>
+      <li><a href="#" data-url="@Url.Action("DateCapsule", new { grouping = MyInventory.Code.DateGrouping.Week, idCapsula = "IdCapsula" })" data-needspawn="true" class="replacedLink">Interests Capsule by Week</a></li>
+      <li><a href="#" data-url="@Url.Action("DateCapsule", new { grouping = MyInventory.Code.DateGrouping.Month, idCapsula = "IdCapsula" })" data-needspawn="true" class="replacedLink">Interests Capsule by Month</a></li>
+      <li><a href="#" data-url="@Url.Action("TotalCapsule", new { @id = "IdCapsula" })" data-needspawn="true" class="replacedLink">Interests Total</a></li>
+      @if (MyInventory.Utils.GetUsernamFromEmail(User.Identity.GetUserName()) == "diegomenta") {
+        <li class="divider"></li>
+        <li><a href="#" data-url="@Url.Action("SendToUser", new { @id = "IdCapsula", sendToUser = "pceriani@gmail.com" })" data-needspawn="false" class="replacedLink">Send to pceriani</a></li>
+      }
+      @if (MyInventory.Utils.GetUsernamFromEmail(User.Identity.GetUserName()) == "pceriani") {
+        <li class="divider"></li>
+        <li><a href="#" data-url="@Url.Action("SendToUser", new { @id = "IdCapsula", sendToUser = "diegomenta@gmail.com" })" data-needspawn="false" class="replacedLink">Send to diegomenta</a></li>
+      }
+    </ul>
+  </div>
+</div>
+<div class="col-lg-4 col-md-5 col-sm-6 col-xs-12 clearfix">
+  <table class="table table-condensed table-striped" id="capsules">
+    <colgroup>
+      <col class="col-lg-1 col-md-1 col-sm-1 col-xs-1" />
+      <col class="col-lg-3 col-md-3 col-sm-3 col-xs-2" />
+      <col class="col-lg-6 col-md-6 col-sm-6 col-xs-5" />
+      <col class="col-lg-2 col-md-2 col-sm-2 col-xs-1" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th></th>
+        <th>ID</th>
+        <th>Item</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+<div class="clearfix"></div>
+<p>
+  @Html.ActionLink("Add", "Add")
+  | @Html.ActionLink("Last Spawn", "LastSpawn", "Interests")
+  | @Html.ActionLink("Interests Capsule by Day", "DateCapsule", "Interests", new { grouping = MyInventory.Code.DateGrouping.Day }, null)
+  | @Html.ActionLink("Interests Capsule by Week", "DateCapsule", "Interests", new { grouping = MyInventory.Code.DateGrouping.Week }, null)
+  | @Html.ActionLink("Interests Capsule by Month", "DateCapsule", "Interests", new { grouping = MyInventory.Code.DateGrouping.Month }, null)
+  | @Html.ActionLink("Interests Total", "TotalCapsule")
+  | @Html.ActionLink("Interests Total by Item", "TotalByItem")
+</p>
+@section scripts{
+  @Scripts.Render("~/bundlesview/capsules-index")
+}

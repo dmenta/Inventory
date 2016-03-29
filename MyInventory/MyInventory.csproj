@@ -391,6 +391,12 @@
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
+    <Content Include="Scripts\views\capsules-add.js" />
+    <Content Include="Scripts\views\capsules-edit.js" />
+    <Content Include="Scripts\views\capsules-unload.js" />
+    <Content Include="Scripts\views\interests-percentagerarity.js" />
+    <Content Include="Scripts\views\interests-datetotal.js" />
+    <Content Include="Scripts\views\interests-datechart.js" />
     <Content Include="Scripts\views\capsules-index.js" />
     <Content Include="Scripts\views\inventory-index.js" />
     <Content Include="Scripts\views\inventory-manage.js" />

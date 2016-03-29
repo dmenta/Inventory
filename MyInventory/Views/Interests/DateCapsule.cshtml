@@ -1,70 +1,62 @@
 ﻿@model MyInventory.Models.Interests.ByDateViewModel
 @{
-    ViewBag.Title = Model.Title;
-    string dateFormat = Resources.General.ResourceManager.GetString(string.Format("InterestsByDate_DateFormat_{0}", Model.Grouping.ToString()));
+  ViewBag.Title = Model.Title;
+  string dateFormat = Resources.General.ResourceManager.GetString(string.Format("InterestsByDate_DateFormat_{0}", Model.Grouping.ToString()));
 }
-
 <h2>@ViewBag.Title</h2>
 <div class="table-responsive">
-    <table class="table table-condensed table-striped table-hover" style="font-size:0.9em">
-        <thead>
-            <tr>
-                <th class="corner"></th>
-                <th>Caps</th>
-                <th>Qty</th>
-                <th>Avg</th>
-                @foreach (var idC in Model.Capsules)
-                {
-                    <th>@idC</th>
-                }
-            </tr>
-        </thead>
-        <tfoot>
-            <tr>
-                <td class="fecha">Total</td>
-                <td class="totalQuantity">@Model.TotalCapsules</td>
-                <td class="totalQuantity">@Model.TotalItems</td>
-                <td class="totalQuantity"></td>
-                @foreach (var capsule in Model.Totals)
-                {
-                    <td class="text-nowrap">
-                        @foreach (var elemento in capsule.Items)
-                        {
-                            <div><span>@elemento.Quantity</span>@Html.Partial("_ItemDescription", elemento.CurrentItem)</div>
-                        }
-                    </td>
-                }
-            </tr>
-        </tfoot>
-        <tbody>
-            @foreach (var info in Model.DateInfo)
-            {
-                <tr>
-                    <td class="fecha text-nowrap">@info.Date.ToString(dateFormat)</td>
-                    <td class="totalQuantity">@info.TotalCapsules</td>
-                    <td class="totalQuantity">@info.TotalItems</td>
-                    <td class="totalQuantity">@info.Average.ToString("N2")</td>
-                    @foreach (var idC in Model.Capsules)
-                    {
-                        var capsule = Model.Rows.SingleOrDefault(p => p.Date == info.Date && p.Code == idC);
-                        if (capsule == null)
-                        {
-                            <td></td>
-                            continue;
-                        }
-
-                        <td class="text-nowrap">
-                            @foreach (var total in capsule.Items)
-                            {
-                                <div><span>@total.Quantity</span>@Html.Partial("_ItemDescription", total.CurrentItem)</div>
-                            }
-                        </td>
-                    }
-                </tr>
+  <table class="table table-condensed table-striped table-hover" style="font-size:0.9em">
+    <thead>
+      <tr>
+        <th class="corner"></th>
+        <th>Caps</th>
+        <th>Qty</th>
+        <th>Avg</th>
+        @foreach (var idC in Model.Capsules) {
+          <th>@idC</th>
+        }
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <td class="fecha">Total</td>
+        <td class="totalQuantity">@Model.TotalCapsules</td>
+        <td class="totalQuantity">@Model.TotalItems</td>
+        <td class="totalQuantity"></td>
+        @foreach (var capsule in Model.Totals) {
+          <td class="text-nowrap">
+            @foreach (var elemento in capsule.Items) {
+              <div><span>@elemento.Quantity</span>@Html.Partial("_ItemDescription", elemento.CurrentItem)</div>
             }
-        </tbody>
-    </table>
+          </td>
+        }
+      </tr>
+    </tfoot>
+    <tbody>
+      @foreach (var info in Model.DateInfo) {
+        <tr>
+          <td class="fecha text-nowrap">@info.Date.ToString(dateFormat)</td>
+          <td class="totalQuantity">@info.TotalCapsules</td>
+          <td class="totalQuantity">@info.TotalItems</td>
+          <td class="totalQuantity">@info.Average.ToString("N2")</td>
+          @foreach (var idC in Model.Capsules) {
+            var capsule = Model.Rows.SingleOrDefault(p => p.Date == info.Date && p.Code == idC);
+            if (capsule == null) {
+              <td></td>
+              continue;
+            }
+
+            <td class="text-nowrap">
+              @foreach (var total in capsule.Items) {
+                <div><span>@total.Quantity</span>@Html.Partial("_ItemDescription", total.CurrentItem)</div>
+              }
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
 </div>
 <p>
-    @Html.ActionLink("Back to Capsules", "Index")
+  @Html.ActionLink("Capsules", "Index")
 </p>

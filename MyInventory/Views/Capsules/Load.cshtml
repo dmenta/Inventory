@@ -1,79 +1,75 @@
 ﻿@model MyInventory.Models.Capsules.LoadViewModel
 @{
-    ViewBag.Title = "Load Items";
+  ViewBag.Title = "Load Items";
 }
-
 <h2>@ViewBag.Title</h2>
 @Html.Partial("_CapsuleHeader", Model)
-
 @if (!ViewData.ModelState.IsValid) {
-    <div class="alert alert-dismissible alert-warning">
-        <button type="button" class="close" data-dismiss="alert">×</button>
-        @string.Join("; ", ViewData.ModelState.Values
+  <div class="alert alert-dismissible alert-warning">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    @string.Join("; ", ViewData.ModelState.Values
                                         .SelectMany(x => x.Errors)
                                         .Select(x => x.ErrorMessage))
-    </div>
+  </div>
 }
-@using (Html.BeginForm("Load", "Capsules", FormMethod.Post, new { @class = "form-horizontal" }))
-{
-    @Html.HiddenFor(model => model.CapsuleId)
-    @Html.HiddenFor(model => model.TotalQuantity)
+@using (Html.BeginForm("Load", "Capsules", FormMethod.Post, new { @class = "form-horizontal" })) {
+  @Html.HiddenFor(model => model.CapsuleId)
+  @Html.HiddenFor(model => model.TotalQuantity)
 
-    <div class="col-lg-4 col-md-5 col-sm-6 col-xs-12">
-        <table class="table table-condensed table-striped">
-            <colgroup>
-                <col class="col-lg-6 col-md-6 col-sm-6 col-xs-5" />
-                <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
-                <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
-                <col class="col-lg-2 col-md-2 col-sm-2 col-xs-3" />
-            </colgroup>
-            <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Qty</th>
-                    <th>Caps.</th>
-                    <th>Load</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (int i = 0; i < Model.Items.Count; i++)
-                {
-                    var item = Model.Items[i];
-                    @Html.HiddenFor(model => Model.Items[i].CurrentItem.ItemId)
-                    @Html.HiddenFor(model => Model.Items[i].CurrentItem.TypeId)
-                    @Html.HiddenFor(model => Model.Items[i].ItemQuantity)
-                    @Html.HiddenFor(model => Model.Items[i].CapsuleQuantity)
-                    @Html.HiddenFor(model => Model.Items[i].CurrentItem.Level)
-                    @Html.HiddenFor(model => Model.Items[i].CurrentItem.Rarity)
-                    <tr>
-                        <td class="name">
-                            @Html.Partial("_ItemDescription", item.CurrentItem)
-                        </td>
-                        <td class="itemQuantity">
-                            @Html.DisplayFor(model => Model.Items[i].ItemQuantity)
-                        </td>
-                        <td class="itemQuantity">
-                            @if (Model.Items[i].CapsuleQuantity > 0)
-                            {
-                                @String.Format("({0})", Model.Items[i].CapsuleQuantity);
-                            }
-                        </td>
-                        <td class="itemQuantity">
-                            @if (item.ItemQuantity > 0) {
-                                @Html.TextBoxFor(model => Model.Items[i].LoadQuantity, new { @class = "form-control text-right input-sm" });
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-    <div class="clearfix"></div>
-    <p>
-        <input type="submit" value="Save" class="btn btn-primary" />
-    </p>
+  <div class="col-lg-4 col-md-5 col-sm-6 col-xs-12">
+    <table class="table table-condensed table-striped">
+      <colgroup>
+        <col class="col-lg-6 col-md-6 col-sm-6 col-xs-5" />
+        <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
+        <col class="col-lg-2 col-md-2 col-sm-2 col-xs-2" />
+        <col class="col-lg-2 col-md-2 col-sm-2 col-xs-3" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Qty</th>
+          <th>Caps.</th>
+          <th>Load</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (int i = 0; i < Model.Items.Count; i++) {
+          var item = Model.Items[i];
+          @Html.HiddenFor(model => Model.Items[i].CurrentItem.ItemId)
+          @Html.HiddenFor(model => Model.Items[i].CurrentItem.TypeId)
+          @Html.HiddenFor(model => Model.Items[i].ItemQuantity)
+          @Html.HiddenFor(model => Model.Items[i].CapsuleQuantity)
+          @Html.HiddenFor(model => Model.Items[i].CurrentItem.Level)
+          @Html.HiddenFor(model => Model.Items[i].CurrentItem.Rarity)
+          <tr>
+            <td class="name">
+              @Html.Partial("_ItemDescription", item.CurrentItem)
+            </td>
+            <td class="itemQuantity">
+              @Html.DisplayFor(model => Model.Items[i].ItemQuantity)
+            </td>
+            <td class="itemQuantity">
+              @if (Model.Items[i].CapsuleQuantity > 0) {
+                @String.Format("({0})", Model.Items[i].CapsuleQuantity);
+              }
+            </td>
+            <td class="itemQuantity">
+              @if (item.ItemQuantity > 0) {
+                @Html.TextBoxFor(model => Model.Items[i].LoadQuantity, new { @class = "form-control text-right input-sm" });
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <div class="clearfix"></div>
+  <p>
+    <input type="submit" value="Save" class="btn btn-primary" />
+    <a href="~/Capsules" class="btn btn-default">Cancel</a>
+  </p>
 }
 <div class="clearfix"></div>
 <p>
-    @Html.ActionLink("Back to Capsules", "Index") | @Html.ActionLink("Back to View Capsule", "List", new { @id = Model.CapsuleId })
+  @Html.ActionLink("View Capsule", "List", new { @id = Model.CapsuleId })
 </p>

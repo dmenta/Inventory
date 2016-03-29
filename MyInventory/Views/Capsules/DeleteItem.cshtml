@@ -2,10 +2,8 @@
 @{
   ViewBag.Title = "Delete Item";
 }
-
 <h2>@ViewBag.Title</h2>
 @Html.Partial("_CapsuleHeader", Model)
-
 @using (Html.BeginForm("DeleteItem", "Capsules", FormMethod.Post)) {
   @Html.HiddenFor(model => model.CapsuleId)
   @Html.HiddenFor(model => model.Item.CurrentItem.ItemId)

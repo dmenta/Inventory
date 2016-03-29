@@ -23,40 +23,5 @@
   <img src="@Url.Action("PercentageRarityChart", "Interests", new { grouping = Model.Grouping, percentage = Model.Percentage })" alt="@ViewBag.Title" />
 </div>
 @section scripts{
-  <script type="text/javascript">
-
-    function UpdateImage() {
-      var grp = $("#grouping").val();
-      var per = $("#percentage").is(':checked');
-      var newImg = '/Interests/PercentageRarityChart?grouping=' + grp + '&percentage=' + per;
-      $("img").attr('src', newImg);
-
-      $("#chartTitle").text("Interest per Rarity per " + grp + " by " + (per ? "Percentage" : "Quantity"));
-    }
-
-    $(document).ready(function () {
-      $('#grouping,#percentage').change(function () {
-        UpdateImage();
-        historyManager.setState();
-      });
-
-      historyManager.init({
-        data: function () {
-          return { grouping: $("#grouping").val(), percentage: $("#percentage").is(':checked') };
-        },
-        title: function (data) {
-          return "Interest per Rarity per " + data.grouping + " by " + (data.percentage ? "Percentage" : "Quantity");
-        },
-        url: function (data) {
-          return '/Interests/PercentageRarity?grouping=' + data.grouping + '&percentage=' + data.percentage;
-        },
-        change: function (data) {
-          $("#grouping").val(data.grouping);
-          $("#percentage").prop('checked', data.percentage);
-
-          UpdateImage();
-        }
-      });
-    });
-  </script>
+  @Scripts.Render("~/bundlesview/interests-percentagerarity")
 }

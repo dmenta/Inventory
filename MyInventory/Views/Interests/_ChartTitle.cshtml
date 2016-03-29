@@ -1,17 +1,13 @@
 ﻿@model MyInventory.Models.Interests.ChartTitleViewModel
-
-@if (Model.Accumulative)
-{
-    <span>Accumulative</span>
+@if (Model.Accumulative) {
+  <span>Accumulative</span>
 }
 Interest of
-@if (Model.Item.CurrentItem == null)
-{
-    <text>@Resources.Groups.G_ALL Items</text>
+@if (Model.Item.CurrentItem == null) {
+  <text>@Resources.Groups.G_ALL Items</text>
 }
-else
-{
-    @Html.Partial("_ItemDescription", Model.Item.CurrentItem)
+else {
+  @Html.Partial("_ItemDescription", Model.Item.CurrentItem)
 }
 by
 @Model.Grouping.ToString()

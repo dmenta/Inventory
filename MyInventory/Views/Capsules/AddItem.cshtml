@@ -2,19 +2,16 @@
 @{
   ViewBag.Title = "Add Item";
 }
-
 <h2>@ViewBag.Title</h2>
 @Html.Partial("_CapsuleHeader", Model)
-
 @foreach (var item in ViewContext.ViewData.ModelState) {
   if (item.Value.Errors.Any()) {
-        <div class="alert alert-dismissible alert-warning">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            @(string.Join("; ", item.Value.Errors.Select(x => x.ErrorMessage)))
-        </div>
-    }
+    <div class="alert alert-dismissible alert-warning">
+      <button type="button" class="close" data-dismiss="alert">×</button>
+      @(string.Join("; ", item.Value.Errors.Select(x => x.ErrorMessage)))
+    </div>
+  }
 }
-
 @using (Html.BeginForm("AddItem", "Capsules", FormMethod.Post, new { @class = "form-horizontal" })) {
   <fieldset>
     @Html.HiddenFor(model => model.CapsuleId)
@@ -32,9 +29,10 @@
     </div>
     <div class="col-lg-10 col-lg-offset-2">
       <input type="submit" value="Save" class="btn btn-primary" />
+      <a href="~/Capsules" class="btn btn-default">Cancel</a>
     </div>
   </fieldset>
 }
 <p>
-  @Html.ActionLink("Back to Capsules", "Index") | @Html.ActionLink("Back to View Capsule", "List", new { @id = Model.CapsuleId })
+  @Html.ActionLink("View Capsule", "List", new { @id = Model.CapsuleId })
 </p>

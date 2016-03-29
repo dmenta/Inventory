@@ -1,7 +1,7 @@
 ﻿@model MyInventory.Models.Capsules.CapsuleViewModel
 @if (string.IsNullOrEmpty(Model.Name)) {
   if (Model.ItemInside != null) {
-    <h3>@Model.Code [@Html.Partial("_ItemDescription",Model.ItemInside.CurrentItem)] (@Model.TotalQuantity)</h3>
+    <h3>@Model.Code [@Html.Partial("_ItemDescription", Model.ItemInside.CurrentItem)] (@Model.TotalQuantity)</h3>
   }
   else {
     <h3>@Model.Code (@Model.TotalQuantity)</h3>

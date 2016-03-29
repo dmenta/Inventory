@@ -1,23 +1,19 @@
 ﻿@model MyInventory.Models.Capsules.ManageViewModel
 @{
-    ViewBag.Title = "View Items";
+  ViewBag.Title = "View Items";
 }
-
 <h2>@ViewBag.Title</h2>
 @Html.Partial("_CapsuleHeader", Model)
-
 @Html.Partial("_ShowItemsCapsule", Model.Items)
-
 <div class="clearfix"></div>
 <p>
-    @Html.ActionLink("Back to Capsules", "Index")
-    | @Html.ActionLink("Load", "Load", new { @id = Model.CapsuleId })
-    | @Html.ActionLink("Unload", "Unload", new { @id = Model.CapsuleId })
-    | @Html.ActionLink("Edit", "Edit", new { @id = Model.CapsuleId })
-    | @Html.ActionLink("Add Item", "AddItem", new { @id = Model.CapsuleId })
-    | @Html.ActionLink("Manage Items", "ManageItems", new { @id = Model.CapsuleId })
-    @if (Model.Properties.PaysInterests)
-    {
-        <text>|</text> @Html.ActionLink("Log Interests", "LogInterests", new { @id = Model.CapsuleId });
-    }
+  @Html.ActionLink("Capsules", "Index")
+  | @Html.ActionLink("Load", "Load", new { @id = Model.CapsuleId })
+  | @Html.ActionLink("Unload", "Unload", new { @id = Model.CapsuleId })
+  | @Html.ActionLink("Edit", "Edit", new { @id = Model.CapsuleId })
+  | @Html.ActionLink("Add Item", "AddItem", new { @id = Model.CapsuleId })
+  | @Html.ActionLink("Manage Items", "ManageItems", new { @id = Model.CapsuleId })
+  @if (Model.Properties.PaysInterests) {
+    <text>|</text> @Html.ActionLink("Log Interests", "LogInterests", new { @id = Model.CapsuleId });
+  }
 </p>

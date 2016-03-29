@@ -2,10 +2,8 @@
 @{
   ViewBag.Title = "Delete Capsule: " + Model.Code;
 }
-
 <h2>@ViewBag.Title</h2>
 @Html.Partial("_CapsuleHeader", Model)
-
 @using (Html.BeginForm("Delete", "Capsules", FormMethod.Post, new { @class = "form-horizontal" })) {
   <fieldset>
     <div class="form-group">

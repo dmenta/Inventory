@@ -1,10 +1,8 @@
 ﻿@model MyInventory.Models.Capsules.AddEditViewModel
 @{
-  ViewBag.Title = "Edit Capsule:" + Model.Code;
+  ViewBag.Title = "Edit Capsule: " + Model.Code;
 }
-
 <h2>@ViewBag.Title</h2>
-
 @foreach (var item in ViewContext.ViewData.ModelState) {
   if (item.Value.Errors.Any()) {
     <div class="alert alert-dismissible alert-warning">
@@ -50,21 +48,10 @@
     </div>
     <div class="col-lg-10 col-lg-offset-2">
       <input type="submit" value="Save" class="btn btn-primary" />
+      <a href="~/Capsules" class="btn btn-default">Cancel</a>
     </div>
   </fieldset>
 }
 @section scripts{
-  <script type="text/javascript">
-    $(document).ready(function () {
-      $('#ItemId').change(function () {
-        var uniqueId = $('#ItemId option:selected').data('uniqueid');
-        if (uniqueId.length > 0) {
-          $('#Code').val(uniqueId).prop('readonly', true);
-        }
-        else {
-          $('#Code').prop('readonly', false);
-        }
-      });
-    });
-  </script>
+  @Scripts.Render("~/bundlesview/capsules-edit")
 }

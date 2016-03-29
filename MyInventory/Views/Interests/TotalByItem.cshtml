@@ -1,19 +1,16 @@
 ﻿@model List<MyInventory.Models.Capsules.ItemCapsuleViewModel>
 @{
-    ViewBag.Title = "Total Interests";
+  ViewBag.Title = "Total Interests";
 }
-
 <h2>Total Interests</h2>
-@foreach (string group in Model.Select(p => p.CurrentItem.GroupId).Distinct())
-{
-    <div class="group">
-        @foreach (string type in Model.Where(p => p.CurrentItem.GroupId == group).Select(q => q.CurrentItem.TypeId).Distinct())
-        {
-            @Html.Partial("_ShowItemsCapsule", Model.Where(p => p.CurrentItem.TypeId == type).Select(q=>q))
-        }
-    </div>
+@foreach (string group in Model.Select(p => p.CurrentItem.GroupId).Distinct()) {
+  <div class="group">
+    @foreach (string type in Model.Where(p => p.CurrentItem.GroupId == group).Select(q => q.CurrentItem.TypeId).Distinct()) {
+      @Html.Partial("_ShowItemsCapsule", Model.Where(p => p.CurrentItem.TypeId == type).Select(q => q))
+    }
+  </div>
 }
 <div class="clearfix"></div>
 <p class="bottomLinks">
-    @Html.ActionLink("Back to Capsules", "Index")
+  @Html.ActionLink("Capsules", "Index")
 </p>

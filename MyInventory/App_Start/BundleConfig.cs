@@ -22,8 +22,15 @@ namespace MyInventory {
       bundles.Add(new ScriptBundle("~/bundlesview/inventory-difference").Include("~/Scripts/views/inventory-difference.js*"));
       bundles.Add(new ScriptBundle("~/bundlesview/inventory-index").Include("~/Scripts/views/inventory-index.js*"));
       bundles.Add(new ScriptBundle("~/bundlesview/inventory-manage").Include("~/Scripts/views/inventory-manage.js*"));
-
+      bundles.Add(new ScriptBundle("~/bundlesview/inventory-manage").Include("~/Scripts/views/inventory-manage.js*"));
+      bundles.Add(new ScriptBundle("~/bundlesview/interests-datechart").Include("~/Scripts/views/interests-datechart.js*"));
+      bundles.Add(new ScriptBundle("~/bundlesview/interests-datetotal").Include("~/Scripts/views/interests-datetotal.js*"));
+      bundles.Add(new ScriptBundle("~/bundlesview/interests-percentagerarity").Include("~/Scripts/views/interests-percentagerarity.js*"));
       bundles.Add(new ScriptBundle("~/bundlesview/capsules-index").Include("~/Scripts/views/capsules-index.js*"));
+      bundles.Add(new ScriptBundle("~/bundlesview/capsules-unload").Include("~/Scripts/views/capsules-unload.js*"));
+      bundles.Add(new ScriptBundle("~/bundlesview/capsules-edit").Include("~/Scripts/views/capsules-edit.js*"));
+      bundles.Add(new ScriptBundle("~/bundlesview/capsules-add").Include("~/Scripts/views/capsules-add.js*"));
+
 
       // Use the development version of Modernizr to develop with and learn from. Then, when you're
       // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.

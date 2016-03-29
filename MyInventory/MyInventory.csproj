@@ -448,7 +448,6 @@
     <Content Include="Views\Interests\_ChartTitle.cshtml" />
     <Content Include="Views\Interests\DateTotal.cshtml" />
     <Content Include="Views\Interests\PercentageRarity.cshtml" />
-    <Content Include="Views\Interests\_DateTotal.cshtml" />
     <Content Include="Views\Inventory\Manage.cshtml" />
     <Content Include="Views\Inventory\Index.cshtml" />
     <Content Include="Views\Capsules\_CapsuleHeader.cshtml" />

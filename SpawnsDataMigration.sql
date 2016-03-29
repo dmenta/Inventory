@@ -7,29 +7,27 @@ GO
 DBCC CHECKIDENT (Spawns, RESEED, 0)
 GO
 INSERT INTO Spawns
-SELECT DISTINCT IdUsuario UserID, Fecha Creation from Reproducciones
+SELECT DISTINCT IdUsuario UserId, Fecha [Date] from Reproducciones
 ORDER BY Fecha, IdUsuario
 GO
 INSERT INTO SpawnsCapsules
 SELECT DISTINCT
-S.SpawnID,
-R.IdCapsula CapsuleID,
-'CAPS_MUFG' ItemID
+S.SpawnId,
+R.IdCapsula CapsuleCode
 FROM Spawns S
 INNER JOIN Reproducciones R ON
- R.Fecha=S.Creation
- AND R.IdUsuario=S.UserID
+ R.Fecha=S.[Date]
+ AND R.IdUsuario=S.UserId
 GO
 INSERT INTO SpawnsCapsulesItems
 SELECT 
-S.SpawnID,
-R.IdCapsula CapsuleID,
-ItemID,
-0 TotalQty,
-SUM(Cantidad) Interests
+S.SpawnId,
+R.IdCapsula CapsuleCode,
+ItemId,
+SUM(Cantidad) Quantity
 FROM Spawns S
 INNER JOIN Reproducciones R ON
- R.Fecha=S.Creation
+ R.Fecha=S.Date
  AND R.IdUsuario=S.UserID
 INNER JOIN ReproduccionesItems RI ON
  R.IdReproduccion=RI.IdReproduccion

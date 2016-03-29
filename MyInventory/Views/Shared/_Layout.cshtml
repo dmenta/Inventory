@@ -65,13 +65,13 @@
       <p>
         &copy; @DateTime.Now.Year - reptilicusteam
       </p>
-      @if (HttpContext.Current.IsDebuggingEnabled) {
+      @*@if (HttpContext.Current.IsDebuggingEnabled) {
         <ul>
           @foreach (string data in Utils.GetConnectionData()) {
             <li>@data</li>
           }
         </ul>
-      }
+      }*@
     </footer>
   </div>
   <div id="dialog">

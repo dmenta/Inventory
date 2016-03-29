@@ -30,7 +30,7 @@ namespace MyInventory.Code
       get { return Resources.ItemsNames.ResourceManager.GetString(ItemId) ?? Resources.Types.ResourceManager.GetString(TypeId); }
     }
 
-    protected ItemBase() {
+    public ItemBase() {
 
     }
 

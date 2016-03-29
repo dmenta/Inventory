@@ -438,7 +438,7 @@ namespace MyInventory.Controllers {
       var itemsCargados = capsuleDB.CapsulesItems.Select(p => p.ItemId).ToList();
       var isKey = ItemsXml.Where(p => p.IsKey).Select(s => s.ItemId);
 
-      model.AddeableItems = ItemsCapsule.Where(q => !itemsCargados.Contains(q.ItemId) && (!model.Properties.IsKeyLocker || isKey.Contains(q.ItemId)))
+      model.AddeableItems = ItemsXml.Where(q => !ItemsCapsule.Contains(q) && !itemsCargados.Contains(q.ItemId) && (!model.Properties.IsKeyLocker || isKey.Contains(q.ItemId)))
           .Select(q => new Models.ItemViewModel {
             CurrentItem = q,
           }).ToList();
@@ -467,10 +467,10 @@ namespace MyInventory.Controllers {
         var itemsCargados = capsuleDB.CapsulesItems.Select(p => p.ItemId).ToList();
         var isKey = ItemsXml.Where(p => p.IsKey).Select(s => s.ItemId);
 
-        addedItem.AddeableItems = ItemsCapsule.Where(q => !itemsCargados.Contains(q.ItemId) && (!addedItem.Properties.IsKeyLocker || isKey.Contains(q.ItemId)))
-              .Select(q => new Models.ItemViewModel {
-                CurrentItem = q,
-              }).ToList();
+        addedItem.AddeableItems = ItemsXml.Where(q => !ItemsCapsule.Contains(q) && !itemsCargados.Contains(q.ItemId) && (!addedItem.Properties.IsKeyLocker || isKey.Contains(q.ItemId)))
+                .Select(q => new Models.ItemViewModel {
+                  CurrentItem = q,
+                }).ToList();
 
         return View(addedItem);
       }
@@ -498,7 +498,7 @@ namespace MyInventory.Controllers {
       DeleteItemViewModel model = new DeleteItemViewModel();
       LoadCapsule(capsuleDB, model);
 
-      model.Item = ItemViewModelLight.Create(ItemsXml,item.ItemId);
+      model.Item = ItemViewModelLight.Create(ItemsXml, item.ItemId);
       model.Quantity = item.Quantity;
 
       return View(model);

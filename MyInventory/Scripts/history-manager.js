@@ -9,22 +9,22 @@
     return '';
   },
   init: function (config) {
-    if (typeof config.data == 'function') {
+    if (typeof config.data === 'function') {
       this.dataCallback = config.data;
     }
-    if (typeof config.title == 'function') {
+    if (typeof config.title === 'function') {
       this.titleCallback = config.title;
     }
-    if (typeof config.url == 'function') {
+    if (typeof config.url === 'function') {
       this.urlCallback = config.url;
     }
     $(window).bind('popstate', function (e) {
       var newState = e.originalEvent.state;
-      if (newState != null && typeof config.change == 'function') {
+      if (newState !== null && typeof config.change === 'function') {
         document.title = historyManager.titleCallback(newState);
         config.change(newState);
       }
-    })
+    });
 
     var data = this.dataCallback();
     document.title = this.titleCallback(data);

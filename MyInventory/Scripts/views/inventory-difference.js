@@ -94,5 +94,5 @@ var inventoryDifferenceActions = function () {
 
       return html;
     }
-  }
+  };
 }();

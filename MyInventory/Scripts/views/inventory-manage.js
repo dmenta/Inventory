@@ -62,10 +62,10 @@ var inventoryManageActions = function(){
         var min = Number(inp.attr('min'));
         var max = Number(inp.attr('max'));
         var newValue = Number(inp.val());
-        if (newValue<min){
+        if (newValue < min) {
           newValue = min;
         }
-        else if (newValue>max){
+        else if (newValue > max) {
           newValue = max;
         }
         else {
@@ -81,7 +81,7 @@ var inventoryManageActions = function(){
         dataType: "json",
         data: { groupId: $('#Groups').val() },
         success: function (data) {
-          var nuevosItems = ''
+          var nuevosItems = '';
 
           if (!data.Result) {
             $('#resultado').html('<div class="col-lg-6 alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">×</button>There are no items in this group</div>');
@@ -114,7 +114,7 @@ var inventoryManageActions = function(){
         },
       });
     },
-    save: function (){
+    save: function () {
       var items = [];
       $('.newQty').each(function (key, info) {
         var inp = $(info);
@@ -122,13 +122,13 @@ var inventoryManageActions = function(){
         var oldQty = inp.data("originalqty");
         var newQty = inp.val();
 
-        if (parseInt(oldQty) != newQty) {
-          item = { "ItemId": id, "Quantity": newQty };
+        if (parseInt(oldQty) !== newQty) {
+          var item = { "ItemId": id, "Quantity": newQty };
           items.push(item);
         }
       });
 
-      if (items.length == 0) {
+      if (items.length === 0) {
         inventoryManageActions.editing = false;
         inventoryManageActions.changeState(false);
       }
@@ -149,24 +149,24 @@ var inventoryManageActions = function(){
         });
       }
     },
-    setDisabled: function (){
+    setDisabled: function () {
       $('#Groups').prop('disabled', true);
       $('.edit').prop('disabled', true);
       $('.edition').prop('disabled', true);
     },
-    setViewing: function (){
+    setViewing: function () {
       $('#Groups').prop('disabled', false);
       $('.edit').prop('disabled', false).show();
       $('.edition').hide();
     },
-    setEditing: function (){
+    setEditing: function () {
       $('#Groups').prop('disabled', true);
       $('.edit').prop('disabled', true).hide();
       $('.edition').prop('disabled', false).show();
     },
-    changeState: function (){
+    changeState: function () {
       inventoryManageActions.showGroups();
       historyManager.setState();
     }
-  }
+  };
 }();

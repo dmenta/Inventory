@@ -68,7 +68,6 @@ namespace MyInventory.Code
 
   public class Item: ItemBase
   {
-    public string GroupId { get; set; }
     public string GroupName()
     {
       return Resources.Groups.ResourceManager.GetString(GroupId);

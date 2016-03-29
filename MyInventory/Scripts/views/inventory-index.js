@@ -12,7 +12,7 @@
 
     $.each(data, function (key, group) {
       // to footer (only one)
-      if (group.GroupID == 'G_ALL') {
+      if (group.GroupID === 'G_ALL') {
         capsulesGrandTotal = group.CapsulesTotal;
         grandTotal = group.TotalQuantity;
 
@@ -44,5 +44,5 @@ var inventoryIndexActions = function () {
 
       return html;
     }
-  }
+  };
 }();
